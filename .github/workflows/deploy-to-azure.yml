@@ -1,19 +1,13 @@
-name: Deploy to Azure Container Apps
+name: Test Azure Login
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  login-test:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Log in to Azure using OIDC
+    - name: Azure Login with OIDC
       uses: azure/login@v1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -21,26 +15,9 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         allow-no-subscriptions: true
 
-    - name: Build and push Django image
-      run: |
-        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/django-api ./backend
-        az acr login --name ${{ secrets.ACR_NAME }}
-        docker push ${{ secrets.ACR_NAME }}.azurecr.io/django-api
+    - name: Show current Azure account
+      run: az account show
 
-    - name: Build and push React image
-      run: |
-        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/react-ui ./frontend
-        docker push ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
-
-    - name: Deploy to Azure Container Apps
-      run: |
-        az containerapp update \
-          --name django-api \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api
-
-        az containerapp update \
-          --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
 
