@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -46,7 +47,7 @@ jobs:
           --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui \
-          --environment <YOUR_CONTAINERAPPS_ENVIRONMENT_NAME> \
+          --environment ${{ secrets.CONTAINERAPPS_ENV }} \
           --target-port 80 \
           --ingress external \
           --registry-server ${{ secrets.ACR_NAME }}.azurecr.io
@@ -55,5 +56,3 @@ jobs:
           --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
-
-
