@@ -38,10 +38,22 @@ jobs:
 
     - name: Deploy to Azure Container Apps
       run: |
+        az containerapp show \
+          --name react-ui \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          > /dev/null 2>&1 || \
+        az containerapp create \
+          --name react-ui \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui \
+          --environment <YOUR_CONTAINERAPPS_ENVIRONMENT_NAME> \
+          --target-port 80 \
+          --ingress external \
+          --registry-server ${{ secrets.ACR_NAME }}.azurecr.io
+
         az containerapp update \
           --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
-
 
 
