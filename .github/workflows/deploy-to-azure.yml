@@ -42,3 +42,6 @@ jobs:
           --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
+
+
+
