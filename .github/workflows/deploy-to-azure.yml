@@ -1,12 +1,18 @@
-name: Deploy Django + React to Azure
+name: Deploy to Azure
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  login-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Azure Login with OIDC
       uses: azure/login@v1
       with:
@@ -14,9 +20,6 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         allow-no-subscriptions: true
-
-    - name: Show current Azure account
-      run: az account show
 
     - name: Build and push Django image
       run: |
@@ -27,14 +30,14 @@ jobs:
     - name: Build and push React image
       run: |
         docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/react-ui ./frontend
-        az acr login --name ${{ secrets.ACR_NAME }}
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
 
-    - name: (Optional) Deploy to Azure Container Apps
+    - name: Deploy to Azure Container Apps
       run: |
         az containerapp update \
           --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
+
 
 
