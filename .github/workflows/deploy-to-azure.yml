@@ -1,9 +1,13 @@
-name: Deploy to Azure Container Apps
+name: Deploy to Azure
 
 on:
   push:
     branches:
       - main
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build-and-deploy:
@@ -13,20 +17,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Log in to Azure
+    - name: Azure Login with OIDC
       uses: azure/login@v1
       with:
-        creds: >
-          {
-            "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
-            "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
-            "tenantId": "${{ secrets.AZURE_TENANT_ID }}",
-            "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
-          }
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        allow-no-subscriptions: true
 
     - name: Build and push Django image
       run: |
-        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/django-api ./backend
+        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/django-api ./django_project
         az acr login --name ${{ secrets.ACR_NAME }}
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/django-api
 
@@ -37,11 +38,6 @@ jobs:
 
     - name: Deploy to Azure Container Apps
       run: |
-        az containerapp update \
-          --name django-api \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api
-
         az containerapp update \
           --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
