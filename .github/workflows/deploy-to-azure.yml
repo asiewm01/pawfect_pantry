@@ -18,11 +18,11 @@ jobs:
     - name: Show current Azure account
       run: az account show
 
-    - name: Build and push React image
+    - name: Build and push Django image
       run: |
-        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/react-ui ./frontend
+        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/django-api ./django_project
         az acr login --name ${{ secrets.ACR_NAME }}
-        docker push ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/django-api
 
     - name: Build and push React image
       run: |
