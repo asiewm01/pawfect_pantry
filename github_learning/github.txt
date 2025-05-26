@@ -17,3 +17,17 @@ In GitBash -
 cd /c/Users/siewc/OneDrive/Desktop/Generation/Generation_Capstone_Ecommerce
 
 Change to correct Git Respo - git remote set-url origin https://github.com/asiewm01/pawfect_pantry.git
+
+git remote add origin https://github.com/asiewm01/pawfect_pantry.git
+
+Commit Changes -
+
+git init
+git status
+git add .
+git commit -m "Media Added"
+git remote add origin https://github.com/asiewm01/pawfect_pantry.git
+git push origin main
+
+Database File -
+"/c/xampp/mysql/bin/mysqldump.exe" -u capstone_user -p -h 127.0.0.1 -P 3306 capstone > capstone_backup.sql
