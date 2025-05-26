@@ -1,4 +1,4 @@
-name: Test Azure Login
+name: Deploy Django + React to Azure
 
 on:
   workflow_dispatch:
