@@ -80,16 +80,26 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'capstone_db'),
-        'USER': os.getenv('DB_USER', 'capstone_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'securepassword123'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),  # 👈 default to localhost in dev
-        'PORT': os.getenv('DB_PORT', '3306'),
+USE_SQLITE = os.getenv('USE_SQLITE', 'False') == 'True'
+
+if USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('DB_NAME', 'capstone_db'),
+            'USER': os.getenv('DB_USER', 'capstone_user'),
+            'PASSWORD': os.getenv('DB_PASSWORD', 'securepassword123'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
+            'PORT': os.getenv('DB_PORT', '3306'),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -136,6 +146,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3001",  # If using another port
     "http://127.0.0.1:3000",
     "http://react-frontend:3000",  # Docker container name (React)
+    "https://react-ui.icypebble-xxxxx.azurecontainerapps.io",
 ]
 
 CORS_ALLOW_CREDENTIALS = True

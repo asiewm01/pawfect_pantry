@@ -47,7 +47,7 @@ jobs:
           --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui \
-          --environment ${{ secrets.CONTAINERAPPS_ENV }} \
+          --environment ${{ secrets.CONTAINERAPPS_ENV }} \    # <-- ADD THIS BACKSLASH
           --target-port 80 \
           --ingress external \
           --registry-server ${{ secrets.ACR_NAME }}.azurecr.io
