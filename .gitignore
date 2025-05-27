@@ -80,3 +80,4 @@ Desktop.ini
 
 
 /vendor_service/
+.env*
