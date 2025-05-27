@@ -11,15 +11,18 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Install Python dependencies
-COPY requirements.txt .
+COPY requirements.txt ./
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the project
-COPY . .
+# Copy all project files (including manage.py and the app folders)
+COPY django_project/ ./
 
-# Expose Django default port
+# Copy the production environment file and rename it
+COPY .env.production .env
+
+# Expose Django port
 EXPOSE 8000
 
-# Run Django app directly (no wait-for-it)
+# Run Django server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
