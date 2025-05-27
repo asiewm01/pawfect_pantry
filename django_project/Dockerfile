@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-# Install system dependencies required for mysqlclient
+# Install MySQL build dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     default-libmysqlclient-dev \
@@ -9,24 +9,17 @@ RUN apt-get update && apt-get install -y \
 
 # Set work directory
 WORKDIR /app
-COPY . /app
 
 # Install Python dependencies
 COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the Django project
+# Copy the rest of the project
 COPY . .
 
-# Expose port
+# Expose Django default port
 EXPOSE 8000
 
-COPY wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
-
-# Run server
-CMD ["/wait-for-it.sh", "mysql-db:3306", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
-
-# Give execution permission to the script
-RUN chmod +x /app/wait-for-it.sh
+# Run Django app directly (no wait-for-it)
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

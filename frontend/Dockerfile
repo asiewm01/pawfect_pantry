@@ -20,7 +20,8 @@ EXPOSE 3001
 # Start the app (optional if you're using Nginx or serve later)
 CMD ["npm", "start"]
 
-
+# Copy correct env file depending on build context
+COPY .env.production .env
 
 
 
