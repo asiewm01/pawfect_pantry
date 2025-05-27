@@ -146,7 +146,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3001",  # If using another port
     "http://127.0.0.1:3000",
     "http://react-frontend:3000",  # Docker container name (React)
-    "https://react-ui.icypebble-xxxxx.azurecontainerapps.io",
+    "https://react-ui.icypebble-e6a48936.southeastasia.azurecontainerapps.io",
 ]
 
 CORS_ALLOW_CREDENTIALS = True

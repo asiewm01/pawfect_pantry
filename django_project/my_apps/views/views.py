@@ -21,7 +21,7 @@ def homepage(request):
     return JsonResponse(data)
 
 def about_view(request):
-    return JsonResponse({'message': 'This is the About page of the Aquaculture Marketplace API.'})
+    return JsonResponse({'message': 'This is the About page of the Pawfect Pantry API.'})
 
 def contact_view(request):
     return JsonResponse({'email': 'support@example.com', 'phone': '+1234567890'})

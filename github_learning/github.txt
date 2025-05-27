@@ -25,7 +25,7 @@ Commit Changes -
 git init
 git status
 git add .
-git commit -m "Media Added"
+git commit -m "Change Corsheader, add .env production and development"
 git remote add origin https://github.com/asiewm01/pawfect_pantry.git
 git push origin main
 

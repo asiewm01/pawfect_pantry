@@ -77,3 +77,6 @@ pnpm-debug.log*
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+
+/vendor_service/

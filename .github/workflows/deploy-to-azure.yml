@@ -24,7 +24,6 @@ jobs:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        allow-no-subscriptions: true
 
     - name: Build and push Django image
       run: |
@@ -37,17 +36,16 @@ jobs:
         docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/react-ui ./frontend
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
 
-    - name: Deploy to Azure Container Apps
+    - name: Deploy React UI container app
       run: |
         az containerapp show \
           --name react-ui \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          > /dev/null 2>&1 || \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} > /dev/null 2>&1 || \
         az containerapp create \
           --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui \
-          --environment ${{ secrets.CONTAINERAPPS_ENV }} \    # <-- ADD THIS BACKSLASH
+          --environment ${{ secrets.CONTAINERAPPS_ENV }} \
           --target-port 80 \
           --ingress external \
           --registry-server ${{ secrets.ACR_NAME }}.azurecr.io
@@ -56,3 +54,22 @@ jobs:
           --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
+
+    - name: Deploy Django API container app
+      run: |
+        az containerapp show \
+          --name django-api \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} > /dev/null 2>&1 || \
+        az containerapp create \
+          --name django-api \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
+          --environment ${{ secrets.CONTAINERAPPS_ENV }} \
+          --target-port 8000 \
+          --ingress external \
+          --registry-server ${{ secrets.ACR_NAME }}.azurecr.io
+
+        az containerapp update \
+          --name django-api \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api
