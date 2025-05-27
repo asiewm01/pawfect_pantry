@@ -72,6 +72,6 @@ jobs:
         az containerapp update \
           --name django-api \
           --resource-group YOUR_RESOURCE_GROUP \
-          --image pawfectregistry.azurecr.io/django-api
+          --image pawfectregistry.azurecr.io/django-api:latest
 
           
