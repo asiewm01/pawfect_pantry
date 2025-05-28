@@ -22,8 +22,7 @@ COPY django_project/ ./django_project/
 # Copy manage.py from root
 COPY manage.py ./
 
-# Copy production environment variables and rename
-COPY .env.production .env
+# Use runtime env vars from Azure, not .env file
 
 # Expose Django port
 EXPOSE 8000
