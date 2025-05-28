@@ -1,26 +1,25 @@
 from pathlib import Path
 from datetime import timedelta
 import os
-from decouple import config, Csv
 
 SITE_ID = 1
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-OPENAI_API_KEY = config("OPENAI_API_KEY")
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-secret-if-needed')
 
 DEBUG = os.getenv('DEBUG', 'fallback-secret-if-needed')
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'fallback-secret-if-needed')
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')  # Default to SMTP backend
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.example.com')  # Set your fallback
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))  # Default to 587 for TLS
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'  # Ensures bool
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
 
 # Application definition
 INSTALLED_APPS = [
@@ -134,7 +133,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [ BASE_DIR / "static" ]
+STATICFILES_DIRS = [
+    BASE_DIR / 'staticfiles',
+]
+STATIC_ROOT = BASE_DIR / 'staticfiles_build'  # for collectstatic during deployment
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
