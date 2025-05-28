@@ -16,10 +16,9 @@ COPY requirements.txt ./
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all Django project files (including settings, wsgi, urls, etc.)
+# Copy Django project files and custom apps
 COPY django_project/ ./django_project/
-
-# Copy manage.py from root
+COPY my_apps/ ./my_apps/
 COPY manage.py ./
 
 # Use runtime env vars from Azure, not .env file
