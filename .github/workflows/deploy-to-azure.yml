@@ -25,18 +25,20 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Build and push Django image
+    - name: Azure ACR Login
+      run: az acr login --name ${{ secrets.ACR_NAME }}
+
+    - name: Build and Push Django Image
       run: |
         docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/django-api ./django_project
-        az acr login --name ${{ secrets.ACR_NAME }}
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/django-api
 
-    - name: Build and push React image
+    - name: Build and Push React Image
       run: |
         docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/react-ui ./frontend
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
 
-    - name: Deploy React UI container app
+    - name: Deploy React UI to Container App
       run: |
         az containerapp show \
           --name react-ui \
@@ -55,7 +57,7 @@ jobs:
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
 
-    - name: Deploy Django API container app
+    - name: Deploy Django API to Container App
       run: |
         az containerapp show \
           --name django-api \
@@ -71,7 +73,5 @@ jobs:
 
         az containerapp update \
           --name django-api \
-          --resource-group YOUR_RESOURCE_GROUP \
-          --image pawfectregistry.azurecr.io/django-api:latest
-
-          
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api
