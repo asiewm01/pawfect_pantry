@@ -1,3 +1,6 @@
 
 docker compose down
 docker compose up --build
+
+docker build -t pawfectregistry.azurecr.io/django-api:latest .
+docker push pawfectregistry.azurecr.io/django-api:latest

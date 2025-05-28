@@ -1,6 +1,7 @@
+# Use Python slim image
 FROM python:3.11-slim
 
-# Install MySQL build dependencies
+# Install MySQL dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     default-libmysqlclient-dev \
@@ -15,14 +16,17 @@ COPY requirements.txt ./
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all project files (including manage.py and the app folders)
-COPY django_project/ ./
+# Copy all Django project files (including settings, wsgi, urls, etc.)
+COPY django_project/ ./django_project/
 
-# Copy the production environment file and rename it
+# Copy manage.py from root
+COPY manage.py ./
+
+# Copy production environment variables and rename
 COPY .env.production .env
 
 # Expose Django port
 EXPOSE 8000
 
-# Run Django server
+# Start Django server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
