@@ -10,12 +10,11 @@ OPENAI_API_KEY = config("OPENAI_API_KEY")
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-secret-if-needed')
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = os.getenv('DEBUG', 'fallback-secret-if-needed')
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
-
-EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'fallback-secret-if-needed')
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
@@ -81,7 +80,7 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-USE_SQLITE = os.getenv('USE_SQLITE', 'False') == 'True'
+USE_SQLITE = os.getenv('USE_SQLITE', 'False').lower() == 'true'
 
 if USE_SQLITE:
     DATABASES = {
@@ -97,9 +96,7 @@ else:
             'NAME': os.getenv('DB_NAME', 'capstone_db'),
             'USER': os.getenv('DB_USER', 'capstone_user'),
             'PASSWORD': os.getenv('DB_PASSWORD', 'Securepassword123'),
-            #'PASSWORD': os.getenv('DB_PASSWORD', 'securepassword123'),
             'HOST': os.getenv('DB_HOST', 'pawfect-mysql.mysql.database.azure.com'),
-            #'HOST': os.getenv('DB_HOST', 'localhost'),
             'PORT': os.getenv('DB_PORT', '3306'),
         }
     }
