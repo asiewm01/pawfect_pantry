@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 OPENAI_API_KEY = config("OPENAI_API_KEY")
 
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-secret-if-needed')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
