@@ -29,5 +29,5 @@ EXPOSE 8000
 # Start Django server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000", "--settings=django_project.settings"]
 
-COPY ../YourCombinedCert.pem /app/YourCombinedCert.pem
+COPY django_project/YourCombinedCert.pem /app/YourCombinedCert.pem
 
