@@ -7,11 +7,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-secret-if-needed')
+SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-key')
 
-DEBUG = os.getenv('DEBUG', 'fallback-secret-if-needed')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')  # Default to SMTP backend
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.example.com')  # Set your fallback
