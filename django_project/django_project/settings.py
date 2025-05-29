@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 SITE_ID = 1
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(dotenv_path=BASE_DIR / '.env.production')  # Auto-load in Docker
+#load_dotenv(dotenv_path=BASE_DIR / '.env.development')  
+
 
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
 
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -92,6 +95,7 @@ if USE_SQLITE:
         }
     }
 else:
+    #For Cloud Production and Deployment
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -103,6 +107,18 @@ else:
         }
     }
 
+    #For Development Phase
+    #DATABASES = {
+        #'default': {
+            #'ENGINE': 'django.db.backends.mysql',
+            #'NAME': os.getenv('DB_NAME', 'capstone_db'),
+            #'USER': os.getenv('DB_USER', 'capstone_user'),
+            #'PASSWORD': os.getenv('DB_PASSWORD', 'securepassword123'),
+            #'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+            #'PORT': os.getenv('DB_PORT', '3306'),
+        #}
+    #}
+    
 #    if ENV == 'azure':
 #        DATABASES['default']['OPTIONS'] = {
 #           'ssl': {
@@ -166,13 +182,17 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
+    'https://react-ui.icypebble-e6a48936.southeastasia.azurecontainerapps.io',
+    "http://127.0.0.1:3000"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:8000",      
-    "http://127.0.0.1:8000",      
+    "http://127.0.0.1:8000",
+    'https://react-ui.icypebble-e6a48936.southeastasia.azurecontainerapps.io',
+    'https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io',      
 ]
 
 CSRF_COOKIE_HTTPONLY = False
@@ -191,6 +211,22 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'  # or 'mandatory'
 ACCOUNT_UNIQUE_EMAIL = True
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# Azure
+MEDIA_URL = "https://pawfectmediastore.blob.core.windows.net/media/"
+# Development
+#MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGIN_URL = '/api/login/'  # or wherever your API login lives
+
+AZURE_ACCOUNT_NAME = "pawfectmediastore"
+AZURE_CONTAINER = "media"
+AZURE_CUSTOM_DOMAIN = f"{AZURE_ACCOUNT_NAME}.blob.core.windows.net"
+
+DEFAULT_FILE_STORAGE = "storages.backends.azure_storage.AzureStorage"
+
+AZURE_ACCOUNT_KEY = os.getenv("AZURE_ACCOUNT_KEY")  # store in .env or GitHub secret
+AZURE_SSL = True
+MEDIA_URL = f"https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/"
+
+DEFAULT_FILE_STORAGE = "your_project.storage_backends.AzureMediaStorage"
+

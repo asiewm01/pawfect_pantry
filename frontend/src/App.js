@@ -29,10 +29,16 @@ import ChatbotWidget from './components/ChatbotWidget';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import OrderTracking from './pages/order/OrderTracking'; 
 
+import ProductCard from './components/ProductCard';
 
 function App() {
   return (
     <>
+      <div className="App">
+        <h1>Pawfect Pantry</h1>
+        <ProductCard />
+      </div>
+
       <AppInit />
 
       <Routes>
@@ -60,6 +66,7 @@ function App() {
           <Route path="/search" element={<SearchResults />} />
         </Route>
       </Routes>
+
       {/* ✅ Chatbot appears on all pages */}
       <ChatbotWidget />
     </>
