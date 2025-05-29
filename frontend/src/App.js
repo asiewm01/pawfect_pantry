@@ -34,13 +34,7 @@ import ProductCard from './components/ProductCard';
 function App() {
   return (
     <>
-      <div className="App">
-        <h1>Pawfect Pantry</h1>
-        <ProductCard />
-      </div>
-
       <AppInit />
-
       <Routes>
         <Route path="/" element={<BaseLayout />}>
           <Route index element={<Home />} />
