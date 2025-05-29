@@ -20,6 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY django_project/ ./django_project/
 COPY my_apps/ ./my_apps/
 COPY manage.py ./
+COPY .env.production .env.production
 
 # Use runtime env vars from Azure, not .env file
 

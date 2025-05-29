@@ -1,9 +1,11 @@
 from pathlib import Path
 from datetime import timedelta
 import os
+from dotenv import load_dotenv
 
 SITE_ID = 1
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(dotenv_path=BASE_DIR / '.env.production')  # Auto-load in Docker
 
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
 
