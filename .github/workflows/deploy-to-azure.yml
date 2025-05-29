@@ -74,7 +74,7 @@ jobs:
             --target-port 8000 \
             --ingress external \
             --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
-            --set-env-vars SECRET_KEY=${{ secrets.SECRET_KEY }} \
+            --set-env-vars SECRET_KEY='${{ secrets.SECRET_KEY }}' \
               ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} \
               DEBUG=${{ secrets.DEBUG }} \
               OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
@@ -98,7 +98,7 @@ jobs:
             --name django-api \
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
             --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
-            --set-env-vars SECRET_KEY=${{ secrets.SECRET_KEY }} \
+            --set-env-vars SECRET_KEY='${{ secrets.SECRET_KEY }}' \
               ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} \
               DEBUG=${{ secrets.DEBUG }} \
               OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
