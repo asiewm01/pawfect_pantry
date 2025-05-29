@@ -101,12 +101,12 @@ else:
         }
     }
 
-    if ENV == 'azure':
-        DATABASES['default']['OPTIONS'] = {
-            'ssl': {
-                'ca': os.path.join(BASE_DIR, 'YourCombinedCert.pem')
-            }
-        }
+#    if ENV == 'azure':
+#        DATABASES['default']['OPTIONS'] = {
+#           'ssl': {
+#                'ca': os.path.join(BASE_DIR, 'YourCombinedCert.pem')
+#            }
+#        }
 
 
 # Password validation
