@@ -95,7 +95,7 @@ else:
             'NAME': os.getenv('DB_NAME', 'capstone_db'),
             'USER': os.getenv('DB_USER', 'capstone_user'),
             'PASSWORD': os.getenv('DB_PASSWORD', 'Securepassword123'),
-            'HOST': os.getenv('DB_HOST', 'pawfect-mysql.mysql.database.azure.com'),
+            'HOST': os.getenv('DB_HOST', 'mysql-db'),
             #'PASSWORD': os.getenv('DB_PASSWORD', 'securepassword123'),
             #'HOST': os.getenv('DB_HOST', 'localhost'),
             'PORT': os.getenv('DB_PORT', '3306'),
