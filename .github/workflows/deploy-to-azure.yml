@@ -44,18 +44,30 @@ jobs:
           --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} > /dev/null 2>&1 || \
         az containerapp create \
-          --name react-ui \
+          --name django-api \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui \
+          --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
           --environment ${{ secrets.CONTAINERAPPS_ENV }} \
-          --target-port 80 \
+          --target-port 8000 \
           --ingress external \
           --registry-server ${{ secrets.ACR_NAME }}.azurecr.io
+          --env-vars \
+          DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} \
+          AZURE_ACCOUNT_NAME=${{ secrets.AZURE_ACCOUNT_NAME }} \
+          AZURE_ACCOUNT_KEY=${{ secrets.AZURE_ACCOUNT_KEY }} \
+          ALLOWED_HOSTS=django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io \
+          DEBUG=False
 
         az containerapp update \
-          --name react-ui \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
+        --name django-api \
+        --resource-group ${{ secrets.RESOURCE_GROUP }} \
+        --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
+        --env-vars \
+          DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} \
+          AZURE_ACCOUNT_NAME=${{ secrets.AZURE_ACCOUNT_NAME }} \
+          AZURE_ACCOUNT_KEY=${{ secrets.AZURE_ACCOUNT_KEY }} \
+          ALLOWED_HOSTS=django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io \
+          DEBUG=False
 
     - name: Deploy Django API to Container App
       run: |
