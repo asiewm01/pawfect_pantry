@@ -33,5 +33,5 @@ Database File -
 "/c/xampp/mysql/bin/mysqldump.exe" -u capstone_user -p -h 127.0.0.1 -P 3306 capstone > capstone_backup.sql
 
 git add .
-git commit -m "Remove Decouple and us OS for all settings.py"
+git commit -m "Update deploy-to-zure.yml to prevent environment wipe"
 git push origin main
