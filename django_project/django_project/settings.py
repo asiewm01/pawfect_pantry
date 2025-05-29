@@ -210,23 +210,15 @@ ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'optional'  # or 'mandatory'
 ACCOUNT_UNIQUE_EMAIL = True
 
-MEDIA_URL = '/media/'
-# Azure
-MEDIA_URL = "https://pawfectmediastore.blob.core.windows.net/media/"
-# Development
-#MEDIA_ROOT = BASE_DIR / 'media'
-
 LOGIN_URL = '/api/login/'  # or wherever your API login lives
 
 AZURE_ACCOUNT_NAME = "pawfectmediastore"
 AZURE_CONTAINER = "media"
 AZURE_CUSTOM_DOMAIN = f"{AZURE_ACCOUNT_NAME}.blob.core.windows.net"
-
-DEFAULT_FILE_STORAGE = "storages.backends.azure_storage.AzureStorage"
-
+DEFAULT_FILE_STORAGE = "django_project.storage_backends.AzureMediaStorage"
 AZURE_ACCOUNT_KEY = os.getenv("AZURE_ACCOUNT_KEY")  # store in .env or GitHub secret
 AZURE_SSL = True
+#Azure Portal Deployment
 MEDIA_URL = f"https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/"
-
-DEFAULT_FILE_STORAGE = "your_project.storage_backends.AzureMediaStorage"
-
+#Development with VSC
+#MEDIA_URL = '/media/'
