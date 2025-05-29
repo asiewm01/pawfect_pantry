@@ -59,53 +59,59 @@ jobs:
 
     - name: Deploy Django API to Container App (with env vars)
       run: |
-        az containerapp show \
-          --name django-api \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} > /dev/null 2>&1 || \
-        az containerapp create \
+        exists=$(az containerapp show \
           --name django-api \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
-          --environment ${{ secrets.CONTAINERAPPS_ENV }} \
-          --target-port 8000 \
-          --ingress external \
-          --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
-          --env-vars \
-            SECRET_KEY=${{ secrets.SECRET_KEY }} \
-            ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} \
-            DEBUG=${{ secrets.DEBUG }} \
-            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
-            DB_NAME=${{ secrets.DB_NAME }} \
-            DB_USER=${{ secrets.DB_USER }} \
-            DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            DB_HOST=${{ secrets.DB_HOST }} \
-            DB_PORT=${{ secrets.DB_PORT }} \
-            EMAIL_BACKEND=${{ secrets.EMAIL_BACKEND }} \
-            EMAIL_HOST=${{ secrets.EMAIL_HOST }} \
-            EMAIL_PORT=${{ secrets.EMAIL_PORT }} \
-            EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS }} \
-            EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }} \
-            EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} \
-            DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}
+          --query "name" -o tsv || echo "")
 
-        az containerapp update \
-          --name django-api \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
-          --env-vars \
-            SECRET_KEY=${{ secrets.SECRET_KEY }} \
-            ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} \
-            DEBUG=${{ secrets.DEBUG }} \
-            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
-            DB_NAME=${{ secrets.DB_NAME }} \
-            DB_USER=${{ secrets.DB_USER }} \
-            DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            DB_HOST=${{ secrets.DB_HOST }} \
-            DB_PORT=${{ secrets.DB_PORT }} \
-            EMAIL_BACKEND=${{ secrets.EMAIL_BACKEND }} \
-            EMAIL_HOST=${{ secrets.EMAIL_HOST }} \
-            EMAIL_PORT=${{ secrets.EMAIL_PORT }} \
-            EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS }} \
-            EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }} \
-            EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} \
-            DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}
+        if [ -z "$exists" ]; then
+          echo "Creating django-api container app..."
+          az containerapp create \
+            --name django-api \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
+            --environment ${{ secrets.CONTAINERAPPS_ENV }} \
+            --target-port 8000 \
+            --ingress external \
+            --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
+            --env-vars \
+              SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} \
+              DEBUG=${{ secrets.DEBUG }} \
+              OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+              DB_NAME=${{ secrets.DB_NAME }} \
+              DB_USER=${{ secrets.DB_USER }} \
+              DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              DB_HOST=${{ secrets.DB_HOST }} \
+              DB_PORT=${{ secrets.DB_PORT }} \
+              EMAIL_BACKEND=${{ secrets.EMAIL_BACKEND }} \
+              EMAIL_HOST=${{ secrets.EMAIL_HOST }} \
+              EMAIL_PORT=${{ secrets.EMAIL_PORT }} \
+              EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS }} \
+              EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }} \
+              EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} \
+              DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}
+        else
+          echo "Updating django-api container app..."
+          az containerapp update \
+            --name django-api \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
+            --env-vars \
+              SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} \
+              DEBUG=${{ secrets.DEBUG }} \
+              OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+              DB_NAME=${{ secrets.DB_NAME }} \
+              DB_USER=${{ secrets.DB_USER }} \
+              DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              DB_HOST=${{ secrets.DB_HOST }} \
+              DB_PORT=${{ secrets.DB_PORT }} \
+              EMAIL_BACKEND=${{ secrets.EMAIL_BACKEND }} \
+              EMAIL_HOST=${{ secrets.EMAIL_HOST }} \
+              EMAIL_PORT=${{ secrets.EMAIL_PORT }} \
+              EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS }} \
+              EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }} \
+              EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} \
+              DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}
+        fi
