@@ -80,6 +80,7 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 USE_SQLITE = os.getenv('USE_SQLITE', 'False').lower() == 'true'
+ENV = os.getenv('ENV', 'local').lower()  # default to 'local'
 
 if USE_SQLITE:
     DATABASES = {
@@ -93,19 +94,19 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': os.getenv('DB_NAME', 'capstone_db'),
-            'USER': os.getenv('DB_USER', 'capstone_user'),
+            'USER': os.getenv('DB_USER', 'capstone_user@pawfect-mysql' if ENV == 'azure' else 'capstone_user'),
             'PASSWORD': os.getenv('DB_PASSWORD', 'Securepassword123'),
-            'HOST': os.getenv('DB_HOST', 'mysql-db'),
-            #'PASSWORD': os.getenv('DB_PASSWORD', 'securepassword123'),
-            #'HOST': os.getenv('DB_HOST', 'localhost'),
+            'HOST': os.getenv('DB_HOST', 'pawfect-mysql.mysql.database.azure.com' if ENV == 'azure' else 'mysql-db'),
             'PORT': os.getenv('DB_PORT', '3306'),
-        'OPTIONS': {
-            'ssl': {
-                'ca': os.path.join(BASE_DIR, 'YourCombinedCert.pem')
-                }
-            }
         }
     }
+
+    if ENV == 'azure':
+        DATABASES['default']['OPTIONS'] = {
+            'ssl': {
+                'ca': os.path.join(BASE_DIR, 'YourCombinedCert.pem')
+            }
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
