@@ -27,5 +27,5 @@ COPY manage.py ./
 # Expose Django app port
 EXPOSE 8000
 
-# Use Gunicorn to serve in production
-CMD ["gunicorn", "django_project.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--threads", "4"]
+# ✅ Run using Django's built-in server (for development)
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000", "--settings=django_project.settings"]
