@@ -96,7 +96,14 @@ else:
             'USER': os.getenv('DB_USER', 'capstone_user'),
             'PASSWORD': os.getenv('DB_PASSWORD', 'Securepassword123'),
             'HOST': os.getenv('DB_HOST', 'pawfect-mysql.mysql.database.azure.com'),
+            #'PASSWORD': os.getenv('DB_PASSWORD', 'securepassword123'),
+            #'HOST': os.getenv('DB_HOST', 'localhost'),
             'PORT': os.getenv('DB_PORT', '3306'),
+        'OPTIONS': {
+            'ssl': {
+                'ca': os.path.join(BASE_DIR, 'YourCombinedCert.pem')
+                }
+            }
         }
     }
 
