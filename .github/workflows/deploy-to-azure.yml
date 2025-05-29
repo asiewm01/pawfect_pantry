@@ -97,6 +97,7 @@ jobs:
             --name django-api \
             --resource-group YOUR_RESOURCE_GROUP \
             --image pawfectregistry.azurecr.io/django-api
+            --env-vars USE_SQLITE=False ENV=azure
             --set-env-vars \
               SECRET_KEY=${{ secrets.SECRET_KEY }} \
               ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} \
