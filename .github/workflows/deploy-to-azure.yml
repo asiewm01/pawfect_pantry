@@ -75,6 +75,8 @@ jobs:
             --ingress external \
             --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
             --set-env-vars \
+              USE_SQLITE=False \
+              ENV=azure \
               SECRET_KEY=${{ secrets.SECRET_KEY }} \
               ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} \
               DEBUG=${{ secrets.DEBUG }} \
@@ -95,10 +97,11 @@ jobs:
           echo "Updating django-api container app..."
           az containerapp update \
             --name django-api \
-            --resource-group YOUR_RESOURCE_GROUP \
-            --image pawfectregistry.azurecr.io/django-api
-            --env-vars USE_SQLITE=False ENV=azure
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
             --set-env-vars \
+              USE_SQLITE=False \
+              ENV=azure \
               SECRET_KEY=${{ secrets.SECRET_KEY }} \
               ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} \
               DEBUG=${{ secrets.DEBUG }} \
@@ -115,4 +118,5 @@ jobs:
               EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }} \
               EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} \
               DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }}
-          fi
+        fi
+
