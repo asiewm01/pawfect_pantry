@@ -74,12 +74,11 @@ jobs:
           --target-port 8000 \
           --ingress external \
           --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
-          --env-vars \
-            SECRET_KEY=${{ secrets.SECRET_KEY }} \
-            AZURE_ACCOUNT_NAME=${{ secrets.AZURE_ACCOUNT_NAME }} \
-            AZURE_ACCOUNT_KEY=${{ secrets.AZURE_ACCOUNT_KEY }} \
-            ALLOWED_HOSTS=django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io \
-            DEBUG=False
+          --set-env-vars \
+            AZURE_ACCOUNT_NAME="${{ secrets.AZURE_ACCOUNT_NAME }}" \
+            AZURE_ACCOUNT_KEY="${{ secrets.AZURE_ACCOUNT_KEY }}" \
+            ALLOWED_HOSTS="django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io" \
+            DEBUG="False"
         else
           echo "Updating django-api container app..."
           az containerapp update \
@@ -87,9 +86,9 @@ jobs:
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
             --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
             --env-vars \
-              SECRET_KEY=${{ secrets.SECRET_KEY }} \
-              AZURE_ACCOUNT_NAME=${{ secrets.AZURE_ACCOUNT_NAME }} \
-              AZURE_ACCOUNT_KEY=${{ secrets.AZURE_ACCOUNT_KEY }} \
+              SECRET_KEY="${{ secrets.SECRET_KEY }}" \
+              AZURE_ACCOUNT_NAME="${{ secrets.AZURE_ACCOUNT_NAME }}" \
+              AZURE_ACCOUNT_KEY="${{ secrets.AZURE_ACCOUNT_KEY }}" \
               ALLOWED_HOSTS=django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io \
               DEBUG=False
         fi
