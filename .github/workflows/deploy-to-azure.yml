@@ -95,8 +95,8 @@ jobs:
           echo "Updating django-api container app..."
           az containerapp update \
             --name django-api \
-            --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
+            --resource-group YOUR_RESOURCE_GROUP \
+            --image pawfectregistry.azurecr.io/django-api
             --set-env-vars \
               SECRET_KEY=${{ secrets.SECRET_KEY }} \
               ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} \
