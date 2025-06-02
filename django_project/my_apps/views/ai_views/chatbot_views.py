@@ -60,7 +60,25 @@ def chatbot_view(request):
             return JsonResponse({"reply": "⚠️ That’s not a polite message. Please ask respectfully."})
 
         # ✅ RULE-BASED RESPONSES
-        if "order" in msg and any(w in msg for w in ["what", "current", "status", "where", "track", "check", "order"]):
+        # 🛒 Cart-related message check
+        if any(w in msg for w in ["cart", "shopping cart", "my cart", "check cart"]):
+            order = Order.objects.filter(user=user).order_by('-date').first()
+            if order:
+                reply = (
+                    f"🛒 Your latest order (#{order.id}) is <strong>'{order.status}'</strong>. "
+                    f"Total: <strong>${order.total:.2f}</strong>. ETA: 3–5 business days.<br><br>"
+                    f"🧾 View your cart and checkout details here: "
+                    f"<a href='{REACT_URL}/cart' target='_blank'>Cart</a>"
+                )
+            else:
+                reply = (
+                    "🛍️ You currently have no items in your cart or no recent orders.<br>"
+                    f"Browse products here: <a href='{REACT_URL}/catalogue' target='_blank'>Catalogue</a>"
+                )
+            return JsonResponse({"reply": reply})
+
+        # 📦 Order tracking/status
+        if "order" in msg and any(w in msg for w in ["what", "current", "status", "where", "track", "check"]):
             order = Order.objects.filter(user=user).order_by('-date').first()
             if order:
                 reply = (
@@ -74,22 +92,6 @@ def chatbot_view(request):
                     "🕵️ No orders found yet.<br>"
                     f"You can view your order history once you’ve placed an order: "
                     f"<a href='{REACT_URL}/orders/history' target='_blank'>Order History</a>"
-                )
-            return JsonResponse({"reply": reply})
-        
-        if "order" in msg and any(w in msg for w in ["cart", "shopping cart", "my cart", "check cart"]):
-            order = Order.objects.filter(user=user).order_by('-date').first()
-            if order:
-                reply = (
-                    f"🛒 Your latest order (#{order.id}) is <strong>'{order.status}'</strong>. "
-                    f"Total: <strong>${order.total:.2f}</strong>. ETA: 3–5 business days.<br><br>"
-                    f"🧾 View your cart and checkout details here: "
-                    f"<a href='{REACT_URL}/cart' target='_blank'>Cart</a>"
-                )
-            else:
-                reply = (
-                    "🛍️ You currently have no items in your cart or no recent orders.<br>"
-                    f"Browse products here: <a href='{REACT_URL}/catalogue' target='_blank'>Catalogue</a>"
                 )
             return JsonResponse({"reply": reply})
 
