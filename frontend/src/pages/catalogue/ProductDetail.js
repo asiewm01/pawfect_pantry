@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from '../../api/axiosInstance';
 import './css/ProductDetail.css';
 import FeedbackSection from '../../components/FeedbackSection';
+import { useNavigate } from 'react-router-dom';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -12,6 +13,8 @@ const ProductDetail = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     async function fetchData() {
@@ -114,6 +117,15 @@ const ProductDetail = () => {
                 onClick={() => handleAddToCart(product.id)}
               >
                 Add to Cart
+              </button>
+              <button
+                className="btn btn-primary btn-lg flex-grow-1"
+                onClick={() => {
+                  handleAddToCart(product.id);
+                  navigate('/cart');
+                }}
+              >
+                Go to Cart
               </button>
             </div>
           )}
