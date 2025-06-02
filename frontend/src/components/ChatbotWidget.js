@@ -1,53 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './css/ChatbotWidget.css';
 import axios from 'axios';
-
 
 const ChatbotWidget = () => {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
+  const messagesEndRef = useRef(null);
 
   const toggleChatbot = () => setOpen(prev => !prev);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
-  
-    const newMessages = [...messages, { type: 'user', text: input }];
-    setMessages(newMessages);
+    const userInput = input.trim();
+    if (!userInput) return;
+
+    const updatedMessages = [...messages, { type: 'user', text: userInput }];
+    setMessages(updatedMessages);
     setInput('');
-  
+
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/ai/chatbot/`,
-        { message: input },
-        { withCredentials: true } // ensures session/cookie is included
-      );
-  
+      const endpoint = `${process.env.REACT_APP_API_URL}/api/ai/chatbot/`;
+      const response = await axios.post(endpoint, { message: userInput }, { withCredentials: true });
+
       const botReply = response.data.reply || "❓ Sorry, I didn't understand that.";
-      setMessages([...newMessages, { type: 'bot', text: botReply }]);
-  
+      setMessages([...updatedMessages, { type: 'bot', text: botReply }]);
     } catch (err) {
-      if (err.response && err.response.status === 401) {
-        setMessages([...newMessages, {
-          type: 'bot',
-          text: "🔒 Please log in to use the chatbot. You can log in from the top-right menu."
-        }]);
-      } else {
-        setMessages([...newMessages, {
-          type: 'bot',
-          text: "❓ I do not understand your message, please try typing again."
-        }]);
-      }
+      const errorMessage =
+        err.response?.status === 401
+          ? "🔒 Please log in to use the chatbot. You can log in from the top-right menu."
+          : "⚠️ Something went wrong. Please try again later.";
+
+      setMessages([...updatedMessages, { type: 'bot', text: errorMessage }]);
     }
   };
+
   return (
     <>
       <button id="chatbot-toggle" onClick={toggleChatbot}>
-        <div className="chatbot-icon">
-        💬
-        </div>
+        <div className="chatbot-icon">💬</div>
       </button>
 
       {open && (
@@ -56,11 +51,14 @@ const ChatbotWidget = () => {
           <div id="chatbot-messages">
             {messages.map((msg, idx) => (
               <div
+                key={idx}
                 className={`chatbot-message chatbot-${msg.type}`}
                 dangerouslySetInnerHTML={{ __html: msg.text }}
               ></div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
+
           <form id="chatbot-form" onSubmit={handleSubmit}>
             <input
               type="text"

@@ -29,8 +29,6 @@ import ChatbotWidget from './components/ChatbotWidget';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import OrderTracking from './pages/order/OrderTracking'; 
 
-import ProductCard from './components/ProductCard';
-
 function App() {
   return (
     <>

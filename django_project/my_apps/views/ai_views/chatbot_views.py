@@ -1,11 +1,36 @@
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
 from ...models import Order, Product
-import openai, json
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import openai, json, spacy
+import re
 
+REACT_URL = (
+    settings.REACT_URL_DEV
+    if getattr(settings, "DEBUG", True)
+    else settings.REACT_URL_PROD
+)
+
+# Optional profanity filter
+try:
+    from better_profanity import profanity
+    profanity.load_censor_words()
+    use_profanity_filter = True
+except ImportError:
+    use_profanity_filter = False
+    PROFANITY_LIST = ["fuck", "shit", "wtf", "bitch", "asshole", "dick", "cunt", "pussy"]
+
+# Load models
 openai.api_key = settings.OPENAI_API_KEY
+analyzer = SentimentIntensityAnalyzer()
+
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    from spacy.cli import download
+    download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
 
 def custom_login_required(view_func):
     def wrapper(request, *args, **kwargs):
@@ -17,144 +42,165 @@ def custom_login_required(view_func):
 @csrf_exempt
 @custom_login_required
 def chatbot_view(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({
-            "reply": "🔒 Please log in to use the chatbot. You can log in from the top-right menu."
-        })
-
-    # Ensure POST method
     if request.method != "POST":
-        return JsonResponse({
-            "error": "❌ POST method required."
-        }, status=405)
-
-    # Get message from POST
-    msg = request.POST.get('msg', '').lower()
+        return JsonResponse({"error": "❌ POST method required."}, status=405)
 
     try:
         data = json.loads(request.body)
-        user_message = data.get("message", "").strip()
+        msg = data.get("message", "").strip().lower()
 
-        if not user_message:
+        if not msg:
             return JsonResponse({"error": "Message cannot be empty."}, status=400)
 
-        msg = user_message.lower()
+        user = request.user
 
-        # Keyword: Order Status
-        if "order" in msg and any(keyword in msg for keyword in ["what", "current", "status", "where", "track", "check"]):
-            latest_order = Order.objects.filter(user=request.user).order_by('-date').first()
-            if latest_order:
+        # 🔒 Profanity check
+        if (use_profanity_filter and profanity.contains_profanity(msg)) or \
+           (not use_profanity_filter and any(word in msg for word in PROFANITY_LIST)):
+            return JsonResponse({"reply": "⚠️ That’s not a polite message. Please ask respectfully."})
+
+        # ✅ RULE-BASED RESPONSES
+        if "order" in msg and any(w in msg for w in ["what", "current", "status", "where", "track", "check", "order"]):
+            order = Order.objects.filter(user=user).order_by('-date').first()
+            if order:
                 reply = (
-                    f"🧾 Your latest order (#{latest_order.id}) is currently <strong>'{latest_order.status}'</strong>. "
-                    f"The total was <strong>${latest_order.total:.2f}</strong>. "
-                    "Estimated delivery: 3–5 business days.<br><br>"
-                    "📦 You can view your full order history here: "
-                    "<a href='http://localhost:3000/orders/history' target='_blank'>Order History</a>"
+                    f"🧾 Your latest order (#{order.id}) is <strong>'{order.status}'</strong>. "
+                    f"Total: <strong>${order.total:.2f}</strong>. ETA: 3–5 business days.<br><br>"
+                    f"📦 View full order history: "
+                    f"<a href='{REACT_URL}/orders/history' target='_blank'>Order History</a>"
                 )
             else:
                 reply = (
-                    "🕵️ You currently have no orders yet.<br>"
-                    "You can view your order history once you place an order: "
-                    "<a href='http://localhost:3000/orders/history' target='_blank'>Order History</a>"
+                    "🕵️ No orders found yet.<br>"
+                    f"You can view your order history once you’ve placed an order: "
+                    f"<a href='{REACT_URL}/orders/history' target='_blank'>Order History</a>"
                 )
-
             return JsonResponse({"reply": reply})
-
-        # Keyword: Payment Confirmation
-        elif "payment" in msg and any(keyword in msg for keyword in ["status", "where", "track", "check", "did", "pay"]):
-            latest_order = Order.objects.filter(user=request.user).order_by('-date').first()
-            if latest_order:
+        
+        if "order" in msg and any(w in msg for w in ["cart", "shopping cart", "my cart", "check cart"]):
+            order = Order.objects.filter(user=user).order_by('-date').first()
+            if order:
                 reply = (
-                    f"Your latest payment of ${latest_order.total:.2f} for order #{latest_order.id} was received. "
-                    "Thank you for your purchase!"
+                    f"🛒 Your latest order (#{order.id}) is <strong>'{order.status}'</strong>. "
+                    f"Total: <strong>${order.total:.2f}</strong>. ETA: 3–5 business days.<br><br>"
+                    f"🧾 View your cart and checkout details here: "
+                    f"<a href='{REACT_URL}/cart' target='_blank'>Cart</a>"
                 )
             else:
-                reply = "No recent payment found. You haven’t placed any orders yet."
+                reply = (
+                    "🛍️ You currently have no items in your cart or no recent orders.<br>"
+                    f"Browse products here: <a href='{REACT_URL}/catalogue' target='_blank'>Catalogue</a>"
+                )
             return JsonResponse({"reply": reply})
-        
-        # Keyword: All Products
-        elif any(keyword in msg for keyword in ["products", "items", "sell", "buy", "stuff"]):
-            all_products = Product.objects.all()[:3]
-            if all_products:
-                product_lines = [
-                    f'<a href="http://localhost:3000/catalogue/{p.id}/">{p.name} - ${p.price}</a>'
-                    for p in all_products
-                ]
-                reply = "🛒 Here are some of our top products:<br>" + "<br>".join(product_lines)
+
+        elif "payment" in msg and any(w in msg for w in ["status", "did", "pay", "check"]):
+            order = Order.objects.filter(user=user).order_by('-date').first()
+            reply = (
+                f"✅ Payment of ${order.total:.2f} received for order #{order.id}."
+                if order else "❌ No payment found."
+            )
+            return JsonResponse({"reply": reply})
+
+        elif any(w in msg for w in ["products", "items", "sell", "buy", "stuff"]):
+            products = Product.objects.all()[:3]
+            if products:
+                reply = "🛒 Top products:<br>" + "<br>".join(
+                    [f'<a href="{REACT_URL}/catalogue/{p.id}/">{p.name} - ${p.price}</a>' for p in products]
+                )
             else:
-                reply = "Sorry, I couldn’t find any products right now."
+                reply = "❌ No products found."
             return JsonResponse({"reply": reply})
 
-        # Keyword: Cat-related inquiries
-        elif any(keyword in msg for keyword in ["cat", "cats", "kitten", "meow"]):
-            cat_products = Product.objects.filter(species__icontains="cat")[:3]
-            if cat_products:
-                product_lines = [
-                    f'<a href="http://localhost:3000/catalogue/{p.id}/">{p.name} - ${p.price}</a>'
-                    for p in cat_products
-                ]
-                reply = "🐱 Here are some cat-friendly picks:\n" + "\n".join(product_lines)
+        elif any(w in msg for w in ["cat", "kitten"]):
+            products = Product.objects.filter(species__icontains="cat")[:3]
+            if products:
+                reply = "🐱 Cat picks:<br>" + "<br>".join(
+                    [f'<a href="{REACT_URL}/catalogue/{p.id}/">{p.name} - ${p.price}</a>' for p in products]
+                )
             else:
-                reply = "Sorry, I couldn’t find any products for cats at the moment."
+                reply = "😿 No cat products found."
             return JsonResponse({"reply": reply})
 
-        # Keyword: Dog-related inquiries
-        elif any(keyword in msg for keyword in ["dog", "dogs", "puppy", "bark"]):
-            dog_products = Product.objects.filter(species__icontains="dog")[:3]
-            if dog_products:
-                product_lines = [
-                    f'<a href="http://localhost:3000/catalogue/{p.id}/">{p.name} - ${p.price}</a>'
-                    for p in dog_products
-                ]
-                reply = "🐶 Here are some dog-approved picks:\n" + "\n".join(product_lines)
+        elif any(w in msg for w in ["dog", "puppy"]):
+            products = Product.objects.filter(species__icontains="dog")[:3]
+            if products:
+                reply = "🐶 Dog picks:<br>" + "<br>".join(
+                    [f'<a href="{REACT_URL}/catalogue/{p.id}/">{p.name} - ${p.price}</a>' for p in products]
+                )
             else:
-                reply = "Sorry, I couldn’t find any products for dogs at the moment."
+                reply = "🐾 No dog products found."
             return JsonResponse({"reply": reply})
-        
-        # Keyword: Jerky-related inquiries
-        elif any(keyword in msg.lower() for keyword in ["jerky", "dried meat", "dried jerky", "dried", "muscle meat"]):
-            dried_products = Product.objects.filter(
-                food_type__icontains="dried"
-            ).order_by('-views')[:3]
 
-            if dried_products:
-                product_lines = [
-                    f'<a href="http://localhost:3000/catalogue/{p.id}/">{p.name} - ${p.price}</a>'
-                    for p in dried_products
-                ]
-                reply = "🥓 Here are some of our dried meat and jerky-style products:\n" + "\n".join(product_lines)
+        elif any(w in msg for w in ["jerky", "dried"]):
+            products = Product.objects.filter(food_type__icontains="dried")[:3]
+            if products:
+                reply = "🥓 Jerky picks:<br>" + "<br>".join(
+                    [f'<a href="{REACT_URL}/catalogue/{p.id}/">{p.name} - ${p.price}</a>' for p in products]
+                )
             else:
-                reply = "Sorry, I couldn’t find any dried or jerky-style products at the moment."
-
+                reply = "🚫 No jerky or dried meat available."
             return JsonResponse({"reply": reply})
 
-        # Greeting
-        if any(word in msg for word in ["assist", "assistance", "how are you", "need", "help", "hello"]):
-            return JsonResponse({"reply": "Hi there! 👋 How can I assist you today?"})
-        
-        # Profanity and Vulgarity-filter
-        if any(word in msg for word in ["fuck", "shit", "cunt", "pussy", "wtf", "bitch", "asshole", "dick"]):
+        elif re.search(r"\b(hello|hi|help)\b", msg):
+            return JsonResponse({"reply": "👋 Hi there! How can I assist you today?"})
+
+        # ✅ NLP fallback if no rule matched
+        doc = nlp(msg)
+        entities = [(ent.label_, ent.text) for ent in doc.ents]
+        sentiment_score = analyzer.polarity_scores(msg)
+        sentiment = (
+            "positive" if sentiment_score["compound"] >= 0.3 else
+            "negative" if sentiment_score["compound"] <= -0.0 else
+            "neutral"
+        )
+
+        # ✅ Manual frustration detection (before sentiment fallback)
+        if re.search(r"\b(cannot find|can\'t find|no products|nothing|not found|empty|search fail|nothing here)\b", msg):
             return JsonResponse({
-            "reply": "⚠️ That’s not a polite message. Please try asking respectfully."
+                    "reply": (
+                    "😞 Sorry you're having trouble finding what you need. "
+                    "Please click here to chat with support: "
+                    "<a href='https://wa.me/+6592702017' target='_blank'>WhatsApp Support</a>"
+                ),
+                "sentiment": sentiment,
+                "entities": entities
             })
 
-        # GPT fallback
-        latest_order = Order.objects.filter(user=request.user).order_by('-date').first()
-        context_info = (
-            f"Order #{latest_order.id}, status: {latest_order.status}, total: ${latest_order.total:.2f}"
-            if latest_order else "User has no current orders."
-        )
+        # Sentiment-based fallback
+        if sentiment == "positive":
+            return JsonResponse({
+                "reply": "🎉 Thanks for the positive feedback!",
+                "sentiment": sentiment,
+                "entities": entities
+            })
+        elif sentiment == "negative":
+                return JsonResponse({
+                "reply": (
+                    "😞 Sorry to hear that. Chat with support: "
+                    "<a href='https://wa.me/+6592702017' target='_blank'>WhatsApp</a>"
+                ),
+                "sentiment": sentiment,
+                "entities": entities
+            })
+
+        # ✅ OpenAI GPT fallback if nothing else matched
+        order = Order.objects.filter(user=user).order_by('-date').first()
+        context_info = f"User's order: #{order.id}, status: {order.status}" if order else "No order yet."
 
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": f"You are a helpful chatbot. {context_info}"},
-                {"role": "user", "content": user_message},
+                {"role": "system", "content": f"You are a helpful assistant. Context: {context_info}"},
+                {"role": "user", "content": msg},
             ]
         )
+        gpt_reply = response['choices'][0]['message']['content']
 
-        bot_reply = response['choices'][0]['message']['content']
-        return JsonResponse({"reply": bot_reply})
+        return JsonResponse({
+            "reply": gpt_reply,
+            "sentiment": sentiment,
+            "entities": entities
+        })
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
