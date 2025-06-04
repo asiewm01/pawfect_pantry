@@ -23,6 +23,9 @@ const Footer = () => {
           <a href="https://linkedin.com" className="me-4" target="_blank" rel="noopener noreferrer">
             <i className="fab fa-linkedin"></i>
           </a>
+          <a href="https://wa.me/+6592702017" className="me-4" target="_blank" rel="noopener noreferrer">
+            <i className="fa fa-whatsapp"></i>
+          </a>
         </div>
       </section>
 
