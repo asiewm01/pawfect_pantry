@@ -46,22 +46,22 @@ jobs:
       run: |
         az containerapp show \
           --name react-ui \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} > /dev/null 2>&1 || \
+          --resource-group "${{ secrets.RESOURCE_GROUP }}" > /dev/null 2>&1 || \
         az containerapp create \
           --name react-ui \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui \
-          --environment ${{ secrets.CONTAINERAPPS_ENV }} \
+          --resource-group "${{ secrets.RESOURCE_GROUP }}" \
+          --image "${{ secrets.ACR_NAME }}.azurecr.io/react-ui" \
+          --environment "${{ secrets.CONTAINERAPPS_ENV }}" \
           --target-port 80 \
           --ingress external \
-          --registry-server ${{ secrets.ACR_NAME }}.azurecr.io
+          --registry-server "${{ secrets.ACR_NAME }}.azurecr.io"
 
         az containerapp update \
           --name react-ui \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui \
+          --resource-group "${{ secrets.RESOURCE_GROUP }}" \
+          --image "${{ secrets.ACR_NAME }}.azurecr.io/react-ui" \
           --set-env-vars \
-            REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}
+            REACT_APP_API_URL="${{ secrets.REACT_APP_API_URL }}"
 
     - name: Deploy Django API to Azure Container App
       run: |
@@ -100,3 +100,4 @@ jobs:
               AZURE_ACCOUNT_KEY="${{ secrets.AZURE_ACCOUNT_KEY }}" \
               ALLOWED_HOSTS="django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io" \
               DEBUG="False"
+        fi
