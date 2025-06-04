@@ -82,6 +82,7 @@ jobs:
             --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
             --set-env-vars \
               SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              REDIS_KEY="${{ secrets.REDIS_KEY }}" \
               AZURE_ACCOUNT_NAME=${{ secrets.AZURE_ACCOUNT_NAME }} \
               AZURE_ACCOUNT_KEY=${{ secrets.AZURE_ACCOUNT_KEY }} \
               REDIS_KEY=${{ secrets.REDIS_KEY }} \
@@ -95,6 +96,7 @@ jobs:
             --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
             --set-env-vars \
               SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              REDIS_KEY="${{ secrets.REDIS_KEY }}" \
               AZURE_ACCOUNT_NAME=${{ secrets.AZURE_ACCOUNT_NAME }} \
               AZURE_ACCOUNT_KEY=${{ secrets.AZURE_ACCOUNT_KEY }} \
               REDIS_KEY=${{ secrets.REDIS_KEY }} \
