@@ -229,3 +229,14 @@ FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000")
 
 REACT_URL_PROD = "https://react-ui.icypebble-e6a48936.southeastasia.azurecontainerapps.io"
 #REACT_URL_DEV = "http://localhost:3000"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "rediss://:E2xP7VP8nVm1zXYpKuTT4c2naE81pbLv9AzCaCFpHQw=@pawfectredis.redis.cache.windows.net:6380/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "SSL": True,  # Important for Azure Basic Redis
+        }
+    }
+}
