@@ -16,9 +16,6 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ✅ Corrected line
-COPY .env .env
-
 # Copy source code
 COPY django_project/ ./django_project/
 COPY my_apps/ ./my_apps/
