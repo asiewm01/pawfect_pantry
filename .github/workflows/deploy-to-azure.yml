@@ -28,17 +28,21 @@ jobs:
     - name: Azure ACR Login
       run: az acr login --name ${{ secrets.ACR_NAME }}
 
+    # Build and Push Django API Image
     - name: Build and Push Django Image
       run: |
         docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/django-api ./django_project
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/django-api
 
+    # Build and Push React UI Image with API URL
     - name: Build and Push React Image
       run: |
-        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/react-ui ./frontend
+        docker build \
+          --build-arg REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }} \
+          -t ${{ secrets.ACR_NAME }}.azurecr.io/react-ui ./frontend
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
 
-    - name: Deploy React UI to Container App
+    - name: Deploy React UI to Azure Container App
       run: |
         az containerapp show \
           --name react-ui \
@@ -55,9 +59,11 @@ jobs:
         az containerapp update \
           --name react-ui \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui
+          --image ${{ secrets.ACR_NAME }}.azurecr.io/react-ui \
+          --set-env-vars \
+            REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}
 
-    - name: Deploy Django API to Container App
+    - name: Deploy Django API to Azure Container App
       run: |
         exists=$(az containerapp show \
           --name django-api \
@@ -67,18 +73,20 @@ jobs:
         if [ -z "$exists" ]; then
           echo "Creating django-api container app..."
           az containerapp create \
-          --name django-api \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
-          --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
-          --environment ${{ secrets.CONTAINERAPPS_ENV }} \
-          --target-port 8000 \
-          --ingress external \
-          --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
-          --set-env-vars \
-            AZURE_ACCOUNT_NAME="${{ secrets.AZURE_ACCOUNT_NAME }}" \
-            AZURE_ACCOUNT_KEY="${{ secrets.AZURE_ACCOUNT_KEY }}" \
-            ALLOWED_HOSTS="django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io" \
-            DEBUG="False"
+            --name django-api \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
+            --environment ${{ secrets.CONTAINERAPPS_ENV }} \
+            --target-port 8000 \
+            --ingress external \
+            --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
+            --set-env-vars \
+              SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              AZURE_ACCOUNT_NAME=${{ secrets.AZURE_ACCOUNT_NAME }} \
+              AZURE_ACCOUNT_KEY=${{ secrets.AZURE_ACCOUNT_KEY }} \
+              REDIS_KEY=${{ secrets.REDIS_KEY }} \
+              ALLOWED_HOSTS=django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io \
+              DEBUG=False
         else
           echo "Updating django-api container app..."
           az containerapp update \
@@ -86,9 +94,9 @@ jobs:
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
             --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
             --set-env-vars \
-              SECRET_KEY="${{ secrets.SECRET_KEY }}" \
-              AZURE_ACCOUNT_NAME="${{ secrets.AZURE_ACCOUNT_NAME }}" \
-              AZURE_ACCOUNT_KEY="${{ secrets.AZURE_ACCOUNT_KEY }}" \
+              SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              AZURE_ACCOUNT_NAME=${{ secrets.AZURE_ACCOUNT_NAME }} \
+              AZURE_ACCOUNT_KEY=${{ secrets.AZURE_ACCOUNT_KEY }} \
+              REDIS_KEY=${{ secrets.REDIS_KEY }} \
               ALLOWED_HOSTS=django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io \
               DEBUG=False
-        fi

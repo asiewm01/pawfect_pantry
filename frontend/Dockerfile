@@ -2,26 +2,24 @@ FROM node:18
 
 WORKDIR /app
 
-# Copy dependency files
+# Copy dependency files first (for layer caching)
 COPY package.json package-lock.json ./
+
+# Install all dependencies (including cross-env)
+RUN npm install
 
 # Copy the rest of the source code
 COPY . .
 
-# Install all dependencies (including cross-env)
-RUN npm install cross-env --save-dev
+# Declare and pass build-time variable
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
 
-# Build the app
+# Build the app (must come AFTER setting the env var)
 RUN npm run build
 
 # Expose the port
 EXPOSE 3001
 
-# Start the app (optional if you're using Nginx or serve later)
+# Start the app (optional if using serve or nginx in prod)
 CMD ["npm", "start"]
-
-# Copy correct env file depending on build context
-COPY .env.production .env
-
-
-
