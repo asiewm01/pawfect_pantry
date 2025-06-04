@@ -85,7 +85,7 @@ const Cart = () => {
                   <td>{index + 1}</td>
                   <td className="d-flex align-items-center">
                   <img
-                    src={`${BLOB_BASE}/${item.image}`}
+                    src={item.image?.url || `${BLOB_BASE}/${item.image}`}
                     alt={item.name}
                   />
                     {item.product_name}
