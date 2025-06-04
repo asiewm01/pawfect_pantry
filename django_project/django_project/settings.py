@@ -1,12 +1,12 @@
 from pathlib import Path
 from datetime import timedelta
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # ✅ YES, if you installed python-dotenv
 
 SITE_ID = 1
 BASE_DIR = Path(__file__).resolve().parent.parent
-#load_dotenv(dotenv_path=BASE_DIR / '.env.production')  # Auto-load in Docker
-load_dotenv(dotenv_path=BASE_DIR / '.env.development')  
+load_dotenv(dotenv_path=BASE_DIR / '.env.production')  # Auto-load in Docker
+#load_dotenv(dotenv_path=BASE_DIR / '.env.development')  
 
 
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
@@ -96,28 +96,28 @@ if USE_SQLITE:
     }
 else:
     #For Cloud Production and Deployment
-    #DATABASES = {
-        #'default': {
-            #'ENGINE': 'django.db.backends.mysql',
-            #'NAME': os.getenv('DB_NAME', 'capstone_db'),
-            #'USER': os.getenv('DB_USER', 'capstone_user@pawfect-mysql') if ENV == 'azure' else os.getenv('DB_USER', 'capstone_user'),
-            #'PASSWORD': os.getenv('DB_PASSWORD', 'Securepassword123'),
-            #'HOST': os.getenv('DB_HOST', 'pawfect-mysql.mysql.database.azure.com') if ENV == 'azure' else os.getenv('DB_HOST', 'mysql-db'),
-            #'PORT': os.getenv('DB_PORT', '3306'),
-        #}
-    #}
-
-    #For Development Phase
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': os.getenv('DB_NAME', 'capstone_db'),
-            'USER': os.getenv('DB_USER', 'capstone_user'),
-            'PASSWORD': os.getenv('DB_PASSWORD', 'securepassword123'),
-            'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+            'USER': os.getenv('DB_USER', 'capstone_user@pawfect-mysql') if ENV == 'azure' else os.getenv('DB_USER', 'capstone_user'),
+            'PASSWORD': os.getenv('DB_PASSWORD', 'Securepassword123'),
+            'HOST': os.getenv('DB_HOST', 'pawfect-mysql.mysql.database.azure.com') if ENV == 'azure' else os.getenv('DB_HOST', 'mysql-db'),
             'PORT': os.getenv('DB_PORT', '3306'),
         }
     }
+
+    #For Development Phase
+    #DATABASES = {
+        #'default': {
+            #'ENGINE': 'django.db.backends.mysql',
+            #'NAME': os.getenv('DB_NAME', 'capstone_db'),
+            #'USER': os.getenv('DB_USER', 'capstone_user'),
+            #'PASSWORD': os.getenv('DB_PASSWORD', 'securepassword123'),
+            #'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+            #'PORT': os.getenv('DB_PORT', '3306'),
+        #}
+    #}
     
 #    if ENV == 'azure':
 #        DATABASES['default']['OPTIONS'] = {

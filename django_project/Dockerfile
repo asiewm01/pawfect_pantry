@@ -11,21 +11,21 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Install Python dependencies
-COPY requirements.txt ./
+# Copy requirements and install
+COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy Django project and apps
+# ✅ Corrected line
+COPY .env.production .env
+
+# Copy source code
 COPY django_project/ ./django_project/
 COPY my_apps/ ./my_apps/
-COPY manage.py ./
+COPY manage.py .
 
-# Optional: collect static files if needed
-# RUN python manage.py collectstatic --noinput --settings=django_project.settings
-
-# Expose Django app port
+# Expose port
 EXPOSE 8000
 
-# ✅ Run using Django's built-in server (for development)
+# Run app
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000", "--settings=django_project.settings"]
