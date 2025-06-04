@@ -10,7 +10,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/recommend/`, { withCredentials: true })
+    axios.get(`${process.env.REACT_APP_API_URL}/api/ai/recommend/`, { withCredentials: true })
       .then(res => {
         setRecommended(res.data.recommended || []);
       })
@@ -99,7 +99,6 @@ const HomePage = () => {
               </p>
               <hr className="solid divider-line" />
               <div className="about-text">
-              <div className="about-text">
                 <h4 className="mb-3">Stay updated on our exotic pet food & offers 🐾</h4>
                   <form className="d-flex flex-column flex-md-row gap-3">
                     <input
@@ -115,7 +114,6 @@ const HomePage = () => {
                   <p className="mt-3 text-muted" style={{ fontSize: "0.9rem" }}>
                     Subscribe to receive updates, promotions, and pet care tips — tailored for your exotic companion.
                   </p>
-                </div>
               </div>
             </div>
           </div>

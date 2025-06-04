@@ -83,7 +83,7 @@ const Cart = () => {
                   <td>{index + 1}</td>
                   <td className="d-flex align-items-center">
                     <img
-                      src={`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io${item.image}`}
+                      src={`https://pawfectmediastore.blob.core.windows.net${item.image}`}
                       alt={item.product_name}
                       className="cart-img me-2"
                     />
