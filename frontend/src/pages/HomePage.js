@@ -59,7 +59,8 @@ const HomePage = () => {
           <div className="col-md-6 d-flex">
             <div className="welcome-card w-100">
               <h2 className="homepage-subtitle">
-                <img src="/media/images/corgi_butt.png" alt="Corgi Butt" className="corgi-butt" /> “Tail-Wagging Goodness in Every Treat!”</h2>
+                <img src="/media/images/corgi_butt.png" alt="Corgi Butt" className="corgi-butt" /> “Tail-Wagging Goodness in Every Treat!”
+              </h2>
               <hr className="solid divider-line" />
               <div className="about-text">
                 <p>We provide the freshest, highest-quality pet food and thoughtfully curated merchandise to meet your companions' daily needs. From nutrition to playtime, enrichment to grooming, your pets deserve nothing less than excellence — and we deliver it with care, precision, and love.</p>
@@ -76,20 +77,45 @@ const HomePage = () => {
 
       <hr className="solid my-4" />
 
-      <motion.div className="container home-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2 }}>
+      <motion.div className="container home-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
         <div className="row align-items-stretch">
           <div className="col-md-6">
-            <img src="/media/images/exotic_images.png" alt="Exotic Pets" className="img-fluid rounded shadow h-100 w-100 object-fit-cover" />
+            <img src="/media/images/exotic_images.png" alt="Cats and Dogs" className="img-fluid rounded shadow h-100 w-100 object-fit-cover" />
           </div>
           <div className="col-md-6 d-flex">
             <div className="welcome-card w-100">
-              <h2 className="homepage-subtitle"><img src="/media/images/hedgehog.png" alt="Hedgehog" className="hedgehog" /> “We have food for exotic pets too !” <img src="/media/images/ferret.png" alt="Ferret" className="ferret" /></h2>
+              <h2 className="homepage-subtitle">
+                <img src="/media/images/hedgehog.png" alt="Hedgehog" className="hedgehog" />   Treat your pets to something paw-some!
+              </h2>
+              <hr className="solid divider-line" />
+              <p>
+                Join our pet-loving community and get the inside scoop on nutritious treats, trending toys, and seasonal must-haves for your furry best friends. Whether you're raising a playful kitten, an energetic pup, or a wise senior companion, we’ve got curated picks just for them.
+              </p>
+              <p>
+                Every week, we deliver expert care tips, product highlights, and special offers tailored to your pet’s breed, age, and lifestyle. From grain-free meals to chew-proof accessories, we spotlight only the best — tested and loved by real pet parents like you.
+              </p>
+              <p>
+                Subscribe today and be the first to unlock exclusive deals, surprise giveaways, and early access to new arrivals. Because your pet deserves more than ordinary — they deserve PawFect!
+              </p>
               <hr className="solid divider-line" />
               <div className="about-text">
-                <p>We cater to all breeds of cats and dogs, as well as unique companions such as rabbits, rodents, mustelids, hedgehogs, birds, meerkats, marmoset monkeys, teacup pigs, and fennec foxes. At PawFect Pantry, we believe every animal — no matter how big, small, furry, or feathery — deserves love, care, and high-quality nutrition.</p>
-                <p>Our team is passionate about pet well-being and works closely with nutritionists and suppliers to ensure that every product we offer meets high standards of quality, safety, and sustainability. Whether your pet thrives on grain-free formulas, raw alternatives, or specialized diets, we’ve got something to keep their tails wagging and whiskers twitching.</p>
-                <p>We understand the needs of today’s pet parents. That’s why our platform offers curated selections, smart recommendations, and convenient doorstep delivery — all backed by friendly support and secure shopping.</p>
-                <p>Your pet’s health and happiness is our mission. Thank you for choosing PawFect Pantry, where love is delivered in every bite! 🐾</p>
+              <div className="about-text">
+                <h4 className="mb-3">Stay updated on our exotic pet food & offers 🐾</h4>
+                  <form className="d-flex flex-column flex-md-row gap-3">
+                    <input
+                    type="email"
+                    className="form-control"
+                    placeholder="Enter your email"
+                    required
+                    />
+                  <button type="submit" className="btn btn-primary">
+                    Subscribe
+                  </button>
+                  </form>
+                  <p className="mt-3 text-muted" style={{ fontSize: "0.9rem" }}>
+                    Subscribe to receive updates, promotions, and pet care tips — tailored for your exotic companion.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -99,7 +125,9 @@ const HomePage = () => {
       <hr className="solid my-4" />
 
       <motion.div className="container my-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.4 }}>
-        <h2 className="mb-4 text-center">Our Recommendations<img src="/media/images/corgi-over-navbar.png" alt="Cargi" className="corgi-over-navbar" /></h2>
+        <h2 className="mb-4 text-center">Our Recommendations
+          <img src="/media/images/corgi-over-navbar.png" alt="Corgi" className="corgi-over-navbar" />
+        </h2>
         <div className="row">
           {recommended.length > 0 ? (
             recommended.map(product => (

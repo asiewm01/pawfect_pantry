@@ -7,9 +7,9 @@
 
 .welcome-card {
   background-color: #ffffff;
-  padding: 40px 50px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   text-align: center;
   height: 100%;
 }
