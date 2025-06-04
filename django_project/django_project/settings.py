@@ -233,10 +233,10 @@ REACT_URL_PROD = "https://react-ui.icypebble-e6a48936.southeastasia.azurecontain
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "rediss://:E2xP7VP8nVm1zXYpKuTT4c2naE81pbLv9AzCaCFpHQw=@pawfectredis.redis.cache.windows.net:6380/0",
+        "LOCATION": f"rediss://:{os.getenv('REDIS_KEY')}@{os.getenv('REDIS_HOST')}:6380/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "SSL": True,  # Important for Azure Basic Redis
+            "SSL": True,
         }
     }
 }
