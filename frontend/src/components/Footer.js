@@ -1,5 +1,6 @@
 import React from 'react';
 import './css/Footer.css';
+import { FaWhatsapp, FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -10,23 +11,23 @@ const Footer = () => {
         <div className="me-5 d-none d-lg-block">
           <span>Connect with us on social media:</span>
         </div>
-        <div>
-          <a href="https://facebook.com" className="me-4" target="_blank" rel="noopener noreferrer">
-            <i className="fab fa-facebook-f"></i>
-          </a>
-          <a href="https://twitter.com" className="me-4" target="_blank" rel="noopener noreferrer">
-            <i className="fab fa-twitter"></i>
-          </a>
-          <a href="https://instagram.com" className="me-4" target="_blank" rel="noopener noreferrer">
-            <i className="fab fa-instagram"></i>
-          </a>
-          <a href="https://linkedin.com" className="me-4" target="_blank" rel="noopener noreferrer">
-            <i className="fab fa-linkedin"></i>
-          </a>
-          <a href="https://wa.me/+6592702017" className="me-4" target="_blank" rel="noopener noreferrer">
-            <i className="fa fa-whatsapp"></i>
-          </a>
-        </div>
+<div className="social-icons">
+  <a href="https://wa.me/+6592702017" className="me-4" target="_blank" rel="noopener noreferrer">
+    <FaWhatsapp className="social-icon" />
+  </a>
+  <a href="https://facebook.com" className="me-4" target="_blank" rel="noopener noreferrer">
+    <FaFacebookF className="social-icon" />
+  </a>
+  <a href="https://twitter.com" className="me-4" target="_blank" rel="noopener noreferrer">
+    <FaTwitter className="social-icon" />
+  </a>
+  <a href="https://instagram.com" className="me-4" target="_blank" rel="noopener noreferrer">
+    <FaInstagram className="social-icon" />
+  </a>
+  <a href="https://linkedin.com" className="me-4" target="_blank" rel="noopener noreferrer">
+    <FaLinkedinIn className="social-icon" />
+  </a>
+</div>
       </section>
 
       {/* Footer Main Content */}
