@@ -15,12 +15,12 @@ const Login = () => {
 
     try {
       // Get CSRF token
-      await axios.get(`${process.env.REACT_APP_API_URL}/api/csrf/`, {
+      await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/csrf/`, {
         withCredentials: true
       });
 
       // Perform login
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/login/`, {
+      const response = await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/login/`, {
         username,
         password
       }, {

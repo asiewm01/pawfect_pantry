@@ -17,7 +17,7 @@ const NavigationBar = () => {
 
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/api/user/`, {
+    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/user/`, {
       withCredentials: true
     }).then(res => {
       setIsLoggedIn(true);
@@ -38,7 +38,7 @@ const NavigationBar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/logout/`, {}, {
+      await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/logout/`, {}, {
         withCredentials: true
       });
       setIsLoggedIn(false);

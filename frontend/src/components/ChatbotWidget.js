@@ -24,7 +24,7 @@ const ChatbotWidget = () => {
     setInput('');
 
     try {
-      const endpoint = `${process.env.REACT_APP_API_URL}/api/ai/chatbot/`;
+      const endpoint = `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/chatbot/`;
       const response = await axios.post(endpoint, { message: userInput }, { withCredentials: true });
 
       const botReply = response.data.reply || "❓ Sorry, I didn't understand that.";

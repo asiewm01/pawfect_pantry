@@ -21,7 +21,7 @@ const Checkout = () => {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/`, {
+        const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/`, {
           withCredentials: true,
         });
     
@@ -50,7 +50,7 @@ const Checkout = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/cart/checkout/`, {
+      const response = await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/checkout/`, {
         ...formData,
         payment_method: paymentMethod,
       }, {

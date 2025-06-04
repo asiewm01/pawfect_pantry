@@ -58,7 +58,7 @@ const Footer = () => {
               <p><a href="/sitemap" className="text-reset">Sitemap</a></p>
               <p>
                 <a
-                  href={`${process.env.REACT_APP_API_URL}/vendor-panel/`}
+                  href={`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/vendor-panel/`}
                   className="text-reset"
                   target="_blank"
                   rel="noopener noreferrer"

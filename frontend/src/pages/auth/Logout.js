@@ -6,7 +6,7 @@ const Logout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.post(`${process.env.REACT_APP_API_URL}/api/logout/`, {}, {
+    axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/logout/`, {}, {
       withCredentials: true
     }).then(() => {
       alert('Logged out.');

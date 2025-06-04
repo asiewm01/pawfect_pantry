@@ -13,7 +13,7 @@ const OrderHistory = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/`, {
+      const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/orders/`, {
         withCredentials: true // Ensure cookies/session are passed
       });
       setOrders(res.data.orders); // ✅ Extract correct array

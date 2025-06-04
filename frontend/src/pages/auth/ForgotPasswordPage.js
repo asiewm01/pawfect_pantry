@@ -13,7 +13,7 @@ const ForgotPasswordPage = () => {
     setMessage('');
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/password/reset/`, {
+      const response = await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/password/reset/`, {
         email
       }, {
         withCredentials: true

@@ -14,7 +14,7 @@ const Cart = () => {
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/`, { withCredentials: true });
+      const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/`, { withCredentials: true });
       const items = res.data.cart;
       setCartItems(items);
 
@@ -44,7 +44,7 @@ const Cart = () => {
           quantity,
         }))
       };
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/cart/update/`, payload, { withCredentials: true });
+      await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/update/`, payload, { withCredentials: true });
       alert('Cart updated!');
       fetchCart();
     } catch (err) {
@@ -54,7 +54,7 @@ const Cart = () => {
 
   const handleRemove = async (productId) => {
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/cart/remove/${productId}/`, {}, { withCredentials: true });
+      await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/remove/${productId}/`, {}, { withCredentials: true });
       fetchCart();
     } catch (err) {
       console.error('Error removing item:', err);
@@ -83,7 +83,7 @@ const Cart = () => {
                   <td>{index + 1}</td>
                   <td className="d-flex align-items-center">
                     <img
-                      src={`${process.env.REACT_APP_API_URL}${item.image}`}
+                      src={`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io${item.image}`}
                       alt={item.product_name}
                       className="cart-img me-2"
                     />

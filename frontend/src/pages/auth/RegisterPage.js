@@ -35,7 +35,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/register/`, {
+      const response = await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/register/`, {
         username,
         email,
         password: password1,
