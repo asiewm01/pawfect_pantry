@@ -67,38 +67,36 @@ jobs:
       run: |
         exists=$(az containerapp show \
           --name django-api \
-          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --resource-group "${{ secrets.RESOURCE_GROUP }}" \
           --query "name" -o tsv || echo "")
 
         if [ -z "$exists" ]; then
           echo "Creating django-api container app..."
           az containerapp create \
             --name django-api \
-            --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
-            --environment ${{ secrets.CONTAINERAPPS_ENV }} \
+            --resource-group "${{ secrets.RESOURCE_GROUP }}" \
+            --image "${{ secrets.ACR_NAME }}.azurecr.io/django-api" \
+            --environment "${{ secrets.CONTAINERAPPS_ENV }}" \
             --target-port 8000 \
             --ingress external \
-            --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
+            --registry-server "${{ secrets.ACR_NAME }}.azurecr.io" \
             --set-env-vars \
-              SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              SECRET_KEY="${{ secrets.SECRET_KEY }}" \
               REDIS_KEY="${{ secrets.REDIS_KEY }}" \
-              AZURE_ACCOUNT_NAME=${{ secrets.AZURE_ACCOUNT_NAME }} \
-              AZURE_ACCOUNT_KEY=${{ secrets.AZURE_ACCOUNT_KEY }} \
-              REDIS_KEY=${{ secrets.REDIS_KEY }} \
-              ALLOWED_HOSTS=django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io \
-              DEBUG=False
+              AZURE_ACCOUNT_NAME="${{ secrets.AZURE_ACCOUNT_NAME }}" \
+              AZURE_ACCOUNT_KEY="${{ secrets.AZURE_ACCOUNT_KEY }}" \
+              ALLOWED_HOSTS="django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io" \
+              DEBUG="False"
         else
           echo "Updating django-api container app..."
           az containerapp update \
             --name django-api \
-            --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --image ${{ secrets.ACR_NAME }}.azurecr.io/django-api \
+            --resource-group "${{ secrets.RESOURCE_GROUP }}" \
+            --image "${{ secrets.ACR_NAME }}.azurecr.io/django-api" \
             --set-env-vars \
-              SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              SECRET_KEY="${{ secrets.SECRET_KEY }}" \
               REDIS_KEY="${{ secrets.REDIS_KEY }}" \
-              AZURE_ACCOUNT_NAME=${{ secrets.AZURE_ACCOUNT_NAME }} \
-              AZURE_ACCOUNT_KEY=${{ secrets.AZURE_ACCOUNT_KEY }} \
-              REDIS_KEY=${{ secrets.REDIS_KEY }} \
-              ALLOWED_HOSTS=django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io \
-              DEBUG=False
+              AZURE_ACCOUNT_NAME="${{ secrets.AZURE_ACCOUNT_NAME }}" \
+              AZURE_ACCOUNT_KEY="${{ secrets.AZURE_ACCOUNT_KEY }}" \
+              ALLOWED_HOSTS="django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io" \
+              DEBUG="False"
