@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // ✅ Create a configured Axios instance
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: 'http://127.0.0.1:8000',
   withCredentials: true,
   xsrfCookieName: 'csrftoken',
   xsrfHeaderName: 'X-CSRFToken',

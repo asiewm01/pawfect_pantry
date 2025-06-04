@@ -1,34 +1,27 @@
-const API_BASE = process.env.REACT_APP_API_URL || '/api';  // Use env variable if available, fallback to '/api'
-
-const getAuthHeader = () => {
-  const token = localStorage.getItem('token');
-  return { Authorization: `Bearer ${token}` };
-};
+const API_BASE = '/api';
 
 export const fetchDashboard = async () => {
-  try {
-    const res = await fetch(`${API_BASE}/dashboard`, {
-      headers: getAuthHeader(),
-    });
+  const token = localStorage.getItem('token');
 
-    if (!res.ok) throw new Error('Unauthorized or error occurred');
-    return await res.json();
-  } catch (error) {
-    console.error('Error fetching dashboard:', error);
-    throw error;
-  }
+  const res = await fetch(`${API_BASE}/dashboard`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  if (!res.ok) throw new Error('Unauthorized or error occurred');
+  return await res.json();
 };
 
 export const fetchUsername = async () => {
-  try {
-    const res = await fetch(`${API_BASE}/username`, {
-      headers: getAuthHeader(),
-    });
+  const token = localStorage.getItem('token');
 
-    if (!res.ok) throw new Error('Failed to fetch username');
-    return await res.json();
-  } catch (error) {
-    console.error('Error fetching username:', error);
-    throw error;
-  }
+  const res = await fetch('/api/username', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  if (!res.ok) throw new Error('Failed to fetch username');
+  return await res.json();
 };
