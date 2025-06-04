@@ -14,6 +14,8 @@ staticfiles/
 # Envs and secrets
 .env
 *.env
+.env.production
+.env.development
 
 # VSCode or IDE
 .vscode/

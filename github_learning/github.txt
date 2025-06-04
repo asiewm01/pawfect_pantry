@@ -25,7 +25,7 @@ Commit Changes -
 git init
 git status
 git add .
-git commit -m "editter secret key in setting.py"
+git commit -m "Add Subscription Box"
 git remote add origin https://github.com/asiewm01/pawfect_pantry.git
 git push origin main
 
@@ -33,5 +33,5 @@ Database File -
 "/c/xampp/mysql/bin/mysqldump.exe" -u capstone_user -p -h 127.0.0.1 -P 3306 capstone > capstone_backup.sql
 
 git add .
-git commit -m "Change the react ProductDetail.js, added go to cart"
+git commit -m "Add Subscription Box"
 git push origin main
