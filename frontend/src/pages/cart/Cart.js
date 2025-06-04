@@ -7,6 +7,8 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [total, setTotal] = useState(0);
+  const BLOB_BASE = "https://pawfectmediastore.blob.core.windows.net/media";
+
 
   useEffect(() => {
     fetchCart();
@@ -82,11 +84,10 @@ const Cart = () => {
                 <tr key={item.id}>
                   <td>{index + 1}</td>
                   <td className="d-flex align-items-center">
-                    <img
-                      src={`https://pawfectmediastore.blob.core.windows.net${item.image}`}
-                      alt={item.product_name}
-                      className="cart-img me-2"
-                    />
+                  <img
+                    src={`${BLOB_BASE}/${item.image}`}
+                    alt={item.name}
+                  />
                     {item.product_name}
                   </td>
                   <td>
