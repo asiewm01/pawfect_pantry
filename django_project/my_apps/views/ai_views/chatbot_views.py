@@ -69,6 +69,8 @@ def chatbot_view(request):
                     f"Total: <strong>${order.total:.2f}</strong>. ETA: 3–5 business days.<br><br>"
                     f"🧾 View your cart and checkout details here: "
                     f"<a href='{REACT_URL}/cart' target='_blank'>Cart</a>"
+                    f"Also Remember to refresh the website in order to view your cart, order and dashboard. "
+
                 )
             else:
                 reply = (
@@ -162,9 +164,7 @@ def chatbot_view(request):
                     "reply": (
                     "😞 Sorry you're having trouble finding what you need. "
                     "Please click here to chat with support: "
-                    "<a href='https://wa.me/+6592702017' target='_blank'>WhatsApp Support</a>"
-                    "<a href='https://www.messenger.com' target='_blank'>Messenger Support</a>"
-                ),
+                    "<a href='https://wa.me/+6592702017' target='_blank'>WhatsApp Support</a> or <a href='https://www.messenger.com' target='_blank'>Messenger Support</a>"                ),
                 "sentiment": sentiment,
                 "entities": entities
             })
