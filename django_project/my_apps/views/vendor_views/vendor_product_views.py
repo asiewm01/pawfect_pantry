@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from my_apps.models import Product, UserProfile
+from my_apps.models import Product, UserProfile, Vendor
 from django.contrib import messages
 from my_apps.forms import ProductForm  # We'll create this next
+from django.http import HttpResponseForbidden
 
 
 @login_required
@@ -56,9 +57,16 @@ def vendor_product_create(request):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save(commit=False)
-            product.vendor = request.user  # (assuming you link product to vendor/user)
+            
+            try:
+                vendor = Vendor.objects.get(user=request.user)
+            except Vendor.DoesNotExist:
+                return HttpResponseForbidden("You are not registered as a vendor.")
+
+            product.vendor = vendor
             product.save()
-            return redirect('vendor_product_list')  # After saving, back to vendor list
+            return redirect('vendor_product_list')
     else:
         form = ProductForm()
+    
     return render(request, 'vendor/product_management/vendor_product_create.html', {'form': form})

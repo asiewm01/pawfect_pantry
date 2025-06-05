@@ -1,6 +1,6 @@
 import React from 'react';
 import './css/Footer.css';
-import { FaWhatsapp, FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { FaWhatsapp, FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaFacebookMessenger } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -14,6 +14,9 @@ const Footer = () => {
 <div className="social-icons">
   <a href="https://wa.me/+6592702017" className="me-4" target="_blank" rel="noopener noreferrer">
     <FaWhatsapp className="social-icon" />
+  </a>
+  <a href="https://www.messenger.com" className="me-4" target="_blank" rel="noopener noreferrer">
+    <FaFacebookMessenger className="social-icon" />
   </a>
   <a href="https://facebook.com" className="me-4" target="_blank" rel="noopener noreferrer">
     <FaFacebookF className="social-icon" />

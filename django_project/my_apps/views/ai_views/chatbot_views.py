@@ -163,6 +163,7 @@ def chatbot_view(request):
                     "😞 Sorry you're having trouble finding what you need. "
                     "Please click here to chat with support: "
                     "<a href='https://wa.me/+6592702017' target='_blank'>WhatsApp Support</a>"
+                    "<a href='https://www.messenger.com' target='_blank'>Messenger Support</a>"
                 ),
                 "sentiment": sentiment,
                 "entities": entities
