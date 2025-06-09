@@ -1,6 +1,6 @@
 import React from 'react';
 import './css/Footer.css';
-import { FaWhatsapp, FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaFacebookMessenger } from "react-icons/fa";
+import { FaWhatsapp, FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaFacebookMessenger, FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -29,6 +29,9 @@ const Footer = () => {
   </a>
   <a href="https://linkedin.com" className="me-4" target="_blank" rel="noopener noreferrer">
     <FaLinkedinIn className="social-icon" />
+  </a>
+  <a href="https://youtube.com" className="me-4" target="_blank" rel="noopener noreferrer">
+    <FaYoutube className="social-icon" />
   </a>
 </div>
       </section>
