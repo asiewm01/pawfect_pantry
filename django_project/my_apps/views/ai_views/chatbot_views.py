@@ -19,7 +19,7 @@ try:
     use_profanity_filter = True
 except ImportError:
     use_profanity_filter = False
-    PROFANITY_LIST = ["fuck", "shit", "wtf", "bitch", "asshole", "dick", "cunt", "pussy"]
+    PROFANITY_LIST = ["fuck", "shit", "wtf", "bitch", "asshole", "dick", "cunt", "pussy", "idiot", "dumb ass"]
 
 # Load models
 openai.api_key = settings.OPENAI_API_KEY
