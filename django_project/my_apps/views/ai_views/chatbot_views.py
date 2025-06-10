@@ -80,7 +80,7 @@ def chatbot_view(request):
             return JsonResponse({"reply": reply})
 
         # 📦 Order tracking/status
-        if "order" in msg and any(w in msg for w in ["order", "what", "current", "status", "where", "track", "check"]):
+        if any(w in msg for w in ["order", "track", "tracking", "status", "where", "check", "delivery"]):
             order = Order.objects.filter(user=user).order_by('-date').first()
             if order:
                 reply = (
