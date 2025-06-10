@@ -60,7 +60,9 @@ const NavigationBar = () => {
               <Nav.Link as={NavLink} to="/about">About Us <i className='fas fa-users'></i></Nav.Link>
               <Nav.Link as={NavLink} to="/catalogue">Catalogue <i className="fa fa-shopping-cart"></i></Nav.Link>
               <Nav.Link as={NavLink} to="/contact">Contact Us <i className="fa fa-envelope"></i></Nav.Link>
-
+              <Nav.Link as={NavLink} to="/ai-agent" aria-label="Ask our AI nutritionist">
+                Ask Dr.AI <i className="fa fa-heart"></i>
+              </Nav.Link>
               {isLoggedIn ? (
                 <NavDropdown title={`Account (${firstName || username})`} id="account-dropdown">
                   <NavDropdown.Item as={NavLink} to="/dashboard">
@@ -87,6 +89,7 @@ const NavigationBar = () => {
                   <NavDropdown.Item onClick={handleLogout}>
                     <i className="fa fa-sign-out-alt"></i> Logout
                   </NavDropdown.Item>
+                  
                 </NavDropdown>
               ) : (
                 <>

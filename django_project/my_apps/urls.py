@@ -71,6 +71,8 @@ from my_apps.views.ai_views.ai_views import (
 )
 from my_apps.views.ai_views.chatbot_views import chatbot_view
 
+from my_apps.views.ai_views.ai_agent_views import ai_agent_view
+
 # API Views
 from my_apps.views.api_views.api_views import cart_summary
 
@@ -109,6 +111,8 @@ urlpatterns = [
     path('api/ai/recommend/', ai_recommendations, name='ai-recommendations'),
     path('api/ai/recommend/product/<int:product_id>/', product_recommendations, name='product-recommendations'),
     path('api/ai/chatbot/', chatbot_view, name='chatbot'),
+    path("api/ai/agent/", ai_agent_view, name="ai_agent"),
+
 
     # Authentication
     path('api/login/', auth_views.login_view, name='login'),
