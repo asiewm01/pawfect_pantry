@@ -104,7 +104,7 @@ const NavigationBar = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button variant="outline-light" type="submit">
+              <Button variant="outline-primary" type="submit">
                 <i className="fa fa-fw fa-search"></i>
               </Button>
             </Form>
