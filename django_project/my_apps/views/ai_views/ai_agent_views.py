@@ -2,7 +2,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
 from ...models import Order, Product
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import json, spacy, re
 from django.db.models import Q
 from openai import OpenAI
@@ -27,8 +26,8 @@ except ImportError:
 species_nutrition = {
     "ferret": "Obligate carnivore – needs high fat and protein, no carbs.",
     "cat": "Obligate carnivore – similar to ferrets, thrives on meat-based diets.",
-    "husky": "High-energy breed – does well on a high-protein, high-fat diet.",
-    "sheepdog": "Herding breed – tolerates moderate carbs with protein.",
+    "husky": "High-energy breed – does well on a high-protein, high-fat diet but low carbs diet.",
+    "sheepdog": "Herding breed – higher tolerant of carbs and plant-based protein due to their agriculture work ancestry."
 }
 
 product_types = [
@@ -39,7 +38,6 @@ product_types = [
 ]
 
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
-analyzer = SentimentIntensityAnalyzer()
 
 try:
     nlp = spacy.load("en_core_web_sm")
@@ -76,51 +74,18 @@ def ai_agent_view(request):
            (not use_profanity_filter and any(word in msg for word in PROFANITY_LIST)):
             return JsonResponse({"reply": "⚠️ That’s not a polite message. Please ask respectfully."})
 
-        # 🔍 Sentiment and praise detection
-        sentiment_score = analyzer.polarity_scores(msg)
-        compound = sentiment_score["compound"]
-        sentiment = (
-            "positive" if compound >= 0.3 else
-            "negative" if compound <= -0.3 else
-            "neutral"
-        )
-
-        is_praise = sentiment == "positive" and any(word in msg for word in [
-            "like", "love", "great", "awesome", "thank", "nice", "best", "cool", "amazing"
-        ])
-
-        # 📦 Product keyword matching (skipped if it's praise)
-        if not is_praise:
-            keywords = msg.split()
-            query = Q()
-            for kw in keywords:
-                query |= (
-                    Q(name__icontains=kw) |
-                    Q(description__icontains=kw) |
-                    Q(species__icontains=kw) |
-                    Q(food_type__icontains=kw)
-                )
-            matched_products = Product.objects.filter(query).distinct()
-            if matched_products.exists():
-                results = matched_products[:5]
-                reply = "🔎 Here’s what I found based on your search:<br><br>" + "<br>".join(
-                    [f'<a href="{REACT_URL}/catalogue/{p.id}/">{p.name} - ${p.price:.2f}</a>' for p in results]
-                )
-                return JsonResponse({"reply": reply})
-
         # 🔁 Context: recent order
         order = Order.objects.filter(user=user).order_by('-date').first()
         context_info = f"User's order: #{order.id}, status: {order.status}" if order else "No order yet."
 
-        # 🧠 Build system prompt
+        # 🧐 Build system prompt
         system_prompt = (
-            "You are a knowledgeable AI assistant for a pet food e-commerce platform. "
-            "You help customers understand species- and breed-specific nutritional needs and guide them to products.\n\n"
-            "🐾 Species Nutrition Facts:\n" +
-            "\n".join([f"- {species.title()}: {desc}" for species, desc in species_nutrition.items()]) +
-            "\n\n🛒 Product Types:\n" +
-            "\n".join([f"- {ptype}" for ptype in product_types]) +
-            f"\n\nOrder Context: {context_info}"
+            "You are a knowledgeable pet nutrition assistant for an online store. "
+            "You help pet owners understand the dietary needs of different species and breeds. "
+            "Ferrets and cats are obligate carnivores — they require high protein and fat with minimal carbs. "
+            "Some dog breeds like huskies have similar needs, while herding dogs like sheepdogs tolerate more carbs. "
+            "You also explain our product catalog: game meat, seafood, dairy-based treats, artisanal meats, etc. "
+            f"Use this context to assist users. {context_info}"
         )
 
         # 🎯 Send to GPT
@@ -135,7 +100,6 @@ def ai_agent_view(request):
         gpt_reply = response.choices[0].message.content
         return JsonResponse({
             "reply": gpt_reply,
-            "sentiment": sentiment,
             "entities": [(ent.text, ent.label_) for ent in nlp(msg).ents]
         })
 

@@ -56,12 +56,12 @@ const NavigationBar = () => {
           <Navbar.Toggle aria-controls="navbarContent" />
           <Navbar.Collapse id="navbarContent">
             <Nav className="me-auto">
-              <Nav.Link as={NavLink} to="/">Home <i className="fa fa-home"></i></Nav.Link>
-              <Nav.Link as={NavLink} to="/about">About Us <i className='fas fa-users'></i></Nav.Link>
-              <Nav.Link as={NavLink} to="/catalogue">Catalogue <i className="fa fa-shopping-cart"></i></Nav.Link>
-              <Nav.Link as={NavLink} to="/contact">Contact Us <i className="fa fa-envelope"></i></Nav.Link>
+              <Nav.Link as={NavLink} to="/">Home<i className="fa fa-home"></i> | </Nav.Link>
+              <Nav.Link as={NavLink} to="/about">About Us<i className='fas fa-users'></i> | </Nav.Link>
+              <Nav.Link as={NavLink} to="/catalogue">Catalogue <i className="fa fa-shopping-cart"></i> | </Nav.Link>
+              <Nav.Link as={NavLink} to="/contact">Contact Us <i className="fa fa-envelope"></i> | </Nav.Link>
               <Nav.Link as={NavLink} to="/ai-agent" aria-label="Ask our AI nutritionist">
-                Ask Dr.AI <i className="fa fa-heart"></i>
+                Ask Dr.AI <i className="fa fa-heart"></i> | 
               </Nav.Link>
               {isLoggedIn ? (
                 <NavDropdown title={`Account (${firstName || username})`} id="account-dropdown">
@@ -93,7 +93,7 @@ const NavigationBar = () => {
                 </NavDropdown>
               ) : (
                 <>
-                  <Nav.Link as={NavLink} to="/login">Account <i className="fas fa-user-circle"></i></Nav.Link>
+                  <Nav.Link as={NavLink} to="/login">Account <i className="fas fa-user-circle"></i> | </Nav.Link>
                   <Nav.Link as={NavLink} to="/register">Register <i className="far fa-registered"></i></Nav.Link>
                 </>
               )}
