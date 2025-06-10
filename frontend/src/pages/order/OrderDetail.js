@@ -18,7 +18,7 @@ const OrderDetail = () => {
 
   const fetchOrderDetail = async () => {
     try {
-      const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/orders/${id}/`, {
+      const res = await axios.get(`http://127.0.0.1:8000/api/orders/${id}/`, {
         withCredentials: true,
       });
       if (res.data?.order) {
