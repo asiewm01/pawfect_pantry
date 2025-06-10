@@ -32,7 +32,7 @@ const AIAgent = () => {
 
   return (
     <div className="ai-agent-container">
-      <h2 className="ai-agent-title">🐾 Ask About Pet Nutrition</h2>
+      <h2 className="ai-agent-title">🐾 Ask Dr.AI About Pet Food & Nutrition</h2>
       <div className="ai-agent-messages">
         {messages.map((msg, idx) => (
           <div
