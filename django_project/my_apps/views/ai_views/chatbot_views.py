@@ -80,7 +80,7 @@ def chatbot_view(request):
             return JsonResponse({"reply": reply})
 
         # 📦 Order tracking/status
-        if any(w in msg for w in ["order", "track", "tracking", "status", "where", "check", "delivery"]):
+        if any(w in msg for w in ["order", "track", "tracking", "status", "delivery"]):
             order = Order.objects.filter(user=user).order_by('-date').first()
             if order:
                 reply = (
@@ -103,16 +103,6 @@ def chatbot_view(request):
                 f"✅ Payment of ${order.total:.2f} received for order #{order.id}."
                 if order else "❌ No payment found."
             )
-            return JsonResponse({"reply": reply})
-
-        elif any(w in msg for w in ["products", "items", "sell", "buy", "stuff"]):
-            products = Product.objects.all()[:3]
-            if products:
-                reply = "🛒 Top products:<br>" + "<br>".join(
-                    [f'<a href="{REACT_URL}/catalogue/{p.id}/">{p.name} - ${p.price}</a>' for p in products]
-                )
-            else:
-                reply = "❌ No products found."
             return JsonResponse({"reply": reply})
 
         elif any(w in msg for w in ["cat", "kitten"]):
