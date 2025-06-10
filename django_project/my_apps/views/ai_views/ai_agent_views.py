@@ -26,15 +26,20 @@ except ImportError:
 species_nutrition = {
     "ferret": "Obligate carnivore – needs high fat and protein, no carbs.",
     "cat": "Obligate carnivore – similar to ferrets, thrives on meat-based diets.",
+    "hedgehog": "Insectivore and Omnivore – thrives on mix of insect, fruits, starch and animal protein. More tolerant of fiber compared to other carnivore",
+    "fennec fox": "Insectivore and Omnivore – similar to hedgehog and domestic dogs, thrives on mix of insect, fruits, starch and animal protein.",
     "husky": "High-energy breed – does well on a high-protein, high-fat diet but low carbs diet.",
-    "sheepdog": "Herding breed – higher tolerant of carbs and plant-based protein due to their agriculture work ancestry."
+    "sheepdog": "Herding breed – higher tolerant of carbs and plant-based protein due to their agriculture work ancestry. They can tolerate higher grain and soy-based diet. They have lower tolerant for fats as compared to husky and hunting breeds. They can tolerate as low as 25 percent of protein in their diet."
+    
 }
 
 product_types = [
-    "Game Meat (e.g. venison, rabbit)",
-    "Sustainable Seafood (e.g. sardines, salmon)",
-    "Dairy Treats (e.g. goat milk bites, cheese)",
-    "Artisanal Meats (e.g. blood sausage, camel jerky)"
+    "Game Meat (e.g. venison, rabbit, crocodile, kangaroo)",
+    "Insect (e.g. black soldierfly larvae, mealworm larvae, crickets)",
+    "Whole Prey (e.g. frozen quails, frozen mice, pinkies)",
+    "Sustainable Seafood (e.g. sardines, salmon, trout, cod, fish trimmings)",
+    "Dairy Treats (e.g. goat milk bites, cheese, ice cream)",
+    "Artisanal Meats (e.g. blood sausage, camel jerky, artisinal ham)"
 ]
 
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
@@ -83,7 +88,8 @@ def ai_agent_view(request):
             "You are a knowledgeable pet nutrition assistant for an online store. "
             "You help pet owners understand the dietary needs of different species and breeds. "
             "Ferrets and cats are obligate carnivores — they require high protein and fat with minimal carbs. "
-            "Some dog breeds like huskies have similar needs, while herding dogs like sheepdogs tolerate more carbs. "
+            "Hedgehog and Fennex Fox tend to be omniovre and insectivore and will appreciate insect protein, fruits, grains and animal products. They can tolerate as low as 25 percent protein though more should be recommended. They will also require at least 15 percent fats in their diet. They can tolerate as high as 40 percent of Carb"
+            "Some dog breeds like huskies have similar needs as cats and ferrets, while herding dogs like sheepdogs tolerate higher carbs and protein level as low as 25%. Though they are less tolerant of fats"
             "You also explain our product catalog: game meat, seafood, dairy-based treats, artisanal meats, etc. "
             f"Use this context to assist users. {context_info}"
         )
