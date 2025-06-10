@@ -5,6 +5,8 @@ from ...models import Order, Product
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import openai, json, spacy
 import re
+from django.db.models import Q
+
 
 REACT_URL = (
     settings.REACT_URL_DEV
@@ -139,16 +141,12 @@ def chatbot_view(request):
             return JsonResponse({"reply": "👋 Hi there! How can I assist you today?"})
         
         # NEW: Keyword search through SQL if message contains product keywords
-        product_keywords = msg.split()
-        matched_products = Product.objects.filter(
-    name__icontains=msg
-) | Product.objects.filter(
-            description__icontains=msg
-        ) | Product.objects.filter(
-            species__icontains=msg
-        ) | Product.objects.filter(
-            food_type__icontains=msg
-        )
+        product_keywords = msg.lower().split()
+        query = Q()
+        for kw in product_keywords:
+            query |= Q(description__icontains=kw) | Q(species__icontains=kw) | Q(food_type__icontains=kw)
+
+        matched_products = Product.objects.filter(query)
 
         if matched_products.exists():
             results = matched_products.distinct()[:5]
