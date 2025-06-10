@@ -13,12 +13,12 @@ const ProductFilterForm = ({ onFilter }) => {
 
   useEffect(() => {
     // Fetch distinct species from backend
-    axios.get('/api/species-categories/')
+    axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/species-categories/')
       .then(res => setSpeciesOptions(res.data))
       .catch(err => console.warn('Failed to fetch species:', err));
 
     // Fetch distinct food types from backend
-    axios.get('/api/food-type-categories/')
+    axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/food-type-categories/')
       .then(res => setFoodTypeOptions(res.data))
       .catch(err => console.warn('Failed to fetch food types:', err));
   }, []);

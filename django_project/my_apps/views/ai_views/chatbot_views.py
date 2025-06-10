@@ -68,7 +68,7 @@ def chatbot_view(request):
                     f"🛒 Your latest order (#{order.id}) is <strong>'{order.status}'</strong>. "
                     f"Total: <strong>${order.total:.2f}</strong>. ETA: 3–5 business days.<br><br>. "
                     f"🧾 View your cart and checkout details here: "
-                    f"<a href='{REACT_URL}/cart' target='_blank'>Check Cart</a>. "
+                    f"<a href='{REACT_URL}/cart' target='_blank'>Check and Go to Cart</a>. "
                     f"Also Remember to refresh the website in order to view your cart, order and dashboard. "
 
                 )
@@ -85,7 +85,7 @@ def chatbot_view(request):
             if order:
                 reply = (
                     f"🧾 Your latest order (#{order.id}) is <strong>'{order.status}'</strong>. "
-                    f"Total: <strong>${order.total:.2f}</strong>. ETA: 3–5 business days.<br><br>"
+                    f"Total: <strong>${order.total:.2f}</strong>. ETA: 3–5 business days.<br><br>. "
                     f"📦 View full order history: "
                     f"<a href='{REACT_URL}/orders/history' target='_blank'>Order History</a>"
                 )
