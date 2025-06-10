@@ -66,9 +66,9 @@ def chatbot_view(request):
             if order:
                 reply = (
                     f"🛒 Your latest order (#{order.id}) is <strong>'{order.status}'</strong>. "
-                    f"Total: <strong>${order.total:.2f}</strong>. ETA: 3–5 business days.<br><br>"
+                    f"Total: <strong>${order.total:.2f}</strong>. ETA: 3–5 business days.<br><br>. "
                     f"🧾 View your cart and checkout details here: "
-                    f"<a href='{REACT_URL}/cart' target='_blank'>Cart</a>"
+                    f"<a href='{REACT_URL}/cart' target='_blank'>Check Cart</a>. "
                     f"Also Remember to refresh the website in order to view your cart, order and dashboard. "
 
                 )
@@ -80,7 +80,7 @@ def chatbot_view(request):
             return JsonResponse({"reply": reply})
 
         # 📦 Order tracking/status
-        if "order" in msg and any(w in msg for w in ["what", "current", "status", "where", "track", "check"]):
+        if "order" in msg and any(w in msg for w in ["order", "what", "current", "status", "where", "track", "check"]):
             order = Order.objects.filter(user=user).order_by('-date').first()
             if order:
                 reply = (
@@ -147,6 +147,25 @@ def chatbot_view(request):
 
         elif re.search(r"\b(hello|hi|help)\b", msg):
             return JsonResponse({"reply": "👋 Hi there! How can I assist you today?"})
+        
+        # NEW: Keyword search through SQL if message contains product keywords
+        product_keywords = msg.split()
+        matched_products = Product.objects.filter(
+    name__icontains=msg
+) | Product.objects.filter(
+            description__icontains=msg
+        ) | Product.objects.filter(
+            species__icontains=msg
+        ) | Product.objects.filter(
+            food_type__icontains=msg
+        )
+
+        if matched_products.exists():
+            results = matched_products.distinct()[:5]
+            reply = "🔎 Here’s what I found based on your search:<br>" + "<br>".join(
+                [f'<a href="{REACT_URL}/catalogue/{p.id}/">{p.name} - ${p.price}</a>' for p in results]
+            )   
+            return JsonResponse({"reply": reply})
 
         # ✅ NLP fallback if no rule matched
         doc = nlp(msg)
