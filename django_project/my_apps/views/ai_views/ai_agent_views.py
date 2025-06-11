@@ -110,9 +110,13 @@ def ai_agent_view(request):
 
         gpt_reply = response.choices[0].message.content
 
+        # Named entity extraction (safe now)
+        doc = nlp(msg or "")
+        named_entities = [(ent.text, ent.label_) for ent in doc.ents]
+
         return JsonResponse({
             "reply": gpt_reply,
-            "entities": [(ent.text, ent.label_) for ent in nlp(msg or "") if ent.text]
+            "entities": named_entities
         })
 
     except Exception as e:
