@@ -73,6 +73,31 @@ def chatbot_view(request):
             )
             return JsonResponse({"reply": reply})
         
+        # 👨‍💼 Human Agent Request Rule
+        if re.search(r"(talk|speak|chat).*(human|agent|representative|person)", msg, re.IGNORECASE):
+            reply = (
+                "👨‍💼 Sure, you can talk to a human agent! Here are your options:<br><br>"
+                "📞 <a href='/contact' target='_blank'>Contact Us Form</a><br>"
+                "💬 <a href='https://wa.me/+6592702017' target='_blank'>WhatsApp Us</a><br>"
+                "📲 <a href='https://m.me/yourpageusername' target='_blank'>Facebook Messenger</a><br><br>"
+                "We'll get back to you as soon as possible!"
+            )
+            return JsonResponse({"reply": reply})
+        
+        # 🔍 Can't Find Anything Rule
+        if re.search(r"(can.?t|cannot|couldn.?t|not able to).*find", msg, re.IGNORECASE):
+            reply = (
+                "😕 Sorry you're having trouble finding what you need.<br><br>"
+                "Here are a few quick links that might help:<br><br>"
+                "🧭 <a href='/sitemap' target='_blank'>Sitemap</a> – Browse all pages<br>"
+                "🛒 <a href='/catalogue' target='_blank'>View All Products</a><br>"
+                "❓ <a href='/faq' target='_blank'>Frequently Asked Questions</a><br>"
+                "👨‍💼 Still need help? <a href='/contact' target='_blank'>Talk to a human agent</a><br>"
+                "💬 <a href='https://wa.me/+6592702017' target='_blank'>WhatsApp Us</a> | "
+                "<a href='https://m.me/yourpageusername' target='_blank'>Messenger</a>"
+            )
+            return JsonResponse({"reply": reply})
+        
         # Analyze sentiment early
         sentiment_score = analyzer.polarity_scores(msg)
         compound = sentiment_score["compound"]
