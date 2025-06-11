@@ -79,6 +79,43 @@ def ai_agent_view(request):
            (not use_profanity_filter and any(word in msg for word in PROFANITY_LIST)):
             return JsonResponse({"reply": "⚠️ That’s not a polite message. Please ask respectfully."})
 
+        # ✅ Check if user asked for a diet/nutrition table
+        if "table" in msg and any(keyword in msg for keyword in ["diet", "nutrition", "pet"]):
+            html_table = """
+            <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">
+              <thead>
+                <tr>
+                  <th>Pet Type</th>
+                  <th>Diet Requirements</th>
+                  <th>Recommended Products</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Ferrets & Cats</td>
+                  <td>High fat/protein, zero carbs</td>
+                  <td>Game meat, seafood</td>
+                </tr>
+                <tr>
+                  <td>Hedgehogs, Fennec Foxes</td>
+                  <td>Can tolerate insects, fruit, starch</td>
+                  <td>Insects, fruit, artisanal meats</td>
+                </tr>
+                <tr>
+                  <td>Huskies</td>
+                  <td>High protein, high fat, low carb</td>
+                  <td>Game meat, seafood</td>
+                </tr>
+                <tr>
+                  <td>Sheepdogs</td>
+                  <td>Higher grain, soy, carb, 25%+ protein, less fat</td>
+                  <td>Dairy-based treats, grains, soy, artisanal meats</td>
+                </tr>
+              </tbody>
+            </table>
+            """
+            return JsonResponse({"reply": html_table})
+
         # Get user context (latest order)
         order = Order.objects.filter(user=user).order_by('-date').first()
         context_info = f"User's latest order: #{order.id} – Status: {order.status}" if order else "No order found."
@@ -96,10 +133,10 @@ def ai_agent_view(request):
             f"{context_info}"
         )
 
-        # Message to GPT (default to file name if no message)
+        # Use uploaded file name or fallback to text message
         user_input = msg or f"A file was uploaded: {uploaded_file.name}"
 
-        # Send to GPT
+        # Call OpenAI for general queries
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -110,7 +147,7 @@ def ai_agent_view(request):
 
         gpt_reply = response.choices[0].message.content
 
-        # Named entity extraction (safe now)
+        # Named entity recognition
         doc = nlp(msg or "")
         named_entities = [(ent.text, ent.label_) for ent in doc.ents]
 

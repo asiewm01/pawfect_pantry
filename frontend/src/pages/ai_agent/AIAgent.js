@@ -24,7 +24,7 @@ const AIAgent = () => {
   useEffect(() => {
     const greeting = {
       type: 'bot',
-      text: "👋 Hi there! I'm Dr.AI – your pet food and nutrition assistant. <br>🐶🐱 Let's talk! What pets or breeds do you have, and what are their dietary needs?"
+      text: "👋 Hi there! I'm Dr.AI – your pet food and nutrition assistant.<br>🐶🐱 Let's talk! What pets or breeds do you have, and what are their dietary needs?"
     };
     setMessages([greeting]);
   }, []);
@@ -58,7 +58,7 @@ const AIAgent = () => {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',
-            'X-CSRFToken': getCSRFToken(),  // ✅ Explicit CSRF Token header
+            'X-CSRFToken': getCSRFToken(),
           }
         }
       );
@@ -76,44 +76,51 @@ const AIAgent = () => {
   };
 
   return (
-    <div className="container my-4 p-3 bg-light rounded shadow">
-      <h2 className="text-center mb-4">
-        🐾 <strong>Ask Dr.AI about Pet Food & Nutrition</strong>
-      </h2>
+    <div className="container-fluid min-vh-100 d-flex flex-column justify-content-start bg-light py-4">
+      <div className="mx-auto w-100" style={{ maxWidth: '900px' }}>
+        <div className="bg-white rounded shadow p-4">
+          <h2 className="text-center mb-4">
+            🐾 <strong>Ask Dr.AI about Pet Food & Nutrition</strong>
+          </h2>
 
-      {/* Chat Messages */}
-      <div className="mb-3" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-        {messages.map((msg, idx) => (
+          {/* Chat Messages */}
           <div
-            key={idx}
-            className={`alert ${msg.type === 'user' ? 'alert-primary text-end' : 'alert-secondary text-start'}`}
-            dangerouslySetInnerHTML={{ __html: msg.text }}
-          />
-        ))}
-      </div>
+            className="chat-area mb-3 p-3 rounded border bg-light overflow-auto"
+            style={{ minHeight: '300px', maxHeight: '60vh' }}
+          >
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`alert ${msg.type === 'user' ? 'alert-primary text-end' : 'alert-secondary text-start'}`}
+                dangerouslySetInnerHTML={{ __html: msg.text }}
+              />
+            ))}
+          </div>
 
-      {/* Chat Form */}
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="d-flex flex-column flex-md-row gap-2 align-items-center">
-          <input
-            type="text"
-            className="form-control flex-fill"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask a question about pet diets..."
-          />
+          {/* Chat Form */}
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
+            <div className="d-flex flex-column flex-md-row gap-2 align-items-stretch">
+              <input
+                type="text"
+                className="form-control flex-fill"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask a question about pet diets..."
+              />
 
-          <input
-            type="file"
-            className="form-control"
-            accept=".pdf,.jpg,.jpeg,.png"
-            onChange={handleFileChange}
-            style={{ maxWidth: '250px' }}
-          />
+              <input
+                type="file"
+                className="form-control"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={handleFileChange}
+                style={{ maxWidth: '250px' }}
+              />
 
-          <button className="btn btn-primary" type="submit">Send</button>
+              <button className="btn btn-primary" type="submit">Send</button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
