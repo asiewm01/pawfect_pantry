@@ -99,7 +99,7 @@ const AIAgent = () => {
               {/* Chat Messages */}
               <div
                 className="chat-area mb-3 p-3 rounded border bg-light overflow-auto"
-                style={{ minHeight: '300px', maxHeight: '80vh' }}
+                style={{ minHeight: '500px', maxHeight: '80vh' }}
               >
                 {messages.map((msg, idx) => (
                   <div
