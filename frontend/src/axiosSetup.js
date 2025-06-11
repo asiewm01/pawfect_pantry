@@ -1,19 +1,18 @@
 // src/axiosSetup.js
 import axios from 'axios';
 
-// ✅ Create a configured Axios instance
+// ✅ Axios instance with environment-based API URL
 const instance = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
+  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://127.0.0.1:8000',
   withCredentials: true,
   xsrfCookieName: 'csrftoken',
   xsrfHeaderName: 'X-CSRFToken',
   headers: {
-    'X-Requested-With': 'XMLHttpRequest',
-    'Content-Type': 'application/json'
+    'X-Requested-With': 'XMLHttpRequest'
   }
 });
 
-// ✅ Utility function to get CSRF token from cookie
+// ✅ CSRF helper
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -21,7 +20,7 @@ function getCookie(name) {
   return null;
 }
 
-// ✅ Automatically attach CSRF token to mutating requests
+// ✅ Auto-attach CSRF on mutating requests
 instance.interceptors.request.use((config) => {
   const csrfToken = getCookie('csrftoken');
   if (csrfToken && ['post', 'put', 'patch', 'delete'].includes(config.method)) {

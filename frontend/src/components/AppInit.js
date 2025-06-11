@@ -4,7 +4,7 @@ import axios from '../axiosSetup';
 
 const AppInit = () => {
   useEffect(() => {
-    axios.get('/api/csrf/', {
+    axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/csrf/', {
       withCredentials: true,
     })
     .then(() => console.log('✅ CSRF token fetched'))
