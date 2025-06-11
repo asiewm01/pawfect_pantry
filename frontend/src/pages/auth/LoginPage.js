@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import './css/LoginPage.css'; // Adjust path if needed
+import './css/LoginPage.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -14,13 +15,11 @@ const Login = () => {
     setError('');
 
     try {
-      // Get CSRF token
-      await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/csrf/`, {
+      await axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/csrf/', {
         withCredentials: true
       });
 
-      // Perform login
-      const response = await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/login/`, {
+      const response = await axios.post('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/login/', {
         username,
         password
       }, {
@@ -37,31 +36,63 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-container">
-      <h2>Login</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleLogin}>
-        <label>Username:</label><br />
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        /><br />
-        <label>Password:</label><br />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        /><br />
-        <button type="submit">Login</button>
-      </form>
+    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+      <div className="row w-100" style={{ maxWidth: '960px' }}>
+        
+        {/* Left Image Column */}
+        <div className="col-md-6 d-none d-md-block p-0">
+          <img
+            src="/media/images/login-banner.png"
+            alt="Login"
+            className="img-fluid w-100 h-100"
+            style={{ objectFit: 'cover' }}
+          />
+        </div>
 
-      <p style={{ textAlign: 'center', marginTop: '15px' }}>
-        Don’t have an account? <Link to="/register">Register</Link><br />
-        <Link to="/forgot-password">Forgot Password?</Link><br />
-      </p>
+        {/* Login Form Column */}
+        <div className="col-md-6 bg-white p-4 shadow-sm d-flex flex-column justify-content-center">
+          <h2 className="text-center mb-4">Login</h2>
+          {error && <div className="alert alert-danger text-center py-2">{error}</div>}
+
+          <form onSubmit={handleLogin}>
+            <div className="mb-3">
+              <label htmlFor="username" className="form-label">Username</label>
+              <input
+                type="text"
+                className="form-control"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="d-grid">
+              <button type="submit" className="btn btn-primary">Login</button>
+            </div>
+          </form>
+
+          <div className="text-center mt-3">
+            <p>
+              Don’t have an account? <Link to="/register">Register</Link><br />
+              <Link to="/forgot-password">Forgot Password?</Link>
+            </p>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 };
