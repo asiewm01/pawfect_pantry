@@ -2,6 +2,19 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
+// Utility to get CSRF token from cookie
+function getCSRFToken() {
+  const name = 'csrftoken';
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    const trimmed = cookie.trim();
+    if (trimmed.startsWith(name + '=')) {
+      return decodeURIComponent(trimmed.substring(name.length + 1));
+    }
+  }
+  return null;
+}
+
 const AIAgent = () => {
   const [input, setInput] = useState('');
   const [file, setFile] = useState(null);
@@ -45,6 +58,7 @@ const AIAgent = () => {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',
+            'X-CSRFToken': getCSRFToken(),  // ✅ Explicit CSRF Token header
           }
         }
       );
@@ -67,7 +81,7 @@ const AIAgent = () => {
         🐾 <strong>Ask Dr.AI about Pet Food & Nutrition</strong>
       </h2>
 
-      {/* Message display */}
+      {/* Chat Messages */}
       <div className="mb-3" style={{ maxHeight: '300px', overflowY: 'auto' }}>
         {messages.map((msg, idx) => (
           <div
@@ -78,10 +92,9 @@ const AIAgent = () => {
         ))}
       </div>
 
-      {/* Form input */}
+      {/* Chat Form */}
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="d-flex flex-column flex-md-row gap-2 align-items-center">
-          {/* Text input */}
           <input
             type="text"
             className="form-control flex-fill"
@@ -90,7 +103,6 @@ const AIAgent = () => {
             placeholder="Ask a question about pet diets..."
           />
 
-          {/* File input */}
           <input
             type="file"
             className="form-control"
@@ -99,7 +111,6 @@ const AIAgent = () => {
             style={{ maxWidth: '250px' }}
           />
 
-          {/* Submit button */}
           <button className="btn btn-primary" type="submit">Send</button>
         </div>
       </form>

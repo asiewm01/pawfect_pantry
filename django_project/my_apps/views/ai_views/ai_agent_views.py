@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
 from ...models import Order, Product
-import json, spacy, re
+import spacy, re
 from django.db.models import Q
 from openai import OpenAI
 
@@ -26,11 +26,10 @@ except ImportError:
 species_nutrition = {
     "ferret": "Obligate carnivore – needs high fat and protein, no carbs.",
     "cat": "Obligate carnivore – similar to ferrets, thrives on meat-based diets.",
-    "hedgehog": "Insectivore and Omnivore – thrives on mix of insect, fruits, starch and animal protein. More tolerant of fiber compared to other carnivore",
+    "hedgehog": "Insectivore and Omnivore – thrives on mix of insect, fruits, starch and animal protein. More tolerant of fiber compared to other carnivore.",
     "fennec fox": "Insectivore and Omnivore – similar to hedgehog and domestic dogs, thrives on mix of insect, fruits, starch and animal protein.",
-    "husky": "High-energy breed – does well on a high-protein, high-fat diet but low carbs diet.",
-    "sheepdog": "Herding breed – higher tolerant of carbs and plant-based protein due to their agriculture work ancestry. They can tolerate higher grain and soy-based diet. They have lower tolerant for fats as compared to husky and hunting breeds. They can tolerate as low as 25 percent of protein in their diet."
-    
+    "husky": "High-energy breed – does well on a high-protein, high-fat diet but low carbs.",
+    "sheepdog": "Herding breed – tolerant of carbs and plant protein. Lower fat tolerance, can handle protein as low as 25%."
 }
 
 product_types = [
@@ -39,11 +38,10 @@ product_types = [
     "Whole Prey (e.g. frozen quails, frozen mice, pinkies)",
     "Sustainable Seafood (e.g. sardines, salmon, trout, cod, fish trimmings)",
     "Dairy Treats (e.g. goat milk bites, cheese, ice cream)",
-    "Artisanal Meats (e.g. blood sausage, camel jerky, artisinal ham)"
+    "Artisanal Meats (e.g. blood sausage, camel jerky, artisanal ham)"
 ]
 
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
-
+# Load NLP model
 try:
     nlp = spacy.load("en_core_web_sm")
 except OSError:
@@ -51,7 +49,9 @@ except OSError:
     download("en_core_web_sm")
     nlp = spacy.load("en_core_web_sm")
 
+client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
+# Login-required wrapper
 def custom_login_required(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -59,7 +59,7 @@ def custom_login_required(view_func):
         return view_func(request, *args, **kwargs)
     return wrapper
 
-
+# Main AI Agent View
 @csrf_exempt
 @custom_login_required
 def ai_agent_view(request):
@@ -67,48 +67,54 @@ def ai_agent_view(request):
         return JsonResponse({"error": "❌ POST method required."}, status=405)
 
     try:
-        data = json.loads(request.body)
-        msg = data.get("message", "").strip().lower()
+        msg = request.POST.get("message", "").strip().lower()
+        uploaded_file = request.FILES.get("file")
         user = request.user
 
-        if not msg:
-            return JsonResponse({"error": "Message cannot be empty."}, status=400)
+        if not msg and not uploaded_file:
+            return JsonResponse({"error": "Please enter a message or upload a file."}, status=400)
 
-        # 🔒 Profanity filter
+        # Profanity filter
         if (use_profanity_filter and profanity.contains_profanity(msg)) or \
            (not use_profanity_filter and any(word in msg for word in PROFANITY_LIST)):
             return JsonResponse({"reply": "⚠️ That’s not a polite message. Please ask respectfully."})
 
-        # 🔁 Context: recent order
+        # Get user context (latest order)
         order = Order.objects.filter(user=user).order_by('-date').first()
-        context_info = f"User's order: #{order.id}, status: {order.status}" if order else "No order yet."
+        context_info = f"User's latest order: #{order.id} – Status: {order.status}" if order else "No order found."
 
-        # 🧐 Build system prompt
+        # System prompt
         system_prompt = (
-            "You are a knowledgeable pet nutrition assistant for an online store. "
-            "You help pet owners understand the dietary needs of different species and breeds. "
-            "Ferrets and cats are obligate carnivores — they require high protein and fat with minimal carbs. "
-            "Hedgehog and Fennex Fox tend to be omniovre and insectivore and will appreciate insect protein, fruits, grains and animal products. They can tolerate as low as 25 percent protein though more should be recommended. They will also require at least 15 percent fats in their diet. They can tolerate as high as 40 percent of Carb"
-            "Some dog breeds like huskies have similar needs as cats and ferrets, while herding dogs like sheepdogs tolerate higher carbs and protein level as low as 25%. Though they are less tolerant of fats"
-            "You also explain our product catalog: game meat, seafood, dairy-based treats, artisanal meats, etc. "
-            f"Use this context to assist users. {context_info}"
+            "You are Dr.AI, a knowledgeable and friendly pet nutrition assistant for an ethical online pet food store. "
+            "You help users understand dietary needs based on their pet’s species or breed. "
+            "Nutrition facts:\n"
+            "- Ferrets & cats are obligate carnivores: high fat/protein, zero carbs.\n"
+            "- Hedgehogs & fennec foxes are insectivore-omnivores: can tolerate insects, fruit, starch.\n"
+            "- Huskies need high-protein, high-fat, low-carb diets.\n"
+            "- Sheepdogs tolerate higher grain, soy, and carb but less fat, and 25%+ protein.\n"
+            "We also sell products like game meat, seafood, dairy-based treats, insects, and artisanal meats.\n"
+            f"{context_info}"
         )
 
-        # 🎯 Send to GPT
+        # Message to GPT (default to file name if no message)
+        user_input = msg or f"A file was uploaded: {uploaded_file.name}"
+
+        # Send to GPT
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": msg}
+                {"role": "user", "content": user_input}
             ]
         )
 
         gpt_reply = response.choices[0].message.content
+
         return JsonResponse({
             "reply": gpt_reply,
-            "entities": [(ent.text, ent.label_) for ent in nlp(msg).ents]
+            "entities": [(ent.text, ent.label_) for ent in nlp(msg or "") if ent.text]
         })
 
     except Exception as e:
-        print("❌ OpenAI Error:", e)
+        print("❌ AI Agent Error:", e)
         return JsonResponse({"error": str(e)}, status=500)
