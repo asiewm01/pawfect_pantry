@@ -10,7 +10,7 @@
     }
 
     .form-container {
-      max-width: 400px;
+      max-width: 500px;
       margin: 50px auto;
       padding: 30px;
       background: #ffffff;
@@ -20,8 +20,14 @@
     }
 
     .form-container h2 {
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       color: #007bff;
+    }
+
+    .intro-message {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 20px;
     }
 
     .form-container input {
@@ -78,6 +84,11 @@
 
 <div class="form-container">
   <h2>Vendor Login</h2>
+  <p class="intro-message">
+    Want to register as a vendor partner? <strong>Join us now!</strong><br>
+    Submit your profile and our team will review your application.<br>
+    If approved, you’ll gain access to manage your shop and products.
+  </p>
 
   {% if messages %}
     {% for message in messages %}
