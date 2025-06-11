@@ -15,9 +15,8 @@ const Dashboard = () => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Fetch user data on load
   useEffect(() => {
-    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/user/`, {
+    axios.get('https://react-ui.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/user/', {
       withCredentials: true
     }).then(res => {
       setUsername(res.data.username);
@@ -27,14 +26,14 @@ const Dashboard = () => {
         last_name: res.data.last_name || '',
         email: res.data.email || ''
       }));
-    }).catch(err => {
+    }).catch(() => {
       console.warn('User not authenticated.');
       setUsername(null);
     }).finally(() => {
       setLoading(false);
     });
 
-    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/profile/`, {
+    axios.get('https://react-ui.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/profile/', {
       withCredentials: true
     }).then(res => {
       setFormData(prev => ({
@@ -42,7 +41,7 @@ const Dashboard = () => {
         phone: res.data.phone || '',
         address: res.data.address || ''
       }));
-    }).catch(err => {
+    }).catch(() => {
       console.warn('Could not load user profile.');
     });
   }, []);
@@ -63,15 +62,17 @@ const Dashboard = () => {
         address: formData.address
       };
 
-      await axios.put(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/profile/update/`, userPayload, {
+      await axios.put('https://react-ui.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/profile/update/', userPayload, {
         withCredentials: true
       });
 
       if (formData.new_password) {
-        await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/password/change/`, {
-          old_password: '', // not required in your backend
+        await axios.post('https://react-ui.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/password/change/', {
+          old_password: '',
           new_password: formData.new_password
-        }, { withCredentials: true });
+        }, {
+          withCredentials: true
+        });
       }
 
       setMessage('✅ Profile updated successfully!');
@@ -84,26 +85,32 @@ const Dashboard = () => {
   if (username === null) return <p className="text-center my-5 text-danger">You must be logged in to view the dashboard.</p>;
 
   return (
-    <div className="container my-5">
-      <h2 className="mb-3">Welcome to your dashboard, {username}!</h2>
-      <p className="text-muted">
-        Please refresh the page to view access to Order History, Cart, and Dashboard on your navigation tab.
-      </p>
-
-      {message && <div className="alert alert-info">{message}</div>}
-
-      <div className="row mt-4">
-        {/* Left Column: Profile Picture */}
-        <div className="col-md-4 text-center mb-4">
+    <div className="container d-flex justify-content-center align-items-center min-vh-100">
+      <div className="row shadow rounded bg-white overflow-hidden w-100" style={{ maxWidth: '900px' }}>
+        
+        {/* Left Image */}
+        <div className="col-md-5 d-none d-md-block p-0">
           <img
             src="/media/images/dashboard-banner.png"
             alt="Profile"
-            className="img-fluid rounded-circle border border-secondary shadow"
+            className="img-fluid h-100"
+            style={{
+              objectFit: 'cover',
+              borderTopLeftRadius: '0.375rem',
+              borderBottomLeftRadius: '0.375rem'
+            }}
           />
         </div>
 
-        {/* Right Column: Form */}
-        <div className="col-md-8">
+        {/* Right Form */}
+        <div className="col-md-7 p-4">
+          <h3 className="mb-3 text-center">Welcome to your dashboard, {username}!</h3>
+          <p className="text-muted text-center mb-4">
+            Please refresh the page to view access to Order History, Cart, and Dashboard on your navigation tab.
+          </p>
+
+          {message && <div className="alert alert-info">{message}</div>}
+
           <form onSubmit={handleUpdate}>
             <div className="mb-3">
               <label className="form-label">First Name</label>
@@ -167,7 +174,9 @@ const Dashboard = () => {
               />
             </div>
 
-            <button type="submit" className="btn btn-primary">Update Profile</button>
+            <div className="d-grid">
+              <button type="submit" className="btn btn-primary">Update Profile</button>
+            </div>
           </form>
         </div>
       </div>
