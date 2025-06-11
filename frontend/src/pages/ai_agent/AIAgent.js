@@ -7,6 +7,7 @@ const AIAgent = () => {
   const [file, setFile] = useState(null);
   const [messages, setMessages] = useState([]);
 
+  // Initial greeting
   useEffect(() => {
     const greeting = {
       type: 'bot',
@@ -23,13 +24,11 @@ const AIAgent = () => {
     e.preventDefault();
     if (!input.trim() && !file) return;
 
-    const newMessages = [...messages];
-    if (input.trim()) {
-      newMessages.push({ type: 'user', text: input });
-    } else if (file) {
-      newMessages.push({ type: 'user', text: `📎 Sent file: ${file.name}` });
-    }
+    const userMessage = file
+      ? `📎 Sent file: ${file.name}`
+      : input.trim();
 
+    const newMessages = [...messages, { type: 'user', text: userMessage }];
     setMessages(newMessages);
     setInput('');
     setFile(null);
@@ -45,17 +44,19 @@ const AIAgent = () => {
         {
           withCredentials: true,
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
           }
         }
       );
 
       const botReply = res.data.reply || "🤖 Sorry, I couldn't process that.";
       setMessages([...newMessages, { type: 'bot', text: botReply }]);
+
     } catch (err) {
+      const errorText = err.response?.data?.error || "Unexpected error occurred.";
       setMessages([...newMessages, {
         type: 'bot',
-        text: "❌ Error connecting to AI agent."
+        text: `❌ ${errorText}`
       }]);
     }
   };
@@ -63,9 +64,10 @@ const AIAgent = () => {
   return (
     <div className="container my-4 p-3 bg-light rounded shadow">
       <h2 className="text-center mb-4">
-        🐾 <strong>Ask Dr.AI about Pet Food & Nutrition</strong> <br />
+        🐾 <strong>Ask Dr.AI about Pet Food & Nutrition</strong>
       </h2>
 
+      {/* Message display */}
       <div className="mb-3" style={{ maxHeight: '300px', overflowY: 'auto' }}>
         {messages.map((msg, idx) => (
           <div
@@ -76,30 +78,31 @@ const AIAgent = () => {
         ))}
       </div>
 
-<form onSubmit={handleSubmit} encType="multipart/form-data">
-  <div className="d-flex flex-column flex-md-row gap-2 align-items-center">
-    {/* Text input */}
-    <input
-      type="text"
-      className="form-control flex-fill"
-      value={input}
-      onChange={(e) => setInput(e.target.value)}
-      placeholder="Ask a question about pet diets..."
-    />
+      {/* Form input */}
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <div className="d-flex flex-column flex-md-row gap-2 align-items-center">
+          {/* Text input */}
+          <input
+            type="text"
+            className="form-control flex-fill"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask a question about pet diets..."
+          />
 
-    {/* File input */}
-    <input
-      type="file"
-      className="form-control"
-      accept=".pdf,.jpg,.jpeg,.png"
-      onChange={handleFileChange}
-      style={{ maxWidth: '250px' }}
-    />
+          {/* File input */}
+          <input
+            type="file"
+            className="form-control"
+            accept=".pdf,.jpg,.jpeg,.png"
+            onChange={handleFileChange}
+            style={{ maxWidth: '250px' }}
+          />
 
-    {/* Submit button */}
-    <button className="btn btn-primary" type="submit">Send</button>
-  </div>
-</form>
+          {/* Submit button */}
+          <button className="btn btn-primary" type="submit">Send</button>
+        </div>
+      </form>
     </div>
   );
 };
