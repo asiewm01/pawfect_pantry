@@ -76,49 +76,66 @@ const AIAgent = () => {
   };
 
   return (
-    <div className="container-fluid min-vh-100 d-flex flex-column justify-content-start bg-light py-4">
-      <div className="mx-auto w-100" style={{ maxWidth: '900px' }}>
-        <div className="bg-white rounded shadow p-4">
-          <h2 className="text-center mb-4">
-            🐾 <strong>Ask Dr.AI about Pet Food & Nutrition</strong>
-          </h2>
-
-          {/* Chat Messages */}
-          <div
-            className="chat-area mb-3 p-3 rounded border bg-light overflow-auto"
-            style={{ minHeight: '300px', maxHeight: '60vh' }}
-          >
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`alert ${msg.type === 'user' ? 'alert-primary text-end' : 'alert-secondary text-start'}`}
-                dangerouslySetInnerHTML={{ __html: msg.text }}
-              />
-            ))}
+    <div className="container-fluid min-vh-100 py-5 bg-light">
+      <div className="container">
+        <div className="row">
+          {/* Left Column – AI Image */}
+          <div className="col-md-4 d-none d-md-block text-center">
+            <img
+              src="/media/images/corgi-side-banner.png"
+              alt="Dr.AI Assistant"
+              className="img-fluid rounded shadow"
+              style={{ maxWidth: '100%', height: 'auto' }}
+            />
           </div>
 
-          {/* Chat Form */}
-          <form onSubmit={handleSubmit} encType="multipart/form-data">
-            <div className="d-flex flex-column flex-md-row gap-2 align-items-stretch">
-              <input
-                type="text"
-                className="form-control flex-fill"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask a question about pet diets..."
-              />
+          {/* Right Column – Chat UI */}
+          <div className="col-md-8">
+            <div className="bg-white rounded shadow p-4">
+              <h2 className="text-center mb-4">
+                🐾 <strong>Ask Dr.AI about Pet Food & Nutrition</strong>
+              </h2>
 
-              <input
-                type="file"
-                className="form-control"
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={handleFileChange}
-                style={{ maxWidth: '250px' }}
-              />
+              {/* Chat Messages */}
+              <div
+                className="chat-area mb-3 p-3 rounded border bg-light overflow-auto"
+                style={{ minHeight: '300px', maxHeight: '60vh' }}
+              >
+                {messages.map((msg, idx) => (
+                  <div
+                    key={idx}
+                    className={`alert ${msg.type === 'user' ? 'alert-primary text-end' : 'alert-secondary text-start'}`}
+                    dangerouslySetInnerHTML={{ __html: msg.text }}
+                  />
+                ))}
+              </div>
 
-              <button className="btn btn-primary" type="submit">Send</button>
+              {/* Chat Form */}
+              <form onSubmit={handleSubmit} encType="multipart/form-data">
+                <div className="d-flex flex-column flex-md-row gap-2 align-items-stretch">
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Ask a question about pet diets..."
+                  />
+
+                  <input
+                    type="file"
+                    className="form-control"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={handleFileChange}
+                    style={{ maxWidth: '250px' }}
+                  />
+
+                  <button type="submit" className="btn btn-primary">
+                    Send
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
