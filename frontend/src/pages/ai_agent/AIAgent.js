@@ -76,23 +76,30 @@ const AIAgent = () => {
         ))}
       </div>
 
-      <form className="d-flex flex-column flex-sm-row gap-2 align-items-center" onSubmit={handleSubmit} encType="multipart/form-data">
-        <input
-          className="form-control"
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask a question about pet diets..."
-        />
-        <input
-          type="file"
-          className="form-control"
-          accept=".pdf,.jpg,.jpeg,.png"
-          onChange={handleFileChange}
-          style={{ maxWidth: '200px' }}
-        />
-        <button className="btn btn-primary" type="submit">Send</button>
-      </form>
+<form onSubmit={handleSubmit} encType="multipart/form-data">
+  <div className="d-flex flex-column flex-md-row gap-2 align-items-center">
+    {/* Text input */}
+    <input
+      type="text"
+      className="form-control flex-fill"
+      value={input}
+      onChange={(e) => setInput(e.target.value)}
+      placeholder="Ask a question about pet diets..."
+    />
+
+    {/* File input */}
+    <input
+      type="file"
+      className="form-control"
+      accept=".pdf,.jpg,.jpeg,.png"
+      onChange={handleFileChange}
+      style={{ maxWidth: '250px' }}
+    />
+
+    {/* Submit button */}
+    <button className="btn btn-primary" type="submit">Send</button>
+  </div>
+</form>
     </div>
   );
 };
