@@ -21,9 +21,6 @@ const Footer = () => {
   <a href="https://facebook.com" className="me-4" target="_blank" rel="noopener noreferrer">
     <FaFacebookF className="social-icon" />
   </a>
-  <a href="https://twitter.com" className="me-4" target="_blank" rel="noopener noreferrer">
-    <FaTwitter className="social-icon" />
-  </a>
   <a href="https://instagram.com" className="me-4" target="_blank" rel="noopener noreferrer">
     <FaInstagram className="social-icon" />
   </a>

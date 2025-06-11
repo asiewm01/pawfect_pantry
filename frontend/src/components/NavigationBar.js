@@ -14,7 +14,19 @@ const NavigationBar = () => {
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState('');
   const [role, setRole] = useState('');
+  const [isExpanded, setIsExpanded] = useState(true);
 
+  // Dynamically collapse at any custom width (e.g., 1024px)
+  useEffect(() => {
+    const handleResize = () => {
+      const shouldCollapse = window.innerWidth < 1024;
+      setIsExpanded(!shouldCollapse);
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/user/`, {
@@ -23,7 +35,7 @@ const NavigationBar = () => {
       setIsLoggedIn(true);
       setUsername(res.data.username);
       setFirstName(res.data.first_name);
-      setRole(res.data.role); // ✅ This must exist
+      setRole(res.data.role);
     }).catch(() => {
       setIsLoggedIn(false);
     });
@@ -49,72 +61,69 @@ const NavigationBar = () => {
   };
 
   return (
-    <>
+    <Navbar
+      bg="primary"
+      variant="dark"
+      expand={isExpanded} // true (expanded) or false (collapsed)
+      className="custom-navbar"
+    >
+      <Container fluid>
+        <Navbar.Toggle aria-controls="navbarContent" />
+        <Navbar.Collapse id="navbarContent">
+          <Nav className="me-auto">
+            <Nav.Link as={NavLink} to="/">Home <i className="fa fa-home"></i></Nav.Link>
+            <Nav.Link as={NavLink} to="/about">About Us <i className="fas fa-users hide-at-1024"></i></Nav.Link>
+            <Nav.Link as={NavLink} to="/catalogue">Catalogue <i className="fa fa-shopping-cart hide-at-1024"></i></Nav.Link>
+            <Nav.Link as={NavLink} to="/contact">Contact Us <i className="fa fa-envelope hide-at-1024"></i></Nav.Link>
+            <Nav.Link as={NavLink} to="/ai-agent">Ask Dr.AI <i className="fa fa-heart hide-at-1024"></i></Nav.Link>
 
-      <Navbar bg="primary" variant="dark" expand="lg">
-        <Container fluid>
-          <Navbar.Toggle aria-controls="navbarContent" />
-          <Navbar.Collapse id="navbarContent">
-            <Nav className="me-auto">
-              <Nav.Link as={NavLink} to="/">Home<i className="fa fa-home"></i> | </Nav.Link>
-              <Nav.Link as={NavLink} to="/about">About Us<i className='fas fa-users'></i> | </Nav.Link>
-              <Nav.Link as={NavLink} to="/catalogue">Catalogue <i className="fa fa-shopping-cart"></i> | </Nav.Link>
-              <Nav.Link as={NavLink} to="/contact">Contact Us <i className="fa fa-envelope"></i> | </Nav.Link>
-              <Nav.Link as={NavLink} to="/ai-agent" aria-label="Ask our AI nutritionist">
-                Ask Dr.AI <i className="fa fa-heart"></i> | 
-              </Nav.Link>
-              {isLoggedIn ? (
-                <NavDropdown title={`Account (${firstName || username})`} id="account-dropdown">
-                  <NavDropdown.Item as={NavLink} to="/dashboard">
-                    <i className="fas fa-user-circle"></i> My Profile
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={NavLink} to="/cart">
-                    <i className="fa fa-credit-card"></i> Cart
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={NavLink} to="/orders/history">
-                    <i className="fa fa-history"></i> Order History
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={NavLink} to="/orders/tracking">
-                    <i className="fa fa-globe"></i> Order Tracking
-                  </NavDropdown.Item>
-
-                {/* Only vendors see this */}
+            {isLoggedIn ? (
+              <NavDropdown title={`Account (${firstName || username})`} id="account-dropdown">
+                <NavDropdown.Item as={NavLink} to="/dashboard">
+                  <i className="fas fa-user-circle"></i> My Profile
+                </NavDropdown.Item>
+                <NavDropdown.Item as={NavLink} to="/cart">
+                  <i className="fa fa-credit-card"></i> Cart
+                </NavDropdown.Item>
+                <NavDropdown.Item as={NavLink} to="/orders/history">
+                  <i className="fa fa-history"></i> Order History
+                </NavDropdown.Item>
+                <NavDropdown.Item as={NavLink} to="/orders/tracking">
+                  <i className="fa fa-globe"></i> Order Tracking
+                </NavDropdown.Item>
                 {role === 'vendor' && (
                   <NavDropdown.Item as={NavLink} to="/vendor/dashboard">
-                  <i className="fas fa-briefcase"></i> Vendor Panel
+                    <i className="fas fa-briefcase"></i> Vendor Panel
                   </NavDropdown.Item>
                 )}
+                <NavDropdown.Divider />
+                <NavDropdown.Item onClick={handleLogout}>
+                  <i className="fa fa-sign-out-alt"></i> Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <>
+                <Nav.Link as={NavLink} to="/login">Account <i className="fas fa-user-circle hide-at-1024"></i></Nav.Link>
+                <Nav.Link as={NavLink} to="/register">Register <i className="far fa-registered hide-at-1024"></i></Nav.Link>
+              </>
+            )}
+          </Nav>
 
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item onClick={handleLogout}>
-                    <i className="fa fa-sign-out-alt"></i> Logout
-                  </NavDropdown.Item>
-                  
-                </NavDropdown>
-              ) : (
-                <>
-                  <Nav.Link as={NavLink} to="/login">Account <i className="fas fa-user-circle"></i> | </Nav.Link>
-                  <Nav.Link as={NavLink} to="/register">Register <i className="far fa-registered"></i></Nav.Link>
-                </>
-              )}
-            </Nav>
-
-            <Form className="d-flex" onSubmit={handleSearch}>
-              <FormControl
-                type="search"
-                placeholder="Search products..."
-                className="me-2"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Button variant="outline-primary" type="submit">
-                <i className="fa fa-fw fa-search"></i>
-              </Button>
-            </Form>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </>
+          <Form className="d-flex" onSubmit={handleSearch}>
+            <FormControl
+              type="search"
+              placeholder="Search products..."
+              className="me-2"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Button variant="outline-primary" type="submit">
+              <i className="fa fa-fw fa-search"></i>
+            </Button>
+          </Form>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 

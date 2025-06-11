@@ -2,4 +2,39 @@ i {
     margin-left: 5px;
   }
 
-  
+/* Only show | on desktop (md and up) */
+@media (min-width: 768px) {
+  .navbar-nav .nav-link::after {
+    content: "|";
+    margin: 0 8px;
+    color: white;
+  }
+
+  .navbar-nav .nav-link:last-child::after {
+    content: "";
+  }
+}
+
+/* Always hide it on mobile */
+.navbar-nav .nav-link::after {
+  content: "";
+}
+
+.custom-navbar {
+  padding-left: 24px;
+  padding-right: 24px;
+  font-size: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .custom-navbar {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (width: 1024px) {
+  .hide-at-1024 {
+    display: none !important;
+  }
+}

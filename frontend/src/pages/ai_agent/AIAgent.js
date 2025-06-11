@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
-import './css/AIAgent.css';
+import React, { useState, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
 const AIAgent = () => {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
+
+  // Show initial message on first load
+  useEffect(() => {
+    const greeting = {
+      type: 'bot',
+      text: "👋 Hi there! I'm Dr.AI – your pet food and nutrition assistant. <br>🐶🐱 Let's talk! What pets or breeds do you have, and what are their dietary needs?"
+    };
+    setMessages([greeting]);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,25 +40,29 @@ const AIAgent = () => {
   };
 
   return (
-    <div className="ai-agent-container">
-      <h2 className="ai-agent-title">🐾 Ask Dr.AI About Pet Food & Nutrition</h2>
-      <div className="ai-agent-messages">
+    <div className="container my-4 p-3 bg-light rounded shadow">
+      <h2 className="text-center mb-4">
+        🐾 <strong>Ask Dr.AI about Pet Food & Nutrition</strong> <br />
+      </h2>
+
+      <div className="mb-3" style={{ maxHeight: '300px', overflowY: 'auto' }}>
         {messages.map((msg, idx) => (
           <div
             key={idx}
-            className={`ai-message ai-${msg.type}`}
+            className={`alert ${msg.type === 'user' ? 'alert-primary text-end' : 'alert-secondary text-start'}`}
             dangerouslySetInnerHTML={{ __html: msg.text }}
           />
         ))}
       </div>
-      <form className="ai-agent-form" onSubmit={handleSubmit}>
+
+      <form className="d-flex flex-column flex-sm-row gap-2" onSubmit={handleSubmit}>
         <input
-          className="ai-agent-input"
+          className="form-control"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask a question about pet diets..."
         />
-        <button className="ai-agent-send" type="submit">Send</button>
+        <button className="btn btn-primary" type="submit">Send</button>
       </form>
     </div>
   );
