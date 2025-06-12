@@ -2,8 +2,8 @@
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Q
-from my_apps.models import Order, Product
+from django.db.models import Q, Sum
+from my_apps.models import Order, Product, UserProfile
 from my_apps.chains.product_recommender import chain
 from ...utils.custom_login_required import custom_login_required
 import spacy, traceback, re, json
@@ -96,6 +96,80 @@ def ai_agent_view(request):
         if (use_profanity_filter and profanity.contains_profanity(msg)) or \
            (not use_profanity_filter and any(word in msg for word in PROFANITY_LIST)):
             return JsonResponse({"reply": "⚠️ That’s not a polite message. Please ask respectfully."})
+        
+        # ✅ 🧠 Check for customer lookup
+        if re.search(r"(customer|user).*(named|called)?\s*(\w+)", msg):
+            name_match = re.search(r"(customer|user).*(named|called)?\s*(\w+)", msg)
+            search_name = name_match.group(3)
+            customer = UserProfile.objects.filter(
+                Q(user__username__icontains=search_name) |
+                Q(user__first_name__icontains=search_name) |
+                Q(user__last_name__icontains=search_name)
+            ).first()
+            if customer:
+                return JsonResponse({
+                    "reply": f"✅ Found customer: {customer.user.get_full_name()} – Email: {customer.user.email}"
+                })
+            else:
+                return JsonResponse({
+                    "reply": f"❌ No customer named {search_name} found."
+                })
+            
+        if "who purchased the most" in msg or "top buyer" in msg:
+            from django.utils.timezone import now
+            from datetime import timedelta
+
+            recent_days = now() - timedelta(days=7)
+
+            top_customer = (
+            UserProfile.objects
+            .filter(user__order__date__gte=recent_days)
+            .annotate(total_quantity=Sum("user__order__orderitem__quantity"))
+            .order_by("-total_quantity")
+            .first()
+            )
+
+            if top_customer and top_customer.total_quantity:
+                return JsonResponse({
+                    "reply": f"🛍️ In the past 7 days, {top_customer.user.get_full_name()} purchased the most products — {top_customer.total_quantity} items total."
+                })
+            else:
+                return JsonResponse({"reply": "No purchase data found in the last few days."})
+            
+        if "top-selling" in msg or "most popular product" in msg or "best-selling" in msg:
+            top_product = (
+                Product.objects
+                .annotate(total_sales=Sum("orderitem__quantity"))
+                .order_by("-total_sales")
+                .first()
+            )
+
+            if top_product and top_product.total_sales:
+                return JsonResponse({
+                    "reply": f"🔥 Our most popular product is '{top_product.name}' with {top_product.total_sales} units sold."
+                })
+            else:
+                return JsonResponse({"reply": "No sales data available yet to determine a top-selling product."})
+            
+        if "recent orders" in msg or "latest orders" in msg or "recent sales" in msg:
+            recent_orders = Order.objects.select_related("user").order_by("-date")[:5]
+            if not recent_orders:
+                return JsonResponse({"reply": "There are no recent orders."})
+
+            order_data = [
+                {
+                    "order_id": o.id,
+                    "customer": o.user.get_full_name(),
+                    "date": o.date.strftime("%Y-%m-%d"),
+                    "status": o.status
+                }
+                for o in recent_orders
+            ]
+
+            return JsonResponse({
+                "reply": f"📦 Here are the {len(order_data)} most recent orders:",
+                "orders": order_data
+            })
 
         # ✅ Fetch latest order context
         order = Order.objects.filter(user=user).order_by('-date').first()
