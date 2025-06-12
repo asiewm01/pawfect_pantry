@@ -52,7 +52,7 @@ const AIAgent = () => {
       if (file) formData.append('file', file);
 
       const res = await axios.post(
-        'http://localhost:8000/api/ai/agent/',
+        'https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/agent/',
         formData,
         {
           withCredentials: true,
