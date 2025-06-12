@@ -43,3 +43,4 @@ def vendor_list_page(request):
     return JsonResponse(data, safe=False)
 
 
+

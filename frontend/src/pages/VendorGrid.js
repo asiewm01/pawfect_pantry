@@ -6,7 +6,7 @@ const VendorGrid = () => {
   const [vendors, setVendors] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/vendors/') // 🔁 Adjust API path as needed
+    axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/vendors/') // 🔁 Adjust API path as needed
       .then(res => setVendors(res.data))
       .catch(err => console.error('Failed to fetch vendors', err));
   }, []);
