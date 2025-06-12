@@ -59,7 +59,7 @@ def chatbot_view(request):
         if (use_profanity_filter and profanity.contains_profanity(msg)) or \
            (not use_profanity_filter and any(word in msg for word in PROFANITY_LIST)):
             return JsonResponse({"reply": "⚠️ That’s not a polite message. Please ask respectfully."})
-        
+          
         # 👋 Greeting / Welcome message rule
         if re.match(r"^(hi|hello|hey|good morning|good afternoon|good evening)\b", msg):
             reply = (

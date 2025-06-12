@@ -6,8 +6,7 @@ from django.db.models import Q
 from my_apps.models import Order, Product
 from my_apps.chains.product_recommender import chain
 from ...utils.custom_login_required import custom_login_required
-import spacy
-import traceback
+import spacy, traceback, re, json
 from django.http import JsonResponse
 from functools import wraps
 
@@ -59,19 +58,20 @@ def is_relevant_product(product, pet_type):
             return False
     return True
 
-
 @csrf_exempt
 @custom_login_required
 def ai_agent_view(request):
     print("✅ ai_agent_view reached")
+
     if request.method != "POST":
         return JsonResponse({"error": "❌ POST method required."}, status=405)
 
     try:
-        # ✅ Handle both JSON and multipart/form-data input
+        # ✅ Initialize msg
         msg = ""
+
+        # ✅ Parse JSON or FormData
         if request.content_type.startswith("application/json"):
-            import json
             try:
                 data = json.loads(request.body)
                 msg = data.get("message", "").strip().lower()
@@ -86,12 +86,18 @@ def ai_agent_view(request):
         if not msg and not uploaded_file:
             return JsonResponse({"error": "Please enter a message or upload a file."}, status=400)
 
+        # ✅ Handle greetings gracefully
+        if re.match(r"^(hi|hello|hey|greetings|good morning|good afternoon)", msg, re.I):
+            return JsonResponse({
+                "reply": "👋 Hello! I'm Dr.AI. Tell me about your pet or their diet so I can help you better 🐾"
+            })
+
         # ✅ Profanity filter
         if (use_profanity_filter and profanity.contains_profanity(msg)) or \
            (not use_profanity_filter and any(word in msg for word in PROFANITY_LIST)):
             return JsonResponse({"reply": "⚠️ That’s not a polite message. Please ask respectfully."})
 
-        # ✅ Latest order context
+        # ✅ Fetch latest order context
         order = Order.objects.filter(user=user).order_by('-date').first()
         context_info = (
             f"User's latest order: #{order.id} – Status: {order.status}"
@@ -100,13 +106,10 @@ def ai_agent_view(request):
 
         user_input = msg or f"A file was uploaded: {uploaded_file.name}"
 
-        # ✅ LangChain product recommendation
+        # ✅ LangChain call
         try:
             langchain_result = chain.invoke({"user_input": user_input})
-            if hasattr(langchain_result, "dict"):
-                langchain_output = langchain_result.dict()
-            else:
-                langchain_output = langchain_result
+            langchain_output = langchain_result.dict() if hasattr(langchain_result, "dict") else langchain_result
             print("🧠 LangChain Output:", langchain_output)
         except Exception as chain_error:
             print("❌ LangChain Error:", chain_error)
@@ -116,9 +119,12 @@ def ai_agent_view(request):
         if not isinstance(langchain_output, dict):
             return JsonResponse({"error": "AI output format was invalid."}, status=500)
 
-        pet_type = langchain_output.get("pet_type", "your pet")
-        keywords = langchain_output.get("recommended_products", [])
+        # ✅ Handle pet_type and keywords
+        pet_type = langchain_output.get("pet_type")
+        if not pet_type or pet_type.lower() == "n/a":
+            pet_type = "your pet"
 
+        keywords = langchain_output.get("recommended_products", [])
         if not keywords:
             return JsonResponse({
                 "reply": f"Sorry, I couldn’t find any product suggestions for your query about {pet_type}.",
@@ -127,13 +133,13 @@ def ai_agent_view(request):
                 "context": context_info
             })
 
-        # ✅ Query matching products
+        # ✅ Product search
         query = Q()
         for kw in keywords:
             query |= Q(name__icontains=kw) | Q(description__icontains=kw)
         recommended_products = Product.objects.filter(query).distinct()
 
-        # ✅ Add fallback products
+        # ✅ Fallback if not enough
         if recommended_products.count() < 8:
             fallback_products = Product.objects.exclude(id__in=recommended_products).order_by('?')[:8 - recommended_products.count()]
             recommended_products = list(recommended_products) + list(fallback_products)
@@ -144,7 +150,7 @@ def ai_agent_view(request):
             if is_relevant_product(p, pet_type)
         ]
 
-        # ✅ Final product list
+        # ✅ Serialize results
         product_list = [
             {
                 "name": p.name,
@@ -155,7 +161,7 @@ def ai_agent_view(request):
         ]
 
         # ✅ Named Entity Recognition
-        doc = nlp(msg or "")
+        doc = nlp(msg)
         named_entities = [(ent.text, ent.label_) for ent in doc.ents]
 
         return JsonResponse({
