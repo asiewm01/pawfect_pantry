@@ -12,7 +12,7 @@ const SearchResults = () => {
   const [results, setResults] = useState([]);
 
   useEffect(() => {
-    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/products/?q=${query}`)
+    axios.get(`http://localhost:8000//api/products/?q=${query}`)
       .then(res => setResults(res.data))
       .catch(err => console.error('Search error', err));
   }, [query]);
