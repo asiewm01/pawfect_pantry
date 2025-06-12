@@ -94,7 +94,7 @@
   function appendMessage(msg, sender) {
     const div = document.createElement("div");
     div.className = sender === "loading" ? "loading" : "msg-" + sender;
-    div.innerHTML = sender === "loading" ? msg : `<strong>${sender === 'user' ? 'You' : 'VA'}:</strong> ${msg}`;
+    div.innerHTML = sender === "loading" ? msg : `<strong>${sender === 'user' ? 'You' : 'Hera'}:</strong> ${msg}`;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
   }

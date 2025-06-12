@@ -79,6 +79,9 @@ from .views.admin_views.ai_admin_views import admin_va_chat, va_admin_page
 # API Views
 from my_apps.views.api_views.api_views import cart_summary
 
+from my_apps.views.vendor_views import vendor_va_views
+
+
 urlpatterns = [
     # General Pages
     path('api/home/', views.homepage, name='home'),
@@ -198,5 +201,6 @@ urlpatterns = [
     path('vendor/register/', vendor_views.vendor_register, name='vendor_register'),
     path('vendor/reset-password/', vendor_views.vendor_reset_password, name='vendor_reset_password'),
     path('vendor/profile/', vendor_views.update_vendor_profile, name='vendor_profile_edit'),
-
+    path("vendor/va/", vendor_va_views.va_vendor_page, name="va_vendor"),
+    path("vendor/va-chat/", vendor_va_views.vendor_va_chat, name="vendor_va_chat"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
