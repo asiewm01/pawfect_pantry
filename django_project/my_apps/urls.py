@@ -73,6 +73,9 @@ from my_apps.views.ai_views.chatbot_views import chatbot_view
 
 from my_apps.views.ai_views.ai_agent_views import ai_agent_view
 
+from .views.admin_views.ai_admin_views import admin_va_chat, va_admin_page
+
+
 # API Views
 from my_apps.views.api_views.api_views import cart_summary
 
@@ -140,6 +143,8 @@ urlpatterns = [
     path('dashboard/orders/', order_management_views.order_list, name='admin_order_list'),
     path('dashboard/orders/<int:order_id>/', order_management_views.order_detail, name='admin_order_detail'),
     path('dashboard/products/<int:product_id>/update/', product_management_views.product_update, name='product_update'),
+    path("dashboard/va/", va_admin_page, name="va_admin"),
+    path("api/admin/va-chat/", admin_va_chat, name="admin_va_chat"),
 
     # User Account Management
     path('dashboard/users/all/', user_account_management_views.user_list, name='user_list'),
