@@ -1,65 +1,47 @@
-from django.views.decorators.csrf import csrf_exempt
+#add ai_agnet_views.py, chain folder, AiAgent.js, custom_login_required.py, updte requirements.txt
+
 from django.http import JsonResponse
-from django.conf import settings
-from ...models import Order, Product
-import spacy, re
+from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
-from openai import OpenAI
+from my_apps.models import Order, Product
+from my_apps.chains.product_recommender import chain
+from ...utils.custom_login_required import custom_login_required
+import spacy
 
-REACT_URL = (
-    settings.REACT_URL_DEV if getattr(settings, "DEBUG", True)
-    else settings.REACT_URL_PROD
-)
+# Load spaCy model globally
+nlp = spacy.load("en_core_web_sm")
 
-# Optional profanity filter
+# Profanity filtering
+use_profanity_filter = True
 try:
     from better_profanity import profanity
     profanity.load_censor_words()
-    use_profanity_filter = True
 except ImportError:
     use_profanity_filter = False
     PROFANITY_LIST = [
         "fuck", "shit", "wtf", "bitch", "asshole", "dick", "cunt", "pussy", "idiot", "dumb ass", "stupid"
     ]
 
-# Nutrition facts
-species_nutrition = {
-    "ferret": "Obligate carnivore – needs high fat and protein, no carbs.",
-    "cat": "Obligate carnivore – similar to ferrets, thrives on meat-based diets.",
-    "hedgehog": "Insectivore and Omnivore – thrives on mix of insect, fruits, starch and animal protein. More tolerant of fiber compared to other carnivore.",
-    "fennec fox": "Insectivore and Omnivore – similar to hedgehog and domestic dogs, thrives on mix of insect, fruits, starch and animal protein.",
-    "husky": "High-energy breed – does well on a high-protein, high-fat diet but low carbs.",
-    "sheepdog": "Herding breed – tolerant of carbs and plant protein. Lower fat tolerance, can handle protein as low as 25%."
-}
+def is_relevant_product(product, pet_type):
+    """
+    Filters out unsuitable products based on pet type.
+    Dogs and cats should not get hay, rodent food, or small animal treats.
+    """
+    name = product.name.lower()
+    desc = product.description.lower()
+    pet_type = pet_type.lower()
 
-product_types = [
-    "Game Meat (e.g. venison, rabbit, crocodile, kangaroo)",
-    "Insect (e.g. black soldierfly larvae, mealworm larvae, crickets)",
-    "Whole Prey (e.g. frozen quails, frozen mice, pinkies)",
-    "Sustainable Seafood (e.g. sardines, salmon, trout, cod, fish trimmings)",
-    "Dairy Treats (e.g. goat milk bites, cheese, ice cream)",
-    "Artisanal Meats (e.g. blood sausage, camel jerky, artisanal ham)"
-]
+    # ❌ Universal exclusions for dogs/cats
+    exclude_keywords = ['hay', 'alfalfa', 'hedgehog', 'rabbit', 'guinea pig', 'small pet', 'rodent']
 
-# Load NLP model
-try:
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    from spacy.cli import download
-    download("en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm")
+    # ❌ Optional: Exclude overly sugary fruit for carnivores
+    if pet_type in ['dog', 'cat']:
+        if any(keyword in name or keyword in desc for keyword in exclude_keywords):
+            return False
 
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
+    # ✅ If no exclusion hit, allow the product
+    return True
 
-# Login-required wrapper
-def custom_login_required(view_func):
-    def wrapper(request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return JsonResponse({"error": "Authentication required."}, status=401)
-        return view_func(request, *args, **kwargs)
-    return wrapper
-
-# Main AI Agent View
 @csrf_exempt
 @custom_login_required
 def ai_agent_view(request):
@@ -74,86 +56,79 @@ def ai_agent_view(request):
         if not msg and not uploaded_file:
             return JsonResponse({"error": "Please enter a message or upload a file."}, status=400)
 
-        # Profanity filter
+        # Profanity check
         if (use_profanity_filter and profanity.contains_profanity(msg)) or \
            (not use_profanity_filter and any(word in msg for word in PROFANITY_LIST)):
             return JsonResponse({"reply": "⚠️ That’s not a polite message. Please ask respectfully."})
 
-        # ✅ Check if user asked for a diet/nutrition table
-        if "table" in msg and any(keyword in msg for keyword in ["diet", "nutrition", "pet"]):
-            html_table = """
-            <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">
-              <thead>
-                <tr>
-                  <th>Pet Type</th>
-                  <th>Diet Requirements</th>
-                  <th>Recommended Products</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Ferrets & Cats</td>
-                  <td>High fat/protein, zero carbs</td>
-                  <td>Game meat, seafood</td>
-                </tr>
-                <tr>
-                  <td>Hedgehogs, Fennec Foxes</td>
-                  <td>Can tolerate insects, fruit, starch</td>
-                  <td>Insects, fruit, artisanal meats</td>
-                </tr>
-                <tr>
-                  <td>Huskies</td>
-                  <td>High protein, high fat, low carb</td>
-                  <td>Game meat, seafood</td>
-                </tr>
-                <tr>
-                  <td>Sheepdogs</td>
-                  <td>Higher grain, soy, carb, 25%+ protein, less fat</td>
-                  <td>Dairy-based treats, grains, soy, artisanal meats</td>
-                </tr>
-              </tbody>
-            </table>
-            """
-            return JsonResponse({"reply": html_table})
-
-        # Get user context (latest order)
+        # Fetch latest order context
         order = Order.objects.filter(user=user).order_by('-date').first()
         context_info = f"User's latest order: #{order.id} – Status: {order.status}" if order else "No order found."
 
-        # System prompt
-        system_prompt = (
-            "You are Dr.AI, a knowledgeable and friendly pet nutrition assistant for an ethical online pet food store. "
-            "You help users understand dietary needs based on their pet’s species or breed. "
-            "Nutrition facts:\n"
-            "- Ferrets & cats are obligate carnivores: high fat/protein, zero carbs.\n"
-            "- Hedgehogs & fennec foxes are insectivore-omnivores: can tolerate insects, fruit, starch.\n"
-            "- Huskies need high-protein, high-fat, low-carb diets.\n"
-            "- Sheepdogs tolerate higher grain, soy, and carb but less fat, and 25%+ protein.\n"
-            "We also sell products like game meat, seafood, dairy-based treats, insects, and artisanal meats.\n"
-            f"{context_info}"
-        )
-
-        # Use uploaded file name or fallback to text message
+        # Prepare input for LangChain
         user_input = msg or f"A file was uploaded: {uploaded_file.name}"
 
-        # Call OpenAI for general queries
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_input}
-            ]
-        )
+        try:
+            langchain_result = chain.invoke({"user_input": user_input})
+            langchain_output = langchain_result.dict()  # ✅ Convert Pydantic object to dict
+            print("🧠 LangChain Output:", langchain_output)
+        except Exception as chain_error:
+            print("❌ LangChain Error:", chain_error)
+            return JsonResponse({"error": "Dr.AI failed to understand the query."}, status=500)
 
-        gpt_reply = response.choices[0].message.content
+        if not isinstance(langchain_output, dict):
+            return JsonResponse({"error": "AI output format was invalid."}, status=500)
 
-        # Named entity recognition
+        pet_type = langchain_output.get("pet_type", "your pet")
+        keywords = langchain_output.get("recommended_products", [])
+
+        if not keywords:
+            return JsonResponse({
+                "reply": f"Sorry, I couldn’t find any product suggestions for your query about {pet_type}.",
+                "products": [],
+                "entities": [],
+                "context": context_info
+            })
+
+        # Product query
+        query = Q()
+        for kw in keywords:
+            query |= Q(name__icontains=kw) | Q(description__icontains=kw)
+
+        recommended_products = Product.objects.filter(query).distinct()
+
+        # Add fallback if fewer than 8
+        if recommended_products.count() < 8:
+            fallback_products = Product.objects.exclude(id__in=recommended_products).order_by('?')[:8 - recommended_products.count()]
+            recommended_products = list(recommended_products) + list(fallback_products)
+
+        # Filter irrelevant products (e.g. hay for dogs/cats)
+        filtered_products = [
+            p for p in recommended_products
+            if is_relevant_product(p, pet_type)
+        ]
+
+        # Build product list for frontend
+        product_list = [
+            {
+                "name": p.name,
+                "price": str(p.price),
+                "description": p.description,
+            }
+            for p in filtered_products
+        ]
+
+        # Named Entity Recognition
         doc = nlp(msg or "")
         named_entities = [(ent.text, ent.label_) for ent in doc.ents]
 
         return JsonResponse({
-            "reply": gpt_reply,
-            "entities": named_entities
+            "reply": f"Here are some recommended products for your {pet_type}:",
+            "products": product_list,
+            "entities": named_entities,
+            "context": context_info,
+            "pet_summary": langchain_output.get("pet_summary", ""),
+            "care_tips": langchain_output.get("care_tips", [])
         })
 
     except Exception as e:

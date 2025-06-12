@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
-// Utility to get CSRF token from cookie
+// Utility: CSRF token extractor
 function getCSRFToken() {
   const name = 'csrftoken';
   const cookies = document.cookie.split(';');
@@ -20,11 +20,11 @@ const AIAgent = () => {
   const [file, setFile] = useState(null);
   const [messages, setMessages] = useState([]);
 
-  // Initial greeting
+  // On load: greeting message
   useEffect(() => {
     const greeting = {
       type: 'bot',
-      text: "👋 Hi there! I'm Dr.AI – your pet food and nutrition assistant.<br>🐶🐱 Let's talk! What pets or breeds do you have, and what are their dietary needs?"
+      text: "👋 Hi there! I'm <strong>Dr.AI</strong> – your pet food and nutrition assistant.<br>🐶🐱 Let's talk! What pets or breeds do you have, and what are their dietary needs?"
     };
     setMessages([greeting]);
   }, []);
@@ -52,7 +52,7 @@ const AIAgent = () => {
       if (file) formData.append('file', file);
 
       const res = await axios.post(
-        'https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/agent/',
+        'http://localhost:8000/api/ai/agent/',
         formData,
         {
           withCredentials: true,
@@ -63,81 +63,102 @@ const AIAgent = () => {
         }
       );
 
-      const botReply = res.data.reply || "🤖 Sorry, I couldn't process that.";
-      setMessages([...newMessages, { type: 'bot', text: botReply }]);
+      const { reply, pet_summary, care_tips, products } = res.data;
 
+      setMessages([
+        ...newMessages,
+        {
+          type: 'bot',
+          text: reply || "🤖 Sorry, I couldn't process that.",
+          summary: pet_summary,
+          tips: care_tips,
+          products: products
+        }
+      ]);
     } catch (err) {
       const errorText = err.response?.data?.error || "Unexpected error occurred.";
-      setMessages([...newMessages, {
-        type: 'bot',
-        text: `❌ ${errorText}`
-      }]);
+      setMessages([
+        ...newMessages,
+        {
+          type: 'bot',
+          text: `❌ ${errorText}`
+        }
+      ]);
     }
   };
 
   return (
-    <div className="container-fluid min-vh-100 py-5 bg-light">
-      <div className="container">
-        <div className="row">
-          {/* Left Column – AI Image */}
-          <div className="col-md-4 d-none d-md-block text-center">
-            <img
-              src="/media/images/corgi-side-banner.png"
-              alt="Dr.AI Assistant"
-              className="img-fluid rounded shadow"
-              style={{ maxWidth: '100%', height: 'auto' }}
-            />
-          </div>
+    <div className="container my-4 p-3 bg-light rounded shadow">
+      <h2 className="text-center mb-4">
+        🐾 <strong>Ask Dr.AI about Pet Food & Nutrition</strong>
+      </h2>
 
-          {/* Right Column – Chat UI */}
-          <div className="col-md-8">
-            <div className="bg-white rounded shadow p-4">
-              <h2 className="text-center mb-4">
-                🐾 <strong>Ask Dr.AI about Pet Food & Nutrition</strong>
-              </h2>
+      {/* Message History */}
+      <div className="mb-3" style={{ maxHeight: '800px', overflowY: 'auto' }}>
+        {messages.map((msg, idx) => (
+          <div
+            key={idx}
+            className={`alert ${msg.type === 'user' ? 'alert-primary text-end' : 'alert-secondary text-start'}`}
+          >
+            <div dangerouslySetInnerHTML={{ __html: msg.text }} />
 
-              {/* Chat Messages */}
-              <div
-                className="chat-area mb-3 p-3 rounded border bg-light overflow-auto"
-                style={{ minHeight: '500px', maxHeight: '80vh' }}
-              >
-                {messages.map((msg, idx) => (
-                  <div
-                    key={idx}
-                    className={`alert ${msg.type === 'user' ? 'alert-primary text-end' : 'alert-secondary text-start'}`}
-                    dangerouslySetInnerHTML={{ __html: msg.text }}
-                  />
-                ))}
+            {msg.summary && (
+              <div className="mt-2">
+                <strong>📖 About the Breed:</strong>
+                <p>{msg.summary}</p>
               </div>
+            )}
 
-              {/* Chat Form */}
-              <form onSubmit={handleSubmit} encType="multipart/form-data">
-                <div className="d-flex flex-column flex-md-row gap-2 align-items-stretch">
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask a question about pet diets..."
-                  />
+            {msg.tips && Array.isArray(msg.tips) && msg.tips.length > 0 && (
+              <div className="mt-2">
+                <strong>✅ Care Tips:</strong>
+                <ul className="mb-2">
+                  {msg.tips.map((tip, i) => (
+                    <li key={i}>{tip}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-                  <input
-                    type="file"
-                    className="form-control"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={handleFileChange}
-                    style={{ maxWidth: '250px' }}
-                  />
-
-                  <button type="submit" className="btn btn-primary">
-                    Send
-                  </button>
-                </div>
-              </form>
-            </div>
+            {msg.products && Array.isArray(msg.products) && msg.products.length > 0 && (
+              <div className="mt-2">
+                <strong>🛒 Recommended Products:</strong>
+                <ul>
+                  {msg.products.map((p, i) => (
+                    <li key={i}>
+                      <strong>{p.name}</strong> – ${p.price}<br />
+                      <small>{p.description}</small>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
-        </div>
+        ))}
       </div>
+
+      {/* Message Input */}
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <div className="d-flex flex-column flex-md-row gap-2 align-items-center">
+          <input
+            type="text"
+            className="form-control flex-fill"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask a question about pet diets..."
+          />
+
+          <input
+            type="file"
+            className="form-control"
+            accept=".pdf,.jpg,.jpeg,.png"
+            onChange={handleFileChange}
+            style={{ maxWidth: '250px' }}
+          />
+
+          <button className="btn btn-primary" type="submit">Send</button>
+        </div>
+      </form>
     </div>
   );
 };
