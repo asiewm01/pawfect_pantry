@@ -87,6 +87,7 @@ urlpatterns = [
     path('api/home/', views.homepage, name='home'),
     path('api/about/', views.about_view, name='about'),
     path('api/contact/', views.contact_view, name='contact'),
+    path('api/vendors/', views.vendor_list_page, name='vendor-list-api'),
 
     # Catalogue & Product
     path('api/catalogue/', catalogue_list, name='catalogue_list'),

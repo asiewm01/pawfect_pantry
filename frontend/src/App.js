@@ -29,6 +29,7 @@ import ChatbotWidget from './components/ChatbotWidget';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import OrderTracking from './pages/order/OrderTracking'; 
 import AIAgent from './pages/ai_agent/AIAgent'; 
+import VendorGrid from './pages/VendorGrid'; 
 
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
           <Route path="forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/ai-agent" element={<AIAgent />} />
+          <Route path="/vendors" element={<VendorGrid />} />
         </Route>
       </Routes>
 

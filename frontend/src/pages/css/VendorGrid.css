@@ -1,0 +1,32 @@
+.vendor-container {
+  padding: 2rem;
+  text-align: center;
+}
+
+.vendor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  justify-content: center;
+}
+
+.vendor-card {
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+}
+
+.vendor-image img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-right: 1px solid #ccc;
+}
+
+.vendor-info {
+  padding: 1rem;
+  text-align: left;
+}

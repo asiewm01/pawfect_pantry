@@ -93,3 +93,31 @@
   background-color: #f8f9fa;
   font-weight: 600;
 }
+
+.ai-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 1rem;
+}
+
+/* Fix the image responsiveness */
+.vet-logo {
+  height: 50px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* Optional: adjust text sizing on mobile */
+@media (max-width: 600px) {
+  .vet-logo {
+    height: 35px;
+  }
+
+  .ai-header strong {
+    font-size: 1rem;
+  }
+}

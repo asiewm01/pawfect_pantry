@@ -72,7 +72,10 @@ const NavigationBar = () => {
         <Navbar.Collapse id="navbarContent">
           <Nav className="me-auto">
             <Nav.Link as={NavLink} to="/">Home <i className="fa fa-home"></i></Nav.Link>
-            <Nav.Link as={NavLink} to="/about">About Us <i className="fas fa-users hide-at-1024"></i></Nav.Link>
+            <NavDropdown title={<span>About Us <i className="fas fa-users hide-at-1024"></i></span>} id="about-dropdown">
+              <NavDropdown.Item as={NavLink} to="/about"><i className="fas fa-sitemap"></i> Our Company</NavDropdown.Item>
+              <NavDropdown.Item as={NavLink} to="/vendors"><i className="fas fa-store"></i> Vendor Partner</NavDropdown.Item>
+            </NavDropdown>            
             <Nav.Link as={NavLink} to="/catalogue">Catalogue <i className="fa fa-shopping-cart hide-at-1024"></i></Nav.Link>
             <Nav.Link as={NavLink} to="/contact">Contact Us <i className="fa fa-envelope hide-at-1024"></i></Nav.Link>
             <Nav.Link as={NavLink} to="/ai-agent">Ask Dr.AI <i className="fa fa-heart hide-at-1024"></i></Nav.Link>

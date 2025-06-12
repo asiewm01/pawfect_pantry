@@ -90,7 +90,21 @@ const AIAgent = () => {
   return (
     <div className="container my-4 p-3 bg-light rounded shadow">
       <h2 className="text-center mb-4">
-        🐾 <strong>Ask Dr.AI about Pet Food & Nutrition</strong>
+        <div className="ai-header">
+        <img
+          src="/media/images/Vet.png"
+          alt="Vet"
+          style={{
+          height: '50px',
+          width: 'auto',
+          maxWidth: '100%',
+          objectFit: 'contain',
+          marginRight: '12px',
+          verticalAlign: 'middle',
+          flexShrink: 0}}
+        />          
+        <strong>Ask Dr.AI about Pet Food & Nutrition</strong>
+        </div>   
       </h2>
 
       {/* Message History */}
