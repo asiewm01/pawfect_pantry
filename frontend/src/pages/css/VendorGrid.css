@@ -3,30 +3,74 @@
   text-align: center;
 }
 
-.vendor-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
-  justify-content: center;
-}
-
 .vendor-card {
   display: flex;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  background-color: #fff;
+  align-items: stretch; /* Stretch children vertically */
+  padding: 20px;
+  gap: 16px;
+  background: white;
+  border: 2px solid black;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* 🖼️ Image block fills vertical height */
+.vendor-image {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: stretch;
 }
 
 .vendor-image img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-right: 1px solid #ccc;
+  height: 100%;         /* Match paragraph height */
+  width: auto;          /* Maintain aspect ratio */
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
 }
 
+/* 📄 Paragraph block */
 .vendor-info {
-  padding: 1rem;
+  flex: 1;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+hr.solid {
+  border-top: 2px solid #a39f9f;
+}
+
+/* 📢 Banner section */
+.vendor-banner {
+  background-image: url('../../assets/images/vendor_banner.png'); /* If inside src/assets/images */
+  background-size: cover;
+  background-position: center;
+  padding: 80px 20px;
+  color: white;
+  text-align: center;
+  position: relative;
+}
+
+.vendor-banner-overlay {
+  background-color: rgba(0, 0, 0, 0.55);
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.vendor-banner h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+.vendor-banner p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: white;
 }
