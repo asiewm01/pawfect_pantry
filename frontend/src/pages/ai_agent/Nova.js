@@ -13,7 +13,7 @@ const Nova = () => {
     setMessages([
       {
         type: 'bot',
-        text: "👋 Hello! I'm Nova – your order support assistant. How can I help with your delivery, tracking, or order issues?"
+        text: "👋 Hello! I'm Nova – your order support assistant. How can I help with your delivery, cart, tracking, or order issues?"
       }
     ]);
   }, []);
@@ -57,7 +57,7 @@ const Nova = () => {
           alt="Nova Avatar"
           className="img-fluid rounded shadow nova-avatar-img"
         />
-        <p className="mt-3 text-muted">Hi, I'm Nova! 👱‍♀️<br />Order support is my thing!</p>
+        <p className="mt-3 text-muted">Hi, I'm Nova! 👱‍♀️<br />Order and Delivery tracking and support is my thing!</p>
       </div>
     </div>
 

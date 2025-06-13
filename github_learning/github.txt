@@ -35,5 +35,5 @@ Database File -
 cd /c/Users/siewc/OneDrive/Desktop/Generation/Generation_Capstone_Ecommerce
 
 git add .
-git commit -m "Fix redirect after registration popup and fix fetch from navbar"
+git commit -m "Fix Nova"
 git push origin main

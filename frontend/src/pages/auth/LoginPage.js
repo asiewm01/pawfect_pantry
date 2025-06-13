@@ -4,6 +4,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import './css/LoginPage.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+// 🔐 Helper to get CSRF token from cookie
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -16,19 +23,27 @@ const Login = () => {
     setError('');
 
     try {
+      // Step 1: Get CSRF token cookie
       await axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/csrf/', {
         withCredentials: true
       });
 
-      const response = await axios.post('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/login/', {
-        username,
-        password
-      }, {
-        withCredentials: true
-      });
+      const csrftoken = getCookie('csrftoken');
+
+      // Step 2: Login with CSRF token
+      const response = await axios.post(
+        'https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/login/',
+        { username, password },
+        {
+          withCredentials: true,
+          headers: {
+            'X-CSRFToken': csrftoken
+          }
+        }
+      );
 
       if (response.status === 200) {
-        setShowReminder(true);  // Trigger modal
+        setShowReminder(true);
       }
     } catch (err) {
       setError('Invalid username or password.');
@@ -39,8 +54,6 @@ const Login = () => {
     <>
       <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
         <div className="row w-100" style={{ maxWidth: '960px' }}>
-
-          {/* Left Image Column */}
           <div className="col-md-6 d-none d-md-block p-0">
             <img
               src="/media/images/login-banner.png"
@@ -50,7 +63,6 @@ const Login = () => {
             />
           </div>
 
-          {/* Login Form Column */}
           <div className="col-md-6 bg-white p-4 shadow-sm d-flex flex-column justify-content-center">
             <h2 className="text-center mb-4">Login</h2>
             {error && <div className="alert alert-danger text-center py-2">{error}</div>}
@@ -92,11 +104,9 @@ const Login = () => {
               </p>
             </div>
           </div>
-
         </div>
       </div>
 
-      {/* Custom Modal */}
       {showReminder && (
         <div className="custom-modal-backdrop">
           <div className="custom-modal">
@@ -104,15 +114,15 @@ const Login = () => {
             <p className="mb-3">
               After logging in, please refresh the page to fully access your Dashboard, Cart, Orders, and Help Desk.
             </p>
-              <button
-                className="btn btn-primary w-100"
-                onClick={() => {
-                  navigate('/dashboard');
-                  setTimeout(() => window.location.reload(), 300); // Optional short delay
-                }}
-                >
-                Continue to Dashboard
-              </button>
+            <button
+              className="btn btn-primary w-100"
+              onClick={() => {
+                navigate('/dashboard');
+                setTimeout(() => window.location.reload(), 300);
+              }}
+            >
+              Continue to Dashboard
+            </button>
           </div>
         </div>
       )}

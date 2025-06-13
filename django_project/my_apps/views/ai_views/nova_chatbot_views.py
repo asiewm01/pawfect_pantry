@@ -7,15 +7,18 @@ from ...models import Order
 import json, re, spacy, traceback
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-# Initialize models
+# LangChain LLM
 llm = ChatOpenAI(
     model_name="gpt-3.5-turbo",
     openai_api_key=settings.OPENAI_API_KEY,
     temperature=0.7
 )
+
+# NLP tools
 nlp = spacy.load("en_core_web_sm")
 analyzer = SentimentIntensityAnalyzer()
 
+# Frontend URL
 REACT_URL = settings.REACT_URL_DEV if getattr(settings, "DEBUG", True) else settings.REACT_URL_PROD
 
 @csrf_exempt
@@ -43,17 +46,14 @@ def nova_chatbot_internal(request):
     if not user_input:
         return JsonResponse({"reply": "👋 Hi! I'm Nova. How can I help with your order today?"})
 
-    # 🔍 Sentiment + NER
+    # 🔍 Sentiment & Entities
     sentiment_score = analyzer.polarity_scores(user_input)
     sentiment = sentiment_score["compound"]
     doc = nlp(user_input)
     entities = [ent.text for ent in doc.ents]
 
-    # 🚨 Escalation
-    if (
-        sentiment <= -0.4 or
-        re.search(r"(talk to (agent|human)|speak to (someone|rep|staff))", user_input, re.IGNORECASE)
-    ):
+    # 🚨 Escalation logic
+    if sentiment <= -0.4 or re.search(r"(talk to (agent|human)|speak to (someone|rep|staff))", user_input, re.IGNORECASE):
         print("🚨 Escalation triggered")
         return JsonResponse({
             "reply": (
@@ -67,9 +67,8 @@ def nova_chatbot_internal(request):
             "messenger": "https://m.me/yourpageid"
         })
 
-    # 🛍️ Product query redirect
-    product_keywords = r"(recommend|suggest|food|product|treat|toy|which brand|what should i get|buy)"
-    if re.search(product_keywords, user_input, re.IGNORECASE):
+    # 🛍️ Product redirect
+    if re.search(r"(recommend|suggest|food|product|treat|toy|which brand|what should i get|buy)", user_input, re.IGNORECASE):
         return JsonResponse({
             "reply": (
                 "🧾 I'm here to help with your orders, deliveries, and tracking.<br><br>"
@@ -90,7 +89,7 @@ def nova_chatbot_internal(request):
         print("❌ Error reading order:", e)
         order_status = "processing"
 
-    # 🗺️ Mock location data
+    # 🗺️ Mock tracking info
     mock_tracking_data = {
         "processing": {
             "location": "Warehouse A - West Coast",
@@ -128,16 +127,19 @@ def nova_chatbot_internal(request):
 
     tracking = mock_tracking_data.get(order_status, mock_tracking_data["processing"])
 
+    # 📦 Direct delivery tracking response
     if re.search(r"(track|delivery|status|where|order id|when.*arrive)", user_input, re.IGNORECASE):
         if latest_order:
+            reply_text = (
+                "🧾 Hold on, I got something. Based on the satellite images from my system, this is what I got! <br><br>"
+                f"🛰️ <b>Order Tracking for Order #{latest_order.id}</b><br>"
+                f"📍 <b>Location:</b> {tracking['location']}<br>"
+                f"📦 <b>Status:</b> {tracking['status']}<br>"
+                f"⏰ <b>ETA:</b> {tracking['eta']}<br>"
+                + (f"👤 <b>Agent:</b> {tracking['agent']}" if tracking['agent'] else '')
+            )
             return JsonResponse({
-                "reply": (
-                    f"🛰️ <b>Order Tracking for Order #{latest_order.id}</b><br>"
-                    f"📍 <b>Location:</b> {tracking['location']}<br>"
-                    f"📦 <b>Status:</b> {tracking['status']}<br>"
-                    f"⏰ <b>ETA:</b> {tracking['eta']}<br>"
-                    (f"👤 <b>Agent:</b> {tracking['agent']}" if tracking['agent'] else '')
-                ),
+                "reply": reply_text,
                 "latitude": tracking["latitude"],
                 "longitude": tracking["longitude"]
             })
@@ -159,7 +161,6 @@ def nova_chatbot_internal(request):
         print("✅ GPT reply:", reply)
 
         return JsonResponse({"reply": reply})
-
     except Exception as e:
         print("❌ LangChain GPT error:", str(e))
         traceback.print_exc()

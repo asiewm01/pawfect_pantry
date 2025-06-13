@@ -7,7 +7,11 @@ import spacy, json
 from django.conf import settings
 from functools import wraps
 import traceback
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 REACT_URL = (
     settings.REACT_URL_DEV

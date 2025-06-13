@@ -5,11 +5,20 @@ from dotenv import load_dotenv  # ✅ YES, if you installed python-dotenv
 
 SITE_ID = 1
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(dotenv_path=BASE_DIR / '.env.production')  # Auto-load in Docker
-#load_dotenv(dotenv_path=BASE_DIR / '.env.development')  
 
+# Load environment choice from default .env if it exists
+load_dotenv(dotenv_path=BASE_DIR / '.env', override=False)
 
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
+# Then load environment-specific settings
+env = os.getenv("ENV", "development").lower()
+
+if env == "production":
+    load_dotenv(dotenv_path=BASE_DIR / '.env.production', override=True)
+elif env == "development":
+    load_dotenv(dotenv_path=BASE_DIR / '.env.development', override=True)
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+print("🔑 Loaded OpenAI Key from .env:", OPENAI_API_KEY)
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-key')
 
@@ -219,16 +228,22 @@ DEFAULT_FILE_STORAGE = "django_project.storage_backends.AzureMediaStorage"
 AZURE_ACCOUNT_KEY = os.getenv("AZURE_ACCOUNT_KEY")  # store in .env or GitHub secret
 AZURE_SSL = True
 
-#Azure Portal Deployment
-MEDIA_URL = f"https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/"
-#Development with VSC
-#MEDIA_URL = '/media/'
+if DEBUG:
+    MEDIA_URL = '/media/'  # Local dev
+else:
+    MEDIA_URL = f"https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/"  # Azure prod
+
+if DEBUG:
+    MEDIA_ROOT = BASE_DIR / 'media'  # Only needed for local media file handling
+
+    
 
 # Default to local dev, override in prod with environment variable
 FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000")
 
 REACT_URL_PROD = "https://react-ui.icypebble-e6a48936.southeastasia.azurecontainerapps.io"
-#REACT_URL_DEV = "http://localhost:3000"
+REACT_URL_DEV = "http://localhost:3000"
+REACT_URL = REACT_URL_DEV if DEBUG else REACT_URL_PROD
 
 CACHES = {
     "default": {

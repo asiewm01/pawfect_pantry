@@ -94,6 +94,10 @@ const NavigationBar = () => {
                 <NavDropdown.Item as={NavLink} to="/orders/tracking">
                   <i className="fa fa-globe"></i> Order Tracking
                 </NavDropdown.Item>
+                <NavDropdown.Item as={NavLink} to="/nova">
+                  <i className="fas fa-headset me-2"></i> Frontdesk
+                </NavDropdown.Item>
+
                 {role === 'vendor' && (
                   <NavDropdown.Item as={NavLink} to="/vendor/dashboard">
                     <i className="fas fa-briefcase"></i> Vendor Panel
