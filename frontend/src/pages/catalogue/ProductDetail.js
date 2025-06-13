@@ -19,7 +19,7 @@ const ProductDetail = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/catalogue/${id}/`);
+        const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/catalogue/${id}/`);
         setProduct(res.data);
         setFeedbackList(res.data.feedback || []);
       } catch (err) {
@@ -34,7 +34,7 @@ const ProductDetail = () => {
     e.preventDefault();
     try {
       await axios.post(
-        `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/catalogue/${id}/feedback/submit/`,
+        `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/catalogue/${id}/feedback/submit/`,
         { comment },
         { withCredentials: true }
       );
@@ -42,7 +42,7 @@ const ProductDetail = () => {
       setSuccess(true);
       setError('');
 
-      const updated = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/catalogue/${id}/`);
+      const updated = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/catalogue/${id}/`);
       setFeedbackList(updated.data.feedback || []);
 
       setTimeout(() => setSuccess(false), 3000);
@@ -55,7 +55,7 @@ const ProductDetail = () => {
   const handleAddToCart = async (productId) => {
     try {
       const response = await axios.post(
-        `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/add/${productId}/`,
+        `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/cart/add/${productId}/`,
         { quantity },
         { withCredentials: true }
       );

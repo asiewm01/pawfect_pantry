@@ -10,7 +10,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/recommend/`, { withCredentials: true })
+    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/ai/recommend/`, { withCredentials: true })
       .then(res => {
         setRecommended(res.data.recommended || []);
       })

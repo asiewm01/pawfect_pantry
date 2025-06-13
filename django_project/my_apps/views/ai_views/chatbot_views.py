@@ -3,8 +3,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from ...models import Order, Product
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import json, spacy
-import re
+import json, spacy, re
 from django.db.models import Q
 from openai import OpenAI
 

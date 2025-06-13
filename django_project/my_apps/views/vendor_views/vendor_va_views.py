@@ -5,10 +5,8 @@ from django.shortcuts import render
 from ...models import Product, Vendor
 from django.db.models import Q
 from django.utils.timezone import now
-import openai
-import os
-import json
-import re
+import openai, os, json, re
+
 
 # ✅ Load OpenAI API key from environment
 openai_key = os.environ.get("OPENAI_API_KEY", "")

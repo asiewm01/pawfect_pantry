@@ -8,6 +8,7 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showReminder, setShowReminder] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -15,11 +16,11 @@ const Login = () => {
     setError('');
 
     try {
-      await axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/csrf/', {
+      await axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/csrf/', {
         withCredentials: true
       });
 
-      const response = await axios.post('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/login/', {
+      const response = await axios.post('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/login/', {
         username,
         password
       }, {
@@ -27,8 +28,7 @@ const Login = () => {
       });
 
       if (response.status === 200) {
-        alert('Login successful!');
-        navigate('/dashboard');
+        setShowReminder(true);  // Trigger modal
       }
     } catch (err) {
       setError('Invalid username or password.');
@@ -36,64 +36,87 @@ const Login = () => {
   };
 
   return (
-    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
-      <div className="row w-100" style={{ maxWidth: '960px' }}>
-        
-        {/* Left Image Column */}
-        <div className="col-md-6 d-none d-md-block p-0">
-          <img
-            src="/media/images/login-banner.png"
-            alt="Login"
-            className="img-fluid w-100 h-100"
-            style={{ objectFit: 'cover' }}
-          />
+    <>
+      <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+        <div className="row w-100" style={{ maxWidth: '960px' }}>
+
+          {/* Left Image Column */}
+          <div className="col-md-6 d-none d-md-block p-0">
+            <img
+              src="/media/images/login-banner.png"
+              alt="Login"
+              className="img-fluid w-100 h-100"
+              style={{ objectFit: 'cover' }}
+            />
+          </div>
+
+          {/* Login Form Column */}
+          <div className="col-md-6 bg-white p-4 shadow-sm d-flex flex-column justify-content-center">
+            <h2 className="text-center mb-4">Login</h2>
+            {error && <div className="alert alert-danger text-center py-2">{error}</div>}
+
+            <form onSubmit={handleLogin}>
+              <div className="mb-3">
+                <label htmlFor="username" className="form-label">Username</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="password" className="form-label">Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="d-grid">
+                <button type="submit" className="btn btn-primary">Login</button>
+              </div>
+            </form>
+
+            <div className="text-center mt-3">
+              <p>
+                Don’t have an account? <Link to="/register">Register</Link><br />
+                <Link to="/forgot-password">Forgot Password?</Link>
+              </p>
+            </div>
+          </div>
+
         </div>
+      </div>
 
-        {/* Login Form Column */}
-        <div className="col-md-6 bg-white p-4 shadow-sm d-flex flex-column justify-content-center">
-          <h2 className="text-center mb-4">Login</h2>
-          {error && <div className="alert alert-danger text-center py-2">{error}</div>}
-
-          <form onSubmit={handleLogin}>
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label">Username</label>
-              <input
-                type="text"
-                className="form-control"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="d-grid">
-              <button type="submit" className="btn btn-primary">Login</button>
-            </div>
-          </form>
-
-          <div className="text-center mt-3">
-            <p>
-              Don’t have an account? <Link to="/register">Register</Link><br />
-              <Link to="/forgot-password">Forgot Password?</Link>
+      {/* Custom Modal */}
+      {showReminder && (
+        <div className="custom-modal-backdrop">
+          <div className="custom-modal">
+            <h5>🔁 Please Refresh</h5>
+            <p className="mb-3">
+              After logging in, please refresh the page to fully access your Dashboard, Cart, Orders, and Help Desk.
             </p>
+              <button
+                className="btn btn-primary w-100"
+                onClick={() => {
+                  navigate('/dashboard');
+                  setTimeout(() => window.location.reload(), 300); // Optional short delay
+                }}
+                >
+                Continue to Dashboard
+              </button>
           </div>
         </div>
-
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

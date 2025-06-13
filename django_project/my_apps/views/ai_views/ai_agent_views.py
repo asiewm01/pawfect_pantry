@@ -1,12 +1,12 @@
-
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from my_apps.models import Order, Product
 from my_apps.chains.product_recommender import chain
-from ...utils.custom_login_required import custom_login_required
-import spacy
+import spacy, json
 from django.conf import settings
+from functools import wraps
+import traceback
 
 
 REACT_URL = (
@@ -29,6 +29,15 @@ except ImportError:
         "fuck", "shit", "wtf", "bitch", "asshole", "dick", "cunt", "pussy", "idiot", "dumb ass", "stupid"
     ]
 
+def custom_login_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            print("❌ Not authenticated")
+            return JsonResponse({"error": "Authentication required."}, status=401)
+        return view_func(request, *args, **kwargs)
+    return wrapper
+        
 def is_relevant_product(product, pet_type):
     name = product.name.lower()
     desc = product.description.lower()
@@ -39,6 +48,7 @@ def is_relevant_product(product, pet_type):
             return False
     return True
 
+
 @csrf_exempt
 @custom_login_required
 def ai_agent_view(request):
@@ -46,22 +56,24 @@ def ai_agent_view(request):
         return JsonResponse({"error": "❌ POST method required."}, status=405)
 
     try:
+        print("📥 Incoming Dr.AI request")
+
         msg = request.POST.get("message", "").strip().lower()
         uploaded_file = request.FILES.get("file")
-        user = request.user
+        print("📝 Message:", msg)
+        print("📎 File uploaded:", uploaded_file.name if uploaded_file else "None")
 
-        if not msg and not uploaded_file:
-            return JsonResponse({"error": "Please enter a message or upload a file."}, status=400)
+        user = request.user
+        print("👤 Authenticated user:", getattr(user, "username", "Anonymous"))
+        print("🔑 User Authenticated:", user.is_authenticated)
 
         # Handle greetings
         if msg in ["hello", "hi", "hey"]:
             return JsonResponse({
                 "reply": "👋 Hello there! I'm Dr.AI – your virtual pet nutrition assistant. Ask me anything about pet food or dietary needs!",
-                "products": [],
-                "entities": [],
+                "products": [], "entities": [],
                 "context": "Greeting received.",
-                "pet_summary": "",
-                "care_tips": []
+                "pet_summary": "", "care_tips": []
             })
 
         # Redirect order/cart queries to Nova
@@ -72,15 +84,14 @@ def ai_agent_view(request):
                     f"👉 Please visit <a href='{REACT_URL}/nova' target='_blank'><strong>Nova</strong></a> – "
                     "our order assistant – for help with tracking, cart issues, or delivery updates."
                 ),
-                "products": [],
-                "entities": [],
+                "products": [], "entities": [],
                 "context": "Redirected to Nova",
-                "pet_summary": "",
-                "care_tips": []
+                "pet_summary": "", "care_tips": []
             })
-        
+
         # Profanity check
-        if (use_profanity_filter and profanity.contains_profanity(msg)) or            (not use_profanity_filter and any(word in msg for word in PROFANITY_LIST)):
+        if (use_profanity_filter and profanity.contains_profanity(msg)) or \
+           (not use_profanity_filter and any(word in msg for word in PROFANITY_LIST)):
             return JsonResponse({"reply": "⚠️ That’s not a polite message. Please ask respectfully."})
 
         order = Order.objects.filter(user=user).order_by('-date').first()
@@ -88,11 +99,13 @@ def ai_agent_view(request):
         user_input = msg or f"A file was uploaded: {uploaded_file.name}"
 
         try:
+            print("🔍 Invoking LangChain with:", user_input)
             langchain_result = chain.invoke({"user_input": user_input})
             langchain_output = langchain_result.dict()
             print("🧠 LangChain Output:", langchain_output)
         except Exception as chain_error:
-            print("❌ LangChain Error:", chain_error)
+            print("❌ LangChain Error:", repr(chain_error))
+            traceback.print_exc()
             return JsonResponse({"error": "Dr.AI failed to understand the query."}, status=500)
 
         if not isinstance(langchain_output, dict):
@@ -104,8 +117,7 @@ def ai_agent_view(request):
         if not keywords:
             return JsonResponse({
                 "reply": f"Sorry, I couldn’t find any product suggestions for your query about {pet_type}.",
-                "products": [],
-                "entities": [],
+                "products": [], "entities": [],
                 "context": context_info,
                 "pet_summary": langchain_output.get("pet_summary", ""),
                 "care_tips": langchain_output.get("care_tips", [])
@@ -124,11 +136,7 @@ def ai_agent_view(request):
         filtered_products = [p for p in recommended_products if is_relevant_product(p, pet_type)]
 
         product_list = [
-            {
-                "name": p.name,
-                "price": str(p.price),
-                "description": p.description,
-            }
+            {"name": p.name, "price": str(p.price), "description": p.description}
             for p in filtered_products
         ]
 
@@ -145,5 +153,8 @@ def ai_agent_view(request):
         })
 
     except Exception as e:
-        print("❌ AI Agent Error:", e)
-        return JsonResponse({"error": str(e)}, status=500)
+        print("❌ Unexpected AI Agent Error:", repr(e))
+        traceback.print_exc()
+        return JsonResponse({
+            "error": f"Unhandled error: {type(e).__name__} – {str(e)}"
+        }, status=500)
