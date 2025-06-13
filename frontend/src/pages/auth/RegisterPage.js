@@ -115,13 +115,19 @@ const Register = () => {
           </form>
 
           {/* Success Popup */}
-          {showPopup && (
-            <div className="popup-overlay">
-              <div className="popup-box">
-                ✅ Registration successful! Redirecting to login...
-              </div>
-            </div>
-          )}
+{showPopup && (
+  <div className="popup-overlay">
+    <div className="popup-box text-center">
+      <img
+        src="/media/images/corgi_register.png"
+        alt="Welcome corgi"
+        className="popup-corgi"
+      />
+      <h5>🎉 Registration Successful!</h5>
+      <p>Redirecting to login...</p>
+    </div>
+  </div>
+)}
         </div>
       </div>
     </div>
