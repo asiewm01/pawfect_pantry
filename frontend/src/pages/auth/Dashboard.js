@@ -25,7 +25,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/user/', { withCredentials: true })
+    axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/user/', { withCredentials: true })
       .then(res => {
         setUsername(res.data.username);
         setFormData(prev => ({
@@ -41,7 +41,7 @@ const Dashboard = () => {
         setLoading(false);
       });
 
-    axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/profile/', { withCredentials: true })
+    axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/profile/', { withCredentials: true })
       .then(res => {
         setFormData(prev => ({
           ...prev,
@@ -69,12 +69,12 @@ const Dashboard = () => {
         address: formData.address
       };
 
-      await axios.put('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/profile/update/', userPayload, {
+      await axios.put('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/profile/update/', userPayload, {
         withCredentials: true
       });
 
       if (formData.new_password) {
-        await axios.post('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/password/change/', {
+        await axios.post('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/password/change/', {
           old_password: '',
           new_password: formData.new_password
         }, {

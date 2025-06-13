@@ -33,5 +33,5 @@ Database File -
 "/c/xampp/mysql/bin/mysqldump.exe" -u capstone_user -p -h 127.0.0.1 -P 3306 capstone > capstone_backup.sql
 
 git add .
-git commit -m "Fix error code Tracking"
+git commit -m "Fix Traceback for Dr.AI and Add dynamic JS remind to refresh and able auto refresh on click"
 git push origin main

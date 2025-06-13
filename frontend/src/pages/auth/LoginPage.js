@@ -16,11 +16,11 @@ const Login = () => {
     setError('');
 
     try {
-      await axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/csrf/', {
+      await axios.get('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/csrf/', {
         withCredentials: true
       });
 
-      const response = await axios.post('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.iocontainerapps.io/api/login/', {
+      const response = await axios.post('https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/login/', {
         username,
         password
       }, {
