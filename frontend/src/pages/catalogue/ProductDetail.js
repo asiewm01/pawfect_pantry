@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../../api/axiosInstance';
 import './css/ProductDetail.css';
 import FeedbackSection from '../../components/FeedbackSection';
-import CheckoutSuccessPopup from '../../components/Popup/CheckoutSuccessPopup';
+import CartSuccessPopup from '../../components/Popup/CartSuccessPopup';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -158,7 +158,7 @@ const ProductDetail = () => {
       </div>
 
       {showPopup && (
-        <CheckoutSuccessPopup
+        <CartSuccessPopup
           message={popupMessage}
           onClose={() => {
             setShowPopup(false);

@@ -35,5 +35,5 @@ Database File -
 cd /c/Users/siewc/OneDrive/Desktop/Generation/Generation_Capstone_Ecommerce
 
 git add .
-git commit -m "Checkout Popup"
+git commit -m "Update CSS and UX"
 git push origin main
