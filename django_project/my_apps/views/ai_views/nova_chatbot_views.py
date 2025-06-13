@@ -144,7 +144,7 @@ def nova_chatbot_internal(request):
                     f"📍 <b>Location:</b> {tracking['location']}<br>"
                     f"📦 <b>Status:</b> {tracking['status']}<br>"
                     f"⏰ <b>ETA:</b> {tracking['eta']}<br>"
-                    f"{f'👤 <b>Agent:</b> {tracking['agent']}' if tracking['agent'] else ''}"
+                    (f"👤 <b>Agent:</b> {tracking['agent']}" if tracking['agent'] else '')
                 ),
                 "latitude": tracking["latitude"],
                 "longitude": tracking["longitude"]
