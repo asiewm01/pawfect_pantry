@@ -1,19 +1,22 @@
+from langchain_openai import ChatOpenAI
+from langchain.schema import SystemMessage, HumanMessage
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
-from openai import OpenAI
 from ...models import Order
 import json, re, spacy, traceback
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-# Initialize GPT and sentiment models
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
+# Initialize models
+llm = ChatOpenAI(
+    model_name="gpt-3.5-turbo",
+    openai_api_key=settings.OPENAI_API_KEY,
+    temperature=0.7
+)
 nlp = spacy.load("en_core_web_sm")
 analyzer = SentimentIntensityAnalyzer()
 
-# Frontend URL
 REACT_URL = settings.REACT_URL_DEV if getattr(settings, "DEBUG", True) else settings.REACT_URL_PROD
-
 
 @csrf_exempt
 def nova_chatbot(request):
@@ -27,16 +30,6 @@ def nova_chatbot(request):
 
 
 def nova_chatbot_internal(request):
-    # ✅ GPT Health Test
-    try:
-        test = client.models.list()
-        print("✅ GPT is reachable!")
-    except Exception as e:
-        print("❌ GPT unreachable:", e)
-        return JsonResponse({
-            "reply": "⚠️ Nova is currently down. Please try again later."
-        }, status=503)
-
     if request.method != "POST":
         return JsonResponse({"error": "Only POST method allowed."}, status=405)
 
@@ -135,7 +128,6 @@ def nova_chatbot_internal(request):
 
     tracking = mock_tracking_data.get(order_status, mock_tracking_data["processing"])
 
-    # 🛰️ Delivery check
     if re.search(r"(track|delivery|status|where|order id|when.*arrive)", user_input, re.IGNORECASE):
         if latest_order:
             return JsonResponse({
@@ -144,7 +136,7 @@ def nova_chatbot_internal(request):
                     f"📍 <b>Location:</b> {tracking['location']}<br>"
                     f"📦 <b>Status:</b> {tracking['status']}<br>"
                     f"⏰ <b>ETA:</b> {tracking['eta']}<br>"
-                    (f"👤 <b>Agent:</b> {tracking['agent']}" if tracking['agent'] else '')
+                    f"{f'👤 <b>Agent:</b> {tracking['agent']}' if tracking['agent'] else ''}"
                 ),
                 "latitude": tracking["latitude"],
                 "longitude": tracking["longitude"]
@@ -154,36 +146,23 @@ def nova_chatbot_internal(request):
                 "reply": "❌ I couldn’t find any recent orders under your account. Please make sure you're logged in and have placed an order."
             })
 
-    # 🤖 GPT fallback
-    messages = [
-        {
-            "role": "system",
-            "content": (
-                "You are Nova, a friendly order support assistant. You help users with delivery updates, order tracking, "
-                "and order-related issues. You do not answer product or food questions. Escalate to human agent if needed."
-            )
-        },
-        {"role": "user", "content": user_input}
+    # 🧠 LangChain GPT fallback
+    chat_history = [
+        SystemMessage(content="You are Nova, a friendly order support assistant. You help users with delivery updates, order tracking, and order-related issues. You do not answer product or food questions. Escalate to human agent if needed."),
+        HumanMessage(content=user_input)
     ]
 
     try:
-        print("🧠 GPT fallback triggered with:", messages)
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=messages
-        )
+        print("🧠 LangChain GPT fallback triggered with:", chat_history)
+        response = llm.invoke(chat_history)
+        reply = response.content.strip()
+        print("✅ GPT reply:", reply)
 
-        if hasattr(response, "choices") and response.choices:
-            reply = response.choices[0].message.content.strip()
-            print("✅ GPT reply:", reply)
-        else:
-            reply = "⚠️ Nova is having trouble generating a response right now."
-
-        return JsonResponse({ "reply": reply })
+        return JsonResponse({"reply": reply})
 
     except Exception as e:
-        print("❌ GPT fallback error:", str(e))
+        print("❌ LangChain GPT error:", str(e))
         traceback.print_exc()
         return JsonResponse({
-            "reply": "⚠️ Nova encountered an error and cannot respond right now."
+            "reply": "⚠️ Nova encountered an error using LangChain and cannot respond right now."
         }, status=500)
