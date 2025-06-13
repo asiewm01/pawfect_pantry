@@ -16,6 +16,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,10 +25,10 @@ const Checkout = () => {
         const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/`, {
           withCredentials: true,
         });
-    
+
         const items = res.data.cart;
         const total = res.data.total;
-    
+
         setCartItems(items);
         setCartTotal(total);
       } catch (err) {
@@ -58,8 +59,12 @@ const Checkout = () => {
       });
 
       console.log(response.data);
-      alert('Order placed!');
-      navigate('/orders/history');
+      setShowPopup(true);
+
+      // Redirect to order history after 4 seconds
+      setTimeout(() => {
+        navigate('/orders/history');
+      }, 4000);
     } catch (err) {
       console.error('Checkout error:', err);
       alert('Failed to place order');
@@ -90,7 +95,7 @@ const Checkout = () => {
               <tbody>
                 {cartItems.map((item) => (
                   <tr key={item.id}>
-                    <td>{item.product_name}</td> {/* ✅ correct */}
+                    <td>{item.product_name}</td>
                     <td>{item.quantity}</td>
                     <td>${item.price.toFixed(2)}</td>
                     <td>${(item.quantity * item.price).toFixed(2)}</td>
@@ -171,10 +176,10 @@ const Checkout = () => {
             <div className="payment-methods mt-4">
               <p>We accept:</p>
               <div className="logos">
-                <img src="media/images/payment/stripe.png" alt="Stripe" />
-                <img src="media/images/payment/paypal.png" alt="PayPal" />
-                <img src="media/images/payment/visa.png" alt="Visa" />
-                <img src="media/images/payment/mastercard.png" alt="Mastercard" />
+                <img src="/media/images/payment/stripe.png" alt="Stripe" />
+                <img src="/media/images/payment/paypal.png" alt="PayPal" />
+                <img src="/media/images/payment/visa.png" alt="Visa" />
+                <img src="/media/images/payment/mastercard.png" alt="Mastercard" />
               </div>
             </div>
 
@@ -184,6 +189,21 @@ const Checkout = () => {
           </form>
         </div>
       </div>
+
+      {/* ✅ Order Confirmation Popup */}
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-box text-center">
+            <img
+              src="/media/images/corgi_happy.png"
+              alt="Corgi celebrating"
+              className="popup-corgi"
+            />
+            <h4>🎉 Order Confirmed!</h4>
+            <p>Please check your email for confirmation.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
