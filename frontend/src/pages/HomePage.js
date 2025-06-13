@@ -9,15 +9,24 @@ const HomePage = () => {
   const [recommended, setRecommended] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/recommend/`, { withCredentials: true })
-      .then(res => {
-        setRecommended(res.data.recommended || []);
-      })
-      .catch(err => {
-        console.error('Failed to fetch AI recommendations:', err);
-      });
-  }, []);
+useEffect(() => {
+  const hasRedirected = sessionStorage.getItem('hasRedirected');
+
+  axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/recommend/`, {
+    withCredentials: true
+  })
+    .then(res => {
+      setRecommended(res.data.recommended || []);
+    })
+    .catch(err => {
+      console.error('Auth check failed:', err);
+
+      if (!hasRedirected) {
+        sessionStorage.setItem('hasRedirected', 'true');
+        navigate('/login');
+      }
+    });
+}, []);
 
   const handleFilter = (filters) => {
     const queryParams = new URLSearchParams();
@@ -56,7 +65,7 @@ const HomePage = () => {
 
       <motion.div className="container home-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
         <div className="row align-items-stretch">
-          <div className="col-md-6 d-flex">
+          <div className="col-md-6 d-flex order-2 order-md-1">
             <div className="welcome-card w-100">
               <h2 className="homepage-subtitle">
                 <img src="/media/images/corgi_butt.png" alt="Corgi Butt" className="corgi-butt" /> “Tail-Wagging Goodness in Every Treat!”
@@ -69,8 +78,15 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-6">
-            <img src="/media/images/home_images.png" alt="Cats and Dogs" className="img-fluid rounded shadow h-100 w-100 object-fit-cover" />
+          <div className="col-md-6 d-flex p-0 order-1 order-md-2">
+            <div className="w-100 h-100">
+              <img
+                src="/media/images/home_images.png"
+                alt="Cats and Dogs"
+                className="img-fluid w-100 h-100 object-fit-cover rounded shadow"
+                style={{ minHeight: '100%' }}
+              />
+            </div>
           </div>
         </div>
       </motion.div>
@@ -79,13 +95,20 @@ const HomePage = () => {
 
       <motion.div className="container home-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
         <div className="row align-items-stretch">
-          <div className="col-md-6">
-            <img src="/media/images/exotic_images.png" alt="Cats and Dogs" className="img-fluid rounded shadow h-100 w-100 object-fit-cover" />
+          <div className="col-md-6 d-flex p-0">
+            <div className="w-100 h-100">
+              <img
+                src="/media/images/exotic_images.png"
+                alt="French Bulldog"
+                className="img-fluid w-100 h-100 object-fit-cover rounded shadow"
+                style={{ minHeight: '100%' }}
+              />
+            </div>
           </div>
           <div className="col-md-6 d-flex">
             <div className="welcome-card w-100">
               <h2 className="homepage-subtitle">
-                <img src="/media/images/hedgehog.png" alt="Hedgehog" className="hedgehog" />   Treat your pets to something paw-some!
+                <img src="/media/images/hedgehog.png" alt="Hedgehog" className="hedgehog" /> Treat your pets to something paw-some!
               </h2>
               <hr className="solid divider-line" />
               <p>
@@ -100,20 +123,20 @@ const HomePage = () => {
               <hr className="solid divider-line" />
               <div className="about-text">
                 <h4 className="mb-3">Stay updated on our exotic pet food & offers 🐾</h4>
-                  <form className="d-flex flex-column flex-md-row gap-3">
-                    <input
+                <form className="d-flex flex-column flex-md-row gap-3">
+                  <input
                     type="email"
                     className="form-control"
                     placeholder="Enter your email"
                     required
-                    />
+                  />
                   <button type="submit" className="btn btn-primary">
                     Subscribe
                   </button>
-                  </form>
-                  <p className="mt-3 text-muted" style={{ fontSize: "0.9rem" }}>
-                    Subscribe to receive updates, promotions, and pet care tips — tailored for your exotic companion.
-                  </p>
+                </form>
+                <p className="mt-3 text-muted" style={{ fontSize: "0.9rem" }}>
+                  Subscribe to receive updates, promotions, and pet care tips — tailored for your exotic companion.
+                </p>
               </div>
             </div>
           </div>

@@ -32,6 +32,8 @@ git push origin main
 Database File -
 "/c/xampp/mysql/bin/mysqldump.exe" -u capstone_user -p -h 127.0.0.1 -P 3306 capstone > capstone_backup.sql
 
+cd /c/Users/siewc/OneDrive/Desktop/Generation/Generation_Capstone_Ecommerce
+
 git add .
-git commit -m "Fix Traceback for Dr.AI and Add dynamic JS remind to refresh and able auto refresh on click"
+git commit -m "Fix redirect after registration popup and fix fetch from navbar"
 git push origin main
