@@ -6,7 +6,7 @@ const VendorGrid = () => {
   const [vendors, setVendors] = useState([]);
 
   useEffect(() => {
-    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/vendors/`)
+    axios.get(`${process.env.REACT_APP_API_URL || 'https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io'}/api/vendors/`)
       .then(res => setVendors(res.data))
       .catch(err => console.error('Failed to fetch vendors', err));
   }, []);
@@ -45,7 +45,7 @@ const VendorGrid = () => {
 
       <div className="row">
         {vendors.map((vendor) => (
-          <div className="col-md-6 mb-4" key={vendor.id}>
+          <div className="col-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6 mb-4" key={vendor.id}>
             <div className="vendor-card">
               <div className="vendor-image">
                 <img

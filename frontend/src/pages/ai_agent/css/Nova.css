@@ -1,0 +1,131 @@
+/* Container */
+.nova-container {
+  max-width: 1700px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+/* Chat Box */
+.chat-box,
+#nova-chat-box {
+  height: 400px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+/* Messages */
+.chat-box .text-primary {
+  background-color: #e9f7fe;
+  color: #084298;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 0.5rem;
+}
+
+.chat-box .text-dark {
+  background-color: #f0f0f0;
+  color: #212529;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 0.5rem;
+}
+
+/* Input and Button */
+form.d-flex {
+  gap: 0.5rem;
+}
+
+form .form-control {
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+}
+
+form .btn-primary {
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+}
+
+/* Avatar Image */
+img.img-fluid.rounded.shadow {
+  border: 2px solid #dee2e6;
+  max-width: 100%;
+  max-height: 350px;
+  object-fit: cover;
+}
+
+.nova-avatar-box {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  width: 100%;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.nova-avatar-img {
+  max-height: 350px;
+  object-fit: cover;
+  border: 2px solid #dee2e6;
+}
+
+.nova-layout {
+  padding: 2rem;
+}
+
+.nova-avatar-box {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  max-width: 100%;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.nova-avatar-img {
+  max-height: 350px;
+  object-fit: cover;
+  border: 2px solid #dee2e6;
+}
+
+.chat-box {
+  height: 400px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.chat-box .text-primary {
+  background-color: #e9f7fe;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.chat-box .text-dark {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+form.d-flex {
+  gap: 0.5rem;
+}
+
+form .form-control {
+  border-radius: 10px;
+}
+
+form .btn-primary {
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+}
+
+@media (max-width: 853px) {
+  .nova-avatar-box {
+    display: none !important;
+  }
+}

@@ -29,6 +29,7 @@ import ChatbotWidget from './components/ChatbotWidget';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import OrderTracking from './pages/order/OrderTracking'; 
 import AIAgent from './pages/ai_agent/AIAgent'; 
+import Nova from './pages/ai_agent/Nova'; 
 import VendorGrid from './pages/VendorGrid'; 
 
 
@@ -61,6 +62,7 @@ function App() {
           <Route path="/search" element={<SearchResults />} />
           <Route path="/ai-agent" element={<AIAgent />} />
           <Route path="/vendors" element={<VendorGrid />} />
+          <Route path="/nova" element={<Nova />} />
         </Route>
       </Routes>
 

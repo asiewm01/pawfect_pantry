@@ -45,3 +45,9 @@
 .dashboard-form button:hover {
   background-color: #0056b3;
 }
+
+@media (width: 853px) {
+  .hide-at-853 {
+    display: none !important;
+  }
+}

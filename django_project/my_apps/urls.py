@@ -70,8 +70,8 @@ from my_apps.views.ai_views.ai_views import (
     product_recommendations,
 )
 from my_apps.views.ai_views.chatbot_views import chatbot_view
-
 from my_apps.views.ai_views.ai_agent_views import ai_agent_view
+from my_apps.views.ai_views.nova_chatbot_views import nova_chatbot
 
 from .views.admin_views.ai_admin_views import admin_va_chat, va_admin_page
 
@@ -119,7 +119,7 @@ urlpatterns = [
     path('api/ai/recommend/product/<int:product_id>/', product_recommendations, name='product-recommendations'),
     path('api/ai/chatbot/', chatbot_view, name='chatbot'),
     path("api/ai/agent/", ai_agent_view, name="ai_agent"),
-
+    path("api/ai/nova/", nova_chatbot, name="nova"),
 
     # Authentication
     path('api/login/', auth_views.login_view, name='login'),

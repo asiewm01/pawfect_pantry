@@ -95,7 +95,7 @@ const AIAgent = () => {
           src="/media/images/Vet.png"
           alt="Vet"
           style={{
-          height: '50px',
+          height: '100px',
           width: 'auto',
           maxWidth: '100%',
           objectFit: 'contain',
@@ -107,72 +107,95 @@ const AIAgent = () => {
         </div>   
       </h2>
 
-      {/* Message History */}
-      <div className="mb-3" style={{ maxHeight: '800px', overflowY: 'auto' }}>
-        {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`alert ${msg.type === 'user' ? 'alert-primary text-end' : 'alert-secondary text-start'}`}
-          >
-            <div dangerouslySetInnerHTML={{ __html: msg.text }} />
 
-            {msg.summary && (
-              <div className="mt-2">
-                <strong>📖 About the Breed:</strong>
-                <p>{msg.summary}</p>
-              </div>
-            )}
-
-            {msg.tips && Array.isArray(msg.tips) && msg.tips.length > 0 && (
-              <div className="mt-2">
-                <strong>✅ Care Tips:</strong>
-                <ul className="mb-2">
-                  {msg.tips.map((tip, i) => (
-                    <li key={i}>{tip}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {msg.products && Array.isArray(msg.products) && msg.products.length > 0 && (
-              <div className="mt-2">
-                <strong>🛒 Recommended Products:</strong>
-                <ul>
-                  {msg.products.map((p, i) => (
-                    <li key={i}>
-                      <strong>{p.name}</strong> – ${p.price}<br />
-                      <small>{p.description}</small>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* Message Input */}
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="d-flex flex-column flex-md-row gap-2 align-items-center">
-          <input
-            type="text"
-            className="form-control flex-fill"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask a question about pet diets..."
-          />
-
-          <input
-            type="file"
-            className="form-control"
-            accept=".pdf,.jpg,.jpeg,.png"
-            onChange={handleFileChange}
-            style={{ maxWidth: '250px' }}
-          />
-
-          <button className="btn btn-primary" type="submit">Send</button>
+      {/* Two-column layout */}
+      <div className="row">
+        {/* Left image - visible on md and above */}
+        <div className="col-md-4 d-none d-md-flex justify-content-center align-items-start mb-3">
+<img
+  src="/media/images/DrAI.png"
+  alt="Dr.AI"
+  className="img-fluid"
+  style={{
+    width: '100%',
+    maxWidth: '500px',      // wider than before
+    height: 'auto',
+    objectFit: 'contain',
+    borderRadius: '1rem'
+  }}
+/>
         </div>
-      </form>
+
+        {/* Right chat interface */}
+        <div className="col-12 col-md-8">
+          {/* Message History */}
+          <div className="mb-3" style={{ maxHeight: '800px', overflowY: 'auto' }}>
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`alert ${msg.type === 'user' ? 'alert-primary text-end' : 'alert-secondary text-start'}`}
+              >
+                <div dangerouslySetInnerHTML={{ __html: msg.text }} />
+
+                {msg.summary && (
+                  <div className="mt-2">
+                    <strong>📖 About the Breed:</strong>
+                    <p>{msg.summary}</p>
+                  </div>
+                )}
+
+                {msg.tips && Array.isArray(msg.tips) && msg.tips.length > 0 && (
+                  <div className="mt-2">
+                    <strong>✅ Care Tips:</strong>
+                    <ul className="mb-2">
+                      {msg.tips.map((tip, i) => (
+                        <li key={i}>{tip}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {msg.products && Array.isArray(msg.products) && msg.products.length > 0 && (
+                  <div className="mt-2">
+                    <strong>🛒 Recommended Products:</strong>
+                    <ul>
+                      {msg.products.map((p, i) => (
+                        <li key={i}>
+                          <strong>{p.name}</strong> – ${p.price}<br />
+                          <small>{p.description}</small>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Message Input */}
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
+            <div className="d-flex flex-column flex-md-row gap-2 align-items-center">
+              <input
+                type="text"
+                className="form-control flex-fill"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask a question about pet diets..."
+              />
+
+              <input
+                type="file"
+                className="form-control"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={handleFileChange}
+                style={{ maxWidth: '250px' }}
+              />
+
+              <button className="btn btn-primary" type="submit">Send</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
