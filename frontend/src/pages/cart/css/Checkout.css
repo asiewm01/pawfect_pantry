@@ -183,6 +183,7 @@
 
 .popup-box {
   background-color: #fff;
+  color: #000; /* 👈 Add this line */
   border-radius: 20px;
   padding: 20px 30px;
   width: 420px;
