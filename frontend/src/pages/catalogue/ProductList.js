@@ -4,6 +4,7 @@ import ProductFilterForm from '../../components/ProductFilterForm';
 import { Link } from 'react-router-dom';
 import axios from '../../axiosSetup';
 import { motion } from 'framer-motion';
+import CartSuccessPopup from '../../components/Popup/CartSuccessPopup';
 
 const ProductList = ({ products: initialProducts }) => {
   const [products, setProducts] = useState(initialProducts || []);
@@ -18,6 +19,8 @@ const ProductList = ({ products: initialProducts }) => {
   });
 
   const [recommended, setRecommended] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
 
   useEffect(() => {
     axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/recommend/`, { withCredentials: true })
@@ -75,10 +78,13 @@ const ProductList = ({ products: initialProducts }) => {
 
   const handleAddToCart = async (productId) => {
     try {
-      const response = await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/add/${productId}/`, {}, {
-        withCredentials: true
-      });
-      alert(response.data.message || 'Item added to cart!');
+      const response = await axios.post(
+        `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/add/${productId}/`,
+        {},
+        { withCredentials: true }
+      );
+      setPopupMessage(response.data.message || 'Item added to cart!');
+      setShowPopup(true);
     } catch (error) {
       console.error('Error adding to cart:', error);
       alert('Failed to add item. Please log in first.');
@@ -90,15 +96,18 @@ const ProductList = ({ products: initialProducts }) => {
   };
 
   return (
-
     <div className="product-list-container">
-          <div className="container-fluid p-0">
-      <div className="row">
-        <div className="col-12 text-center mt-3">
-          <h1 className="homepage-title"><img src="/media/images/kawaii_cat.png" alt="Kawaii Cat" className="kawaii_cat" />Welcome to our pet food selection</h1>
+      <div className="container-fluid p-0">
+        <div className="row">
+          <div className="col-12 text-center mt-3">
+            <h1 className="homepage-title">
+              <img src="/media/images/kawaii_cat.png" alt="Kawaii Cat" className="kawaii_cat" />
+              Welcome to our pet food selection
+            </h1>
+          </div>
         </div>
       </div>
-    </div>
+
       <ProductFilterForm onFilter={setFilters} />
 
       {loading && <p className="text-center">Loading products...</p>}
@@ -118,10 +127,12 @@ const ProductList = ({ products: initialProducts }) => {
               <div className="price">${product.price}</div>
               <div className="category">{product.species} | {product.food_type}</div>
               <p className="views">{product.views} views</p>
-              <Link to={`/catalogue/${product.id}`} className="view-link">View Details</Link>
-              <button className="add-btn" onClick={() => handleAddToCart(product.id)}>
-                Add to Cart
-              </button>
+              <div className="button-wrapper">
+                <Link to={`/catalogue/${product.id}`} className="view-link">View Details</Link>
+                <button className="add-btn" onClick={() => handleAddToCart(product.id)}>
+                  Add to Cart
+                </button>
+              </div>
             </div>
           ))
         ) : !loading ? (
@@ -142,37 +153,43 @@ const ProductList = ({ products: initialProducts }) => {
           </button>
         )}
       </div>
+
       <hr className="solid my-4" />
-<motion.div className="ai-recommendation-section container py-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.4 }}>
-  <h2 className="text-center mb-4">Recommended for You<img src="/media/images/neko.png" alt="Neko" className="neko" /></h2>
-  <div className="row justify-content-center">
-    {recommended.length > 0 ? (
-      recommended.map(product => (
-        <div key={product.id} className="col-sm-12 col-md-6 col-lg-4 mb-4">
-          <motion.div className="card h-100 shadow-sm" whileHover={{ scale: 1.02 }}>
-            <img
-              src={product.image || "/media/images/placeholder.jpg"}
-              alt={product.name}
-              className="card-img-top"
-              style={{ height: '200px', objectFit: 'cover' }}
-              onError={(e) => { e.target.onerror = null; e.target.src = "/media/images/placeholder.jpg"; }}
-            />
-            <div className="card-body d-flex flex-column">
-              <h5 className="card-title">{product.name}</h5>
-              <p className="card-text mb-1"><strong>Price:</strong> ${product.price}</p>
-              <p className="card-text"><strong>Views:</strong> {product.views}</p>
-              <a href={`/catalogue/${product.id}`} className="btn btn-outline-primary mt-auto">View Product</a>
+
+      <motion.div className="ai-recommendation-section container py-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.4 }}>
+        <h2 className="text-center mb-4">Recommended for You<img src="/media/images/neko.png" alt="Neko" className="neko" /></h2>
+        <div className="row justify-content-center">
+          {recommended.length > 0 ? (
+            recommended.map(product => (
+              <div key={product.id} className="col-sm-12 col-md-6 col-lg-4 mb-4">
+                <motion.div className="card h-100 shadow-sm" whileHover={{ scale: 1.02 }}>
+                  <img
+                    src={product.image || "/media/images/placeholder.jpg"}
+                    alt={product.name}
+                    className="card-img-top"
+                    style={{ height: '200px', objectFit: 'cover' }}
+                    onError={(e) => { e.target.onerror = null; e.target.src = "/media/images/placeholder.jpg"; }}
+                  />
+                  <div className="card-body d-flex flex-column">
+                    <h5 className="card-title">{product.name}</h5>
+                    <p className="card-text mb-1"><strong>Price:</strong> ${product.price}</p>
+                    <p className="card-text"><strong>Views:</strong> {product.views}</p>
+                    <a href={`/catalogue/${product.id}`} className="btn btn-outline-primary mt-auto">View Product</a>
+                  </div>
+                </motion.div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center">
+              <p className="text-muted">No personalized recommendations available yet.</p>
             </div>
-          </motion.div>
+          )}
         </div>
-      ))
-    ) : (
-      <div className="text-center">
-        <p className="text-muted">No personalized recommendations available yet.</p>
-      </div>
-    )}
-  </div>
-</motion.div>
+      </motion.div>
+
+      {showPopup && (
+        <CartSuccessPopup message={popupMessage} onClose={() => setShowPopup(false)} />
+      )}
     </div>
   );
 };

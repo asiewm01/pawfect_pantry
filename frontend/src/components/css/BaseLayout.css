@@ -16,8 +16,9 @@ body {
 }
 
 .site-logo {
-  height: 100px;
+  height: 150px;
   margin-right: 15px;
+  border-radius: 6px;       /* Optional: slight rounding */
 }
 
 @media (max-width: 390px) {

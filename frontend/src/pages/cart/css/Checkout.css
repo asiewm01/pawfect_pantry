@@ -186,7 +186,7 @@
   color: #000; /* 👈 Add this line */
   border-radius: 20px;
   padding: 20px 30px;
-  width: 420px;
+  width: 800px;
   display: flex;
   align-items: center;
   gap: 20px;

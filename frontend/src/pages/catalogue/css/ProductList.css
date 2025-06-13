@@ -136,3 +136,28 @@
   height: 60px;
   margin-left: 20px;
 }
+
+@media (width: 1024px) {
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .product-card .view-link,
+  .product-card .add-btn {
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  .product-card .price,
+  .product-card .category,
+  .product-card .views {
+    font-size: 0.95rem;
+  }
+
+  .product-card .btn {
+    font-size: 0.9rem;
+  }
+}

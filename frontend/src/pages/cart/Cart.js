@@ -7,8 +7,6 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [total, setTotal] = useState(0);
-  const BLOB_BASE = "https://pawfectmediastore.blob.core.windows.net/media";
-
 
   useEffect(() => {
     fetchCart();
@@ -16,16 +14,19 @@ const Cart = () => {
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/`, { withCredentials: true });
+      const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/`, {
+        withCredentials: true
+      });
       const items = res.data.cart;
+
       setCartItems(items);
+      setTotal(res.data.total);
 
       const initialQuantities = items.reduce((acc, item) => {
         acc[item.product_id] = item.quantity;
         return acc;
       }, {});
       setQuantities(initialQuantities);
-      setTotal(res.data.total);
     } catch (err) {
       console.error('Error fetching cart:', err);
     }
@@ -44,9 +45,11 @@ const Cart = () => {
         items: Object.entries(quantities).map(([product_id, quantity]) => ({
           product_id: parseInt(product_id),
           quantity,
-        }))
+        })),
       };
-      await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/update/`, payload, { withCredentials: true });
+      await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/update/`, payload, {
+        withCredentials: true
+      });
       alert('Cart updated!');
       fetchCart();
     } catch (err) {
@@ -56,7 +59,11 @@ const Cart = () => {
 
   const handleRemove = async (productId) => {
     try {
-      await axios.post(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/remove/${productId}/`, {}, { withCredentials: true });
+      await axios.post(
+        `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/remove/${productId}/`,
+        {},
+        { withCredentials: true }
+      );
       fetchCart();
     } catch (err) {
       console.error('Error removing item:', err);
@@ -66,6 +73,7 @@ const Cart = () => {
   return (
     <div className="cart-container container mt-4">
       <h2 className="mb-4">🛒 Your Cart</h2>
+
       {cartItems.length > 0 ? (
         <>
           <table className="table table-bordered align-middle">
@@ -83,12 +91,16 @@ const Cart = () => {
               {cartItems.map((item, index) => (
                 <tr key={item.id}>
                   <td>{index + 1}</td>
-                  <td className="d-flex align-items-center">
-                  <img
-                    src={item.image?.url || `${BLOB_BASE}/${item.image}`}
-                    alt={item.name}
-                  />
-                    {item.product_name}
+                  <td className="d-flex align-items-center gap-2">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="cart-item-img"
+                      onError={(e) =>
+                        (e.target.src = '/media/products_images/default.png')
+                      }
+                    />
+                    {item.name}
                   </td>
                   <td>
                     <input
@@ -102,7 +114,7 @@ const Cart = () => {
                       style={{ width: '80px' }}
                     />
                   </td>
-                  <td>${item.price.toFixed(2)}</td>
+                  <td>${parseFloat(item.price).toFixed(2)}</td>
                   <td>${(item.price * quantities[item.product_id]).toFixed(2)}</td>
                   <td>
                     <button
@@ -131,7 +143,12 @@ const Cart = () => {
           </div>
         </>
       ) : (
-        <p>Your cart is empty.</p>
+        <div className="text-center py-5">
+          <h4>Your cart is empty 🐾</h4>
+          <Link to="/catalogue" className="btn btn-primary mt-3">
+            Browse Products
+          </Link>
+        </div>
       )}
     </div>
   );

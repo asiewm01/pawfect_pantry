@@ -1,34 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../../api/axiosInstance';
 import './css/ProductDetail.css';
 import FeedbackSection from '../../components/FeedbackSection';
-import { useNavigate } from 'react-router-dom';
+import CheckoutSuccessPopup from '../../components/Popup/CheckoutSuccessPopup';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [product, setProduct] = useState(null);
   const [feedbackList, setFeedbackList] = useState([]);
   const [comment, setComment] = useState('');
+  const [quantity, setQuantity] = useState(1);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const [quantity, setQuantity] = useState(1);
-  const navigate = useNavigate();
-
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/catalogue/${id}/`);
-        setProduct(res.data);
-        setFeedbackList(res.data.feedback || []);
-      } catch (err) {
-        console.error(err);
-        setError('Failed to load product data');
-      }
-    }
-    fetchData();
+    fetchProductData();
   }, [id]);
+
+  const fetchProductData = async () => {
+    try {
+      const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/catalogue/${id}/`);
+      setProduct(res.data);
+      setFeedbackList(res.data.feedback || []);
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load product data');
+    }
+  };
 
   const handleSubmitFeedback = async (e) => {
     e.preventDefault();
@@ -40,26 +43,26 @@ const ProductDetail = () => {
       );
       setComment('');
       setSuccess(true);
-      setError('');
-
-      const updated = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/catalogue/${id}/`);
-      setFeedbackList(updated.data.feedback || []);
-
       setTimeout(() => setSuccess(false), 3000);
+      fetchProductData();
     } catch (err) {
-      setError('Error submitting feedback');
       console.error(err);
+      setError('Error submitting feedback');
     }
   };
 
-  const handleAddToCart = async (productId) => {
+  const handleAddToCart = async (productId, redirectToCart = false) => {
     try {
       const response = await axios.post(
         `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/add/${productId}/`,
         { quantity },
         { withCredentials: true }
       );
-      alert(response.data.message || 'Item added to cart!');
+      setPopupMessage(response.data.message || 'Item added to cart!');
+      setShowPopup(true);
+      if (redirectToCart) {
+        setTimeout(() => navigate('/cart'), 1000);
+      }
     } catch (error) {
       console.error('Error adding to cart:', error);
       alert('Failed to add item. Please log in first.');
@@ -70,7 +73,6 @@ const ProductDetail = () => {
 
   return (
     <div className="container-xl product-detail mt-4">
-      {/* Product Info */}
       <div className="row">
         <div className="col-md-6 text-center">
           <img
@@ -95,9 +97,8 @@ const ProductDetail = () => {
             )}
           </p>
 
-          {/* Quantity + Add to Cart */}
           {product.stock > 0 && (
-            <div className="d-flex align-items-end gap-2 mb-3">
+            <div className="d-flex flex-wrap align-items-end gap-2 mb-3">
               <div style={{ flex: '0 0 100px' }}>
                 <label htmlFor="quantity"><strong>Qty:</strong></label>
                 <input
@@ -120,10 +121,7 @@ const ProductDetail = () => {
               </button>
               <button
                 className="btn btn-primary btn-lg flex-grow-1"
-                onClick={() => {
-                  handleAddToCart(product.id);
-                  navigate('/cart');
-                }}
+                onClick={() => handleAddToCart(product.id, true)}
               >
                 Go to Cart
               </button>
@@ -132,7 +130,6 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* Feedback Form */}
       <div className="row mt-4">
         <div className="col-md-12">
           <div className="feedback-form">
@@ -154,12 +151,21 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* Customer Feedback */}
       <div className="row mt-5">
         <div className="col-md-12">
           <FeedbackSection feedbackList={feedbackList} />
         </div>
       </div>
+
+      {showPopup && (
+        <CheckoutSuccessPopup
+          message={popupMessage}
+          onClose={() => {
+            setShowPopup(false);
+            fetchProductData();
+          }}
+        />
+      )}
     </div>
   );
 };

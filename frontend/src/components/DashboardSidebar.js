@@ -46,6 +46,9 @@ const DashboardSidebar = ({ setIsLoggedIn }) => {
           <NavLink to="/nova" className="nav-link d-flex align-items-center">
             <i className="fas fa-headset me-2"></i> Frontdesk AI - Nova
           </NavLink>
+          <NavLink to="/nova" className="nav-link d-flex align-items-center">
+            <i className="fa fa-heart"></i> Ask Dr.AI 
+          </NavLink>
         </li>
         <li className="nav-item mt-3">
           <button onClick={handleLogout} className="nav-link btn btn-link text-start text-danger p-0 d-flex align-items-center">

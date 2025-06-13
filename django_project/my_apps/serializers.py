@@ -31,12 +31,41 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CartItemSerializer(serializers.ModelSerializer):
+    product_id = serializers.IntegerField(source='product.id')
     name = serializers.CharField(source='product.name')
     price = serializers.DecimalField(source='product.price', max_digits=10, decimal_places=2)
+    species = serializers.CharField(source='product.species', allow_null=True, required=False)
+    food_type = serializers.CharField(source='product.food_type', allow_null=True, required=False)
+    image = serializers.SerializerMethodField()
+    subtotal = serializers.SerializerMethodField()
 
     class Meta:
         model = CartItem
-        fields = ['id', 'name', 'price', 'quantity']
+        fields = [
+            'id',
+            'product_id',
+            'name',
+            'price',
+            'quantity',
+            'subtotal',
+            'image',
+            'species',
+            'food_type'
+        ]
+
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.product.image:
+            image_url = obj.product.image.url
+        else:
+            image_url = '/media/images/placeholder.jpg'  # fallback image
+
+        if request is not None:
+            return request.build_absolute_uri(image_url)
+        return image_url
+
+    def get_subtotal(self, obj):
+        return float(obj.quantity * obj.product.price)
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name')
