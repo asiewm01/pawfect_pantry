@@ -35,5 +35,5 @@ Database File -
 cd /c/Users/siewc/OneDrive/Desktop/Generation/Generation_Capstone_Ecommerce
 
 git add .
-git commit -m "Fix Nova"
+git commit -m "Checkout Popup"
 git push origin main
