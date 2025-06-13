@@ -83,3 +83,4 @@ Desktop.ini
 .env*
 .env.production
 .env.deployment
+.env
