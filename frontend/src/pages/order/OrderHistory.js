@@ -22,7 +22,7 @@ const OrderHistory = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`/api/orders/`, {
+      const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/orders/`, {
         withCredentials: true
       });
       setOrders(res.data.orders);
