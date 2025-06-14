@@ -24,7 +24,7 @@ const ProductList = ({ products: initialProducts }) => {
 
   // ✅ AI Recommendations (once)
   useEffect(() => {
-    axios.get(`/api/ai/recommend/`, { withCredentials: true })
+    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/recommend/`, { withCredentials: true })
       .then(res => {
         setRecommended(res.data.recommended || []);
       })
@@ -44,7 +44,7 @@ const ProductList = ({ products: initialProducts }) => {
       food_type: currentFilters.food_type || ''
     });
 
-    axios.get(`/api/catalogue/?${queryParams.toString()}`)
+    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/catalogue/?${queryParams.toString()}`)
       .then(res => {
         const productArray = res.data.products;
         if (Array.isArray(productArray)) {
@@ -75,7 +75,7 @@ const ProductList = ({ products: initialProducts }) => {
   const handleAddToCart = async (productId) => {
     try {
       const response = await axios.post(
-        `/api/cart/add/${productId}/`,
+        `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/add/${productId}/`,
         {},
         { withCredentials: true }
       );

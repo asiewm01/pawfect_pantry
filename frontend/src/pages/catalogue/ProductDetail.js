@@ -34,7 +34,7 @@ const ProductDetail = () => {
 
   const fetchProductData = async () => {
     try {
-      const res = await axios.get(`/api/catalogue/${id}/`);
+      const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/catalogue/${id}/`);
       setProduct(res.data);
       setFeedbackList(res.data.feedback || []);
     } catch (err) {
@@ -47,7 +47,7 @@ const ProductDetail = () => {
     e.preventDefault();
     try {
       await axios.post(
-        `/api/catalogue/${id}/feedback/submit/`,
+        `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/catalogue/${id}/feedback/submit/`,
         { comment },
         { withCredentials: true }
       );
@@ -64,7 +64,7 @@ const ProductDetail = () => {
   const handleAddToCart = async (productId, redirectToCart = false) => {
     try {
       const response = await axios.post(
-        `/api/cart/add/${productId}/`,
+        `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/add/${productId}/`,
         { quantity },
         { withCredentials: true }
       );
