@@ -20,10 +20,12 @@ const ChatbotWidget = () => {
     const timer = setTimeout(() => {
       setOpen(true);
       if (messages.length === 0) {
-        const welcomeMsg = {
-          type: 'bot',
-          text: `<b>👋 Hello! I'm <span style="color:#007BFF;">B.A.R.K.L.E.Y.</span> – Bot Assistant for Recommending Kits, Listings & Engaging You.</b><br>Ask me anything about our store, products, or promotions! 🐾`
-        };
+const welcomeMsg = {
+  type: 'bot',
+  text: `<b>👋 Hello! I'm <span style="color:#007BFF;">B.A.R.K.L.E.Y.</span> – <br> Bot Assistant for Recommending Kits, Listings & Engaging You.</b>
+  <br><br>
+  Ask me anything about our store, products, or promotions! 🐾`
+};
         setMessages([welcomeMsg]);
       }
     }, 1000);
