@@ -22,20 +22,9 @@ const ProductList = ({ products: initialProducts }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
 
-  // ✅ Refresh-once on initial load
+  // ✅ AI Recommendations (once)
   useEffect(() => {
-    const hasRefreshed = sessionStorage.getItem('productListRefreshed');
-    if (!hasRefreshed) {
-      sessionStorage.setItem('productListRefreshed', 'true');
-      window.location.reload();
-    }
-  }, []);
-
-  // ✅ AI Recommendations (static once)
-  useEffect(() => {
-    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/recommend/`, {
-      withCredentials: true
-    })
+    axios.get(`/api/ai/recommend/`, { withCredentials: true })
       .then(res => {
         setRecommended(res.data.recommended || []);
       })
@@ -55,7 +44,7 @@ const ProductList = ({ products: initialProducts }) => {
       food_type: currentFilters.food_type || ''
     });
 
-    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/catalogue/?${queryParams.toString()}`)
+    axios.get(`/api/catalogue/?${queryParams.toString()}`)
       .then(res => {
         const productArray = res.data.products;
         if (Array.isArray(productArray)) {
@@ -78,7 +67,7 @@ const ProductList = ({ products: initialProducts }) => {
       .finally(() => setLoading(false));
   }, [filters]);
 
-  // ✅ Fetch on filters or page change
+  // ✅ Fetch products when filters or page change
   useEffect(() => {
     fetchProducts(pageInfo.page, filters);
   }, [filters]);
@@ -86,7 +75,7 @@ const ProductList = ({ products: initialProducts }) => {
   const handleAddToCart = async (productId) => {
     try {
       const response = await axios.post(
-        `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/add/${productId}/`,
+        `/api/cart/add/${productId}/`,
         {},
         { withCredentials: true }
       );

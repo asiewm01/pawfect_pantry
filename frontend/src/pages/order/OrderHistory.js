@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../../axiosSetup'; // Make sure this has baseURL + withCredentials
+import axios from '../../axiosSetup';
 import { Link } from 'react-router-dom';
 import './css/OrderHistory.css';
 
@@ -7,16 +7,25 @@ const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState('');
 
+  // ✅ One-time refresh on first entry to this page
+  useEffect(() => {
+    const hasRefreshed = sessionStorage.getItem('orderHistoryRefreshed');
+    if (!hasRefreshed) {
+      sessionStorage.setItem('orderHistoryRefreshed', 'true');
+      window.location.reload();
+    }
+  }, []);
+
   useEffect(() => {
     fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/orders/`, {
-        withCredentials: true // Ensure cookies/session are passed
+      const res = await axios.get(`/api/orders/`, {
+        withCredentials: true
       });
-      setOrders(res.data.orders); // ✅ Extract correct array
+      setOrders(res.data.orders);
     } catch (err) {
       console.error('Failed to fetch order history:', err);
       setError('Unable to load your order history.');
@@ -46,9 +55,9 @@ const OrderHistory = () => {
                 <td>{order.total.toFixed(2)}</td>
                 <td>{order.status}</td>
                 <td>
-                <Link to={`/orders/detail/${order.id}`} className="view-btn">
-                  View
-                </Link>
+                  <Link to={`/orders/detail/${order.id}`} className="view-btn">
+                    View
+                  </Link>
                 </td>
               </tr>
             ))
