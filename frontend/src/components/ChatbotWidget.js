@@ -28,11 +28,23 @@ const ChatbotWidget = () => {
       const response = await axios.post(endpoint, { message: userInput }, { withCredentials: true });
 
       const botReply = response.data.reply || "❓ Sorry, I didn't understand that.";
-      setMessages([...updatedMessages, { type: 'bot', text: botReply }]);
+
+      const introMessage = {
+        type: 'bot',
+        text: `<b>👋 Hello! My name is <span style="color:#007BFF;">B.A.R.K.L.E.Y.</span> – Bot Assistant for Recommending Kits, Listings & Engaging You.</b><br>Ask me anything about our store, products, or promotions! 🐾`
+      };
+
+      const isFirstInteraction = messages.length === 0;
+
+      setMessages([
+        ...updatedMessages,
+        ...(isFirstInteraction ? [introMessage] : []),
+        { type: 'bot', text: botReply }
+      ]);
     } catch (err) {
       const errorMessage =
         err.response?.status === 401
-          ? "🔒 Please log in to use the chatbot. You can log in from the top-right menu."
+          ? "🔒 Please log in to use BARKLEY ChatBot. You can log in from the top-right menu."
           : "⚠️ Something went wrong. Please try again later.";
 
       setMessages([...updatedMessages, { type: 'bot', text: errorMessage }]);
@@ -47,7 +59,8 @@ const ChatbotWidget = () => {
 
       {open && (
         <div id="chatbot-box">
-          <div id="chatbot-header">🤖 Ask Me Anything</div>
+          <div id="chatbot-header">🐾 BARKLEY ChatBot</div>
+
           <div id="chatbot-messages">
             {messages.map((msg, idx) => (
               <div
@@ -65,7 +78,7 @@ const ChatbotWidget = () => {
               id="chatbot-input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Type a message..."
+              placeholder="Ask BARKLEY about products, promos, or categories..."
               required
             />
             <button type="submit" id="chatbot-send">➤</button>
