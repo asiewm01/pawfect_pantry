@@ -10,9 +10,26 @@ const ChatbotWidget = () => {
 
   const toggleChatbot = () => setOpen(prev => !prev);
 
+  // Auto-scroll to bottom on message update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Auto-open and greet after login
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOpen(true);
+      if (messages.length === 0) {
+        const welcomeMsg = {
+          type: 'bot',
+          text: `<b>👋 Hello! I'm <span style="color:#007BFF;">B.A.R.K.L.E.Y.</span> – Bot Assistant for Recommending Kits, Listings & Engaging You.</b><br>Ask me anything about our store, products, or promotions! 🐾`
+        };
+        setMessages([welcomeMsg]);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [messages.length]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,19 +45,7 @@ const ChatbotWidget = () => {
       const response = await axios.post(endpoint, { message: userInput }, { withCredentials: true });
 
       const botReply = response.data.reply || "❓ Sorry, I didn't understand that.";
-
-      const introMessage = {
-        type: 'bot',
-        text: `<b>👋 Hello! My name is <span style="color:#007BFF;">B.A.R.K.L.E.Y.</span> – Bot Assistant for Recommending Kits, Listings & Engaging You.</b><br>Ask me anything about our store, products, or promotions! 🐾`
-      };
-
-      const isFirstInteraction = messages.length === 0;
-
-      setMessages([
-        ...updatedMessages,
-        ...(isFirstInteraction ? [introMessage] : []),
-        { type: 'bot', text: botReply }
-      ]);
+      setMessages([...updatedMessages, { type: 'bot', text: botReply }]);
     } catch (err) {
       const errorMessage =
         err.response?.status === 401
