@@ -70,6 +70,18 @@ const Cart = () => {
     }
   };
 
+useEffect(() => {
+  // ✅ Refresh once per session
+  const hasRefreshed = sessionStorage.getItem('cartRefreshed');
+
+  if (!hasRefreshed) {
+    sessionStorage.setItem('cartRefreshed', 'true');
+    window.location.reload();
+  } else {
+    fetchCart();
+  }
+}, []);
+
   return (
     <div className="cart-container container mt-4">
       <h2 className="mb-4">🛒 Your Cart</h2>

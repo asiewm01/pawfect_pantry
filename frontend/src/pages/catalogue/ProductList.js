@@ -22,8 +22,20 @@ const ProductList = ({ products: initialProducts }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
 
+  // ✅ Refresh-once on initial load
   useEffect(() => {
-    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/recommend/`, { withCredentials: true })
+    const hasRefreshed = sessionStorage.getItem('productListRefreshed');
+    if (!hasRefreshed) {
+      sessionStorage.setItem('productListRefreshed', 'true');
+      window.location.reload();
+    }
+  }, []);
+
+  // ✅ AI Recommendations (static once)
+  useEffect(() => {
+    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/recommend/`, {
+      withCredentials: true
+    })
       .then(res => {
         setRecommended(res.data.recommended || []);
       })
@@ -32,9 +44,9 @@ const ProductList = ({ products: initialProducts }) => {
       });
   }, []);
 
+  // ✅ Fetch products with pagination + filters
   const fetchProducts = useCallback((page = 1, currentFilters = filters) => {
     setLoading(true);
-
     const queryParams = new URLSearchParams({
       page,
       search: currentFilters.search || '',
@@ -66,15 +78,10 @@ const ProductList = ({ products: initialProducts }) => {
       .finally(() => setLoading(false));
   }, [filters]);
 
+  // ✅ Fetch on filters or page change
   useEffect(() => {
-    if (!initialProducts) {
-      fetchProducts(1, filters);
-    }
-  }, [initialProducts, fetchProducts, filters]);
-
-  useEffect(() => {
-    fetchProducts(1, filters);
-  }, [filters, fetchProducts]);
+    fetchProducts(pageInfo.page, filters);
+  }, [filters]);
 
   const handleAddToCart = async (productId) => {
     try {
@@ -93,6 +100,7 @@ const ProductList = ({ products: initialProducts }) => {
 
   const handlePageChange = (newPage) => {
     fetchProducts(newPage, filters);
+    setPageInfo(prev => ({ ...prev, page: newPage }));
   };
 
   return (
@@ -157,7 +165,10 @@ const ProductList = ({ products: initialProducts }) => {
       <hr className="solid my-4" />
 
       <motion.div className="ai-recommendation-section container py-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.4 }}>
-        <h2 className="text-center mb-4">Recommended for You<img src="/media/images/neko.png" alt="Neko" className="neko" /></h2>
+        <h2 className="text-center mb-4">
+          Recommended for You
+          <img src="/media/images/neko.png" alt="Neko" className="neko" />
+        </h2>
         <div className="row justify-content-center">
           {recommended.length > 0 ? (
             recommended.map(product => (

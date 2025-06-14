@@ -4,12 +4,11 @@ import './css/CheckoutSuccessPopup.css';
 const CheckoutSuccessPopup = ({ onClose }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
-      onClose();
-      window.location.reload();
+      handleOkClick();
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [onClose]);
+  }, []);
 
   const handleOkClick = () => {
     onClose();
@@ -18,13 +17,14 @@ const CheckoutSuccessPopup = ({ onClose }) => {
 
   return (
     <div className="popup-overlay">
-      <div className="popup-box text-center">
+      <div className="popup-box square-popup text-center">
         <img
-          src="/media/images/corgi_happy.png"
+          src="/media/images/corgi_butt.png"
           alt="Corgi celebrating"
           className="popup-corgi mb-3"
         />
-        <h4>🎉 Order Confirmed! Please check your email!</h4>
+        <h4>🎉 Order Confirmed!</h4>
+        <p>Please check your email for confirmation.</p>
         <button className="btn btn-primary mt-3" onClick={handleOkClick}>
           OK
         </button>

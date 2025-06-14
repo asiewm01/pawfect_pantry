@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './css/Checkout.css';
 import axios from '../../axiosSetup';
 import { useNavigate } from 'react-router-dom';
+import CheckoutSucessPopup from '../../components/Popup/CheckoutSuccessPopup';
+
 
 const Checkout = () => {
   const [formData, setFormData] = useState({
@@ -191,19 +193,7 @@ const Checkout = () => {
       </div>
 
       {/* ✅ Order Confirmation Popup */}
-      {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup-box text-center">
-            <img
-              src="/media/images/corgi_happy.png"
-              alt="Corgi celebrating"
-              className="popup-corgi"
-            />
-            <h4>🎉 Order Confirmed!</h4>
-            <p>Please check your email for confirmation.</p>
-          </div>
-        </div>
-      )}
+      {showPopup && <CheckoutSucessPopup />}
     </div>
   );
 };
