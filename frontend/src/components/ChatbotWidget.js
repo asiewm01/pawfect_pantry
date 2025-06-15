@@ -16,22 +16,32 @@ const ChatbotWidget = () => {
   }, [messages]);
 
   // Auto-open and greet after login
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setOpen(true);
-      if (messages.length === 0) {
-const welcomeMsg = {
-  type: 'bot',
-  text: `<b>👋 Hello! I'm <span style="color:#007BFF;">B.A.R.K.L.E.Y.</span> – <br> Bot Assistant for Recommending Kits, Listings & Engaging You.</b>
-  <br><br>
-  Ask me anything about our store, products, or promotions! 🐾`
-};
-        setMessages([welcomeMsg]);
-      }
-    }, 1000);
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setOpen(true);
+    if (messages.length === 0) {
+      const welcomeMsg = {
+        type: 'bot',
+        text: `<b>👋 Hello! I'm <span style="color:#007BFF;">B.A.R.K.L.E.Y.</span> – <br> Bot Assistant for Recommending Kits, Listings & Engaging You.</b>
+        <br><br>
+        Ask me anything about our store, products, or promotions! 🐾
+        <br><br>
+        You can also <span class="chatbot-close-link" style="color:#007BFF; cursor:pointer;">close</span> this tab and come back later ! I will be here anytime when you need me !` 
+      };
+      setMessages([welcomeMsg]);
 
-    return () => clearTimeout(timer);
-  }, [messages.length]);
+      setTimeout(() => {
+        const closeLink = document.querySelector('.chatbot-close-link');
+        if (closeLink) {
+          closeLink.addEventListener('click', () => setOpen(false));
+        }
+      }, 100);
+    }
+  }, 1000);
+
+  return () => clearTimeout(timer);
+}, [messages.length]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
