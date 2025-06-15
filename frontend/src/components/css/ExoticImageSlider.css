@@ -105,3 +105,19 @@
   display: block;
   min-height: 100%;
 }
+
+@media (max-width: 431px) {
+  .exotic-slide-box {
+    height: 150px !important; /* Match the taller height */
+  }
+
+  .exotic-two-tone-bg {
+    height: 100% !important;
+    align-items: center;
+  }
+
+  .exotic-slide-img {
+    height: 90%;
+    object-fit: contain;
+  }
+}
