@@ -1,0 +1,107 @@
+.exotic-slide-box {
+  width: 100%;
+  height: 560px; /* Fixed height on desktop */
+  min-height: 450px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+}
+
+/* Shared background wrapper */
+.exotic-two-tone-bg {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  transition: background 0.5s ease-in-out;
+}
+
+/* 🐶 Dog background */
+.exotic-two-tone-bg.show-dog-bg {
+  background: #C5EAF6;
+  transition: none;
+}
+
+/* 🐱 Cat background */
+.exotic-two-tone-bg.show-cat-bg {
+  background: linear-gradient(to right, #FFD43B 50%, #9DA7A0 50%);
+}
+
+/* Image styling */
+.exotic-slide-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: 90%;
+  object-fit: contain;
+  border-radius: 10px;
+  transition: opacity 1s ease-in-out;
+}
+
+/* 📱 Responsive mobile layout */
+@media (max-width: 768px) {
+  .exotic-slide-box {
+    height: auto;
+    min-height: 500px; /* ✅ force taller height to match cat box */
+    flex: 1;
+    display: flex;
+  }
+
+  .exotic-two-tone-bg {
+    height: auto;
+    height: 100%; /* ✅ match parent height */
+    width: 100%;
+    flex: 1;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .exotic-two-tone-bg.show-cat-bg {
+    background: linear-gradient(to right, #FFD43B 50%, #9DA7A0 50%) !important;
+  }
+
+  .exotic-two-tone-bg.show-dog-bg {
+    background: #C5EAF6 !important;
+  }
+
+  .exotic-slide-img {
+    width: 100%;
+    height: auto;
+    max-height: 90%;
+    object-fit: contain;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .exotic-row {
+    display: flex;
+    align-items: stretch; /* Match height */
+  }
+
+  .exotic-slide-box {
+    height: 500px; /* ✅ Keep fixed height for visual consistency */
+    flex: 1;
+  }
+
+  .exotic-two-tone-bg {
+    height: 100%; /* ✅ Always fill */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .exotic-slide-img {
+    max-height: 90%;
+    object-fit: contain;
+  }
+}
+
+.exotic-two-tone-bg::before {
+  content: '';
+  display: block;
+  min-height: 100%;
+}

@@ -103,3 +103,36 @@
 .cute-cat {
   height: 70px;
 }
+
+/* Hide video banner below 768px (mobile only) */
+@media (max-width: 767px) {
+  .video-banner-wrapper {
+    display: none !important;
+  }
+}
+
+/* ✅ Always show full version */
+.full-paragraphs {
+  display: block;
+}
+
+/* 🚫 Removed shortened paragraph version */
+.short-paragraphs,
+.full-paragraph-wrapper {
+  display: none !important;
+}
+
+/* Hide divider on 1024px and below */
+@media (max-width: 1024px) {
+  .hide-on-1024 {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1280px) {
+  .stack-on-1280 > .col-md-6 {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+

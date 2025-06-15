@@ -1,0 +1,84 @@
+.video-banner-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9; /* ✅ Keeps it scalable */
+  overflow: hidden;
+  height: auto; /* Responsive by default */
+}
+
+.video-banner {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 1s ease-in-out;
+}
+
+/* 📦 Overlay text */
+.video-overlay-text {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 400px;
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.video-overlay-text h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.video-overlay-text p {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+/* 📱 Tablet and smaller: 768px */
+@media (max-width: 768px) {
+  .video-banner-container {
+    aspect-ratio: auto;  /* disable ratio and set height */
+    height: 400px;
+  }
+
+  .video-overlay-text {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .video-overlay-text h1 {
+    font-size: 1.8rem;
+  }
+
+  .video-overlay-text p {
+    font-size: 1rem;
+  }
+}
+
+/* 📱📱 Extra small phones: ≤480px */
+@media (max-width: 480px) {
+  .video-banner-container {
+    height: 300px;
+  }
+
+  .video-overlay-text {
+    padding: 16px;
+  }
+
+  .video-overlay-text h1 {
+    font-size: 1.4rem;
+  }
+
+  .video-overlay-text p {
+    font-size: 0.9rem;
+  }
+}

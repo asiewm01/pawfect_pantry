@@ -4,29 +4,31 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import './css/HomePage.css';
 import ProductFilterForm from '../components/ProductFilterForm';
+import VideoBanner from '../components/VideoBanner';
+import ExoticImageSlider from '../components/ExoticImageSlider';
 
 const HomePage = () => {
   const [recommended, setRecommended] = useState([]);
   const navigate = useNavigate();
 
-useEffect(() => {
-  const hasRedirected = sessionStorage.getItem('hasRedirected');
+  useEffect(() => {
+    const hasRedirected = sessionStorage.getItem('hasRedirected');
 
-  axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/recommend/`, {
-    withCredentials: true
-  })
-    .then(res => {
-      setRecommended(res.data.recommended || []);
+    axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/recommend/`, {
+      withCredentials: true
     })
-    .catch(err => {
-      console.error('Auth check failed:', err);
+      .then(res => {
+        setRecommended(res.data.recommended || []);
+      })
+      .catch(err => {
+        console.error('Auth check failed:', err);
 
-      if (!hasRedirected) {
-        sessionStorage.setItem('hasRedirected', 'true');
-        navigate('/login');
-      }
-    });
-}, []);
+        if (!hasRedirected) {
+          sessionStorage.setItem('hasRedirected', 'true');
+          navigate('/login');
+        }
+      });
+  }, []);
 
   const handleFilter = (filters) => {
     const queryParams = new URLSearchParams();
@@ -42,7 +44,10 @@ useEffect(() => {
       <motion.div className="container-fluid p-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
         <div className="row">
           <div className="col-12 text-center mt-3">
-            <h1 className="homepage-title">Welcome to Our Pet Food & Merchandise Store <img src="/media/images/cute-cat.png" alt="Cute Cat" className="cute-cat" /></h1>
+            <h1 className="homepage-title">
+              Welcome to Our Pet Food & Merchandise Store
+              <img src="/media/images/cute-cat.png" alt="Cute Cat" className="cute-cat" />
+            </h1>
           </div>
         </div>
       </motion.div>
@@ -52,19 +57,14 @@ useEffect(() => {
       </div>
 
       <hr className="solid my-4" />
-
-      <motion.div className="container-fluid p-0" initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1 }}>
-        <div className="row">
-          <div className="col-12">
-            <img src="/media/images/home_banner.png" alt="Banner" className="img-fluid w-100 banner" />
-          </div>
-        </div>
+      <motion.div className="video-banner-wrapper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+        <VideoBanner />
       </motion.div>
 
-      <hr className="solid my-4" />
+      <hr className="solid my-4 d-none d-md-block" />
 
-      <motion.div className="container home-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-        <div className="row align-items-stretch">
+<motion.div className="container home-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+  <div className="row align-items-stretch stack-on-1280 d-flex flex-md-row">
           <div className="col-md-6 d-flex order-2 order-md-1">
             <div className="welcome-card w-100">
               <h2 className="homepage-subtitle">
@@ -93,16 +93,11 @@ useEffect(() => {
 
       <hr className="solid my-4" />
 
-      <motion.div className="container home-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-        <div className="row align-items-stretch">
+<motion.div className="container home-container exotic-section" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+  <div className="row align-items-stretch stack-on-1280 d-flex flex-md-row">
           <div className="col-md-6 d-flex p-0">
-            <div className="w-100 h-100">
-              <img
-                src="/media/images/exotic_images.png"
-                alt="French Bulldog"
-                className="img-fluid w-100 h-100 object-fit-cover rounded shadow"
-                style={{ minHeight: '100%' }}
-              />
+            <div className="w-100 h-100 exotic-slider-wrapper">
+              <ExoticImageSlider />
             </div>
           </div>
           <div className="col-md-6 d-flex">
@@ -111,16 +106,18 @@ useEffect(() => {
                 <img src="/media/images/hedgehog.png" alt="Hedgehog" className="hedgehog" /> Treat your pets to something paw-some!
               </h2>
               <hr className="solid divider-line" />
-              <p>
-                Join our pet-loving community and get the inside scoop on nutritious treats, trending toys, and seasonal must-haves for your furry best friends. Whether you're raising a playful kitten, an energetic pup, or a wise senior companion, we’ve got curated picks just for them.
-              </p>
-              <p>
-                Every week, we deliver expert care tips, product highlights, and special offers tailored to your pet’s breed, age, and lifestyle. From grain-free meals to chew-proof accessories, we spotlight only the best — tested and loved by real pet parents like you.
-              </p>
-              <p>
-                Subscribe today and be the first to unlock exclusive deals, surprise giveaways, and early access to new arrivals. Because your pet deserves more than ordinary — they deserve PawFect!
-              </p>
-              <hr className="solid divider-line" />
+              <div className="full-paragraphs">
+                <p>
+                  Join our pet-loving community and get the inside scoop on nutritious treats, trending toys, and seasonal must-haves for your furry best friends. Whether you're raising a playful kitten, an energetic pup, or a wise senior companion, we’ve got curated picks just for them.
+                </p>
+                <p>
+                  Every week, we deliver expert care tips, product highlights, and special offers tailored to your pet’s breed, age, and lifestyle. From grain-free meals to chew-proof accessories, we spotlight only the best — tested and loved by real pet parents like you.
+                </p>
+                <p>
+                  Subscribe today and be the first to unlock exclusive deals, surprise giveaways, and early access to new arrivals. Because your pet deserves more than ordinary — they deserve PawFect!
+                </p>
+              </div>
+              <hr className="solid divider-line hide-on-1024" />
               <div className="about-text">
                 <h4 className="mb-3">Stay updated on our exotic pet food & offers 🐾</h4>
                 <form className="d-flex flex-column flex-md-row gap-3">
@@ -146,7 +143,8 @@ useEffect(() => {
       <hr className="solid my-4" />
 
       <motion.div className="container my-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.4 }}>
-        <h2 className="mb-4 text-center">Our Recommendations
+        <h2 className="mb-4 text-center">
+          Our Recommendations
           <img src="/media/images/corgi-over-navbar.png" alt="Corgi" className="corgi-over-navbar" />
         </h2>
         <div className="row">
@@ -159,7 +157,10 @@ useEffect(() => {
                     className="card-img-top"
                     alt={product.name}
                     style={{ height: '200px', objectFit: 'cover' }}
-                    onError={(e) => { e.target.onerror = null; e.target.src = "/media/images/placeholder.jpg"; }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/media/images/placeholder.jpg";
+                    }}
                   />
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title">{product.name}</h5>
