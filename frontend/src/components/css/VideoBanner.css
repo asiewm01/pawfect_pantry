@@ -1,16 +1,31 @@
 .video-banner-container {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9; /* ✅ Keeps it scalable */
+  height: auto;
   overflow: hidden;
-  height: auto; /* Responsive by default */
+  background-color: #e6f4ff; /* fallback if image has transparency */
+  max-height: 740px; /* or match PNG height */
+
 }
 
 .video-banner {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity 1s ease-in-out;
+  height: auto;         /* ✅ Show full PNG/GIF image */
+  object-fit: contain;  /* ✅ Prevent cropping */
+  display: block;
+  object-fit: cover; /* Crop overflow for GIF */
+}
+
+/* Crop height for GIF only */
+.video-banner.gif-banner {
+  height: 420px;          /* Adjust based on your PNG height */
+  object-position: center top; /* Focus top of GIF */
+}
+
+/* Let PNG display fully */
+.video-banner.png-banner {
+  height: auto;
+  object-fit: contain;
 }
 
 /* 📦 Overlay text */
@@ -82,3 +97,4 @@
     font-size: 0.9rem;
   }
 }
+

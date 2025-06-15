@@ -136,3 +136,14 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .video-banner-wrapper {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1281px) {
+  .stack-on-1280 {
+    flex-direction: column !important;
+  }
+}
