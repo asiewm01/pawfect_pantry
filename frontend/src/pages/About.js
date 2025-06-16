@@ -13,7 +13,7 @@ const About = () => (
       <div className="row">
         <div className="col-12 text-center mt-3">
           <h1 className="homepage-title">
-            <img src="/media/images/rabbit.png" alt="Rabbit" className="rabbit" />
+            <img src="/media/images/fat_corgi.png" alt="Fat Corgi" className="fat-corgi" />
             About PawFect Pantry
           </h1>
         </div>

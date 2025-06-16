@@ -3,16 +3,16 @@ import { Link } from 'react-router-dom';
 import './css/HeaderBrand.css';
 
 const HeaderBrand = () => {
-  const [showCorgi, setShowCorgi] = useState(window.innerWidth > 830);
+  const [showCorgi, setShowCorgi] = useState(true);
 
   useEffect(() => {
-    const handleResize = () => {
-      console.log("Window width:", window.innerWidth); // ✅ debug
-      setShowCorgi(window.innerWidth > 820);
+    const checkScreenSize = () => {
+      setShowCorgi(window.innerWidth < 1024);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    checkScreenSize(); // Initial check
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
   return (
@@ -25,6 +25,7 @@ const HeaderBrand = () => {
             className="site-logo"
           />
         </Link>
+
         <span
           className="brand-name"
           style={{
@@ -32,20 +33,20 @@ const HeaderBrand = () => {
             textShadow: '1px 1px 2px rgba(0,0,0,0.25)',
           }}
         >
-{/* Desktop slogan */}
-<p className="slogan-desktop">
-  Where every bite is perfectly paw-picked.
-</p>
+          {/* Desktop slogan */}
+          <p className="slogan-desktop d-none d-md-block">
+            Where every bite is perfectly paw-picked.
+          </p>
 
-{/* Mobile/iPad slogan */}
-<div className="slogan-mobile">
-  <p>Where every bite is</p>
-  <p>perfectly paw-picked.</p>
-</div>
+          {/* Mobile/iPad slogan */}
+          <div className="slogan-mobile d-block d-md-none">
+            <p>Where every bite is</p>
+            <p>perfectly paw-picked.</p>
+          </div>
         </span>
       </div>
 
-      {/* 🐾 CORGI ONLY ABOVE 820px */}
+      {/* 🐾 Show Corgi only if screen is above 830px */}
       {showCorgi && (
         <div
           className="corgi-wrapper"
@@ -66,14 +67,15 @@ const HeaderBrand = () => {
             }}
           >
             <img
-              src="/media/images/corgi-speech.png"
+              src="/media/images/corgi-header.gif"
               alt="Corgi Speech"
               className="corgi-speech"
               style={{
-                height: '200px',
+                height: '190px',
                 objectFit: 'contain',
                 display: 'block',
-                margin: '0 10px 0 0',
+                margin: 0,
+                borderLeft: '4px solid black',
                 padding: 0,
               }}
             />
