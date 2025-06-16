@@ -50,7 +50,7 @@ const OrderTracking = () => {
 
   return (
     <div className="geo-tracking-container">
-      <h2><img src="/media/images/fat_corgi.png" alt="Fat Corgi" className="fat_corgi" /> Order Tracking</h2>
+      <h2><img src="/media/images/running_corgi.gif" alt="Fat Corgi" className="fat_corgi" /> Order Tracking</h2>
 
       {error && <p className="text-danger">{error}</p>}
 
