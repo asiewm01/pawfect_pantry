@@ -6,7 +6,10 @@ def generate_sales_data(role='admin', user=None):
     if role == 'vendor' and user:
         try:
             vendor = Vendor.objects.get(user=user)
-            vendor_products = Product.objects.filter(vendor=vendor)
+            vendor_products = Product.objects.filter(vendor=vendor)  # Moved up before use
+
+            print("✅ Vendor found:", vendor.business_name or vendor.user.username)
+            print("✅ Vendor products:", list(vendor_products.values_list('name', flat=True)))
 
             daily_sales = (
                 OrderItem.objects
@@ -101,6 +104,18 @@ def generate_sales_data(role='admin', user=None):
         total_revenue = Order.objects.aggregate(total=Sum('total'))['total'] or 0
         total_orders = Order.objects.count()
         abandoned_cart_items = CartItem.objects.count()
+
+    # Final debug output (inside the function)
+    print("✅ Sales data being returned:", {
+        'role': role,
+        'daily_sales': list(daily_sales),
+        'monthly_sales': list(monthly_sales),
+        'top_products': list(top_products),
+        'feedback_counts': feedback_counts,
+        'total_revenue': total_revenue,
+        'total_orders': total_orders,
+        'abandoned_cart_items': abandoned_cart_items,
+    })
 
     return {
         'role': role,

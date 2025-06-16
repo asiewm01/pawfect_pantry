@@ -58,7 +58,7 @@
     <p>Track orders, revenue, and product performance</p>
   </div>
 
-  <!-- New Summary Metrics -->
+  <!-- Summary Metrics -->
   <div class="row">
     <div class="col-md-4">
       <div class="chart-box">
@@ -80,7 +80,7 @@
     </div>
   </div>
 
-  <!-- Existing Charts -->
+  <!-- Main Charts -->
   <div class="row">
     <div class="col-md-6">
       <div class="chart-box">
@@ -96,11 +96,26 @@
     </div>
   </div>
 
+  <!-- Feedback + 2 more charts -->
   <div class="row">
     <div class="col-md-4">
       <div class="chart-box">
         <h4 style="font-size:20px">💬 Product Feedback Sentiment</h4>
         <canvas id="feedbackChart"></canvas>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="chart-box">
+        <h4 style="font-size:20px">🛒 Abandoned Cart Breakdown</h4>
+        <canvas id="abandonedCartChart"></canvas>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="chart-box">
+        <h4 style="font-size:20px">📦 Order Volume Trends</h4>
+        <canvas id="totalOrdersChart"></canvas>
       </div>
     </div>
   </div>
@@ -148,6 +163,31 @@
           {{ feedback_counts.negative|default:0 }}
         ],
         backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+      }]
+    }
+  });
+
+  // Placeholder charts (can be replaced with real data later)
+  new Chart(document.getElementById('abandonedCartChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Cart Items'],
+      datasets: [{
+        label: 'Abandoned',
+        data: [{{ abandoned_cart_items|default:0 }}],
+        backgroundColor: '#ff6384'
+      }]
+    }
+  });
+
+  new Chart(document.getElementById('totalOrdersChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Orders'],
+      datasets: [{
+        label: 'Total',
+        data: [{{ total_orders|default:0 }}],
+        backgroundColor: '#36a2eb'
       }]
     }
   });
