@@ -8,44 +8,43 @@ const ChatbotWidget = () => {
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
 
-  const toggleChatbot = () => setOpen(prev => !prev);
+  const handleWelcomeMessage = () => {
+    const welcomeMsg = {
+      type: 'bot',
+      text: `<b>👋 Hello! I'm <span style="color:#007BFF;">B.A.R.K.L.E.Y.</span> – <br> Bot Assistant for Recommending Kits, Listings & Engaging You.</b>
+      <br><br>
+      Ask me anything about our store, products, or promotions! 🐾
+      <br><br>
+      You can also <span class="chatbot-close-link" style="color:#007BFF; cursor:pointer;">close</span> this tab and come back later! I’ll be here when you need me.`
+    };
 
-  // Auto-scroll to bottom on message update
+    setMessages([welcomeMsg]);
+
+    setTimeout(() => {
+      const closeLink = document.querySelector('.chatbot-close-link');
+      if (closeLink) {
+        closeLink.addEventListener('click', () => setOpen(false));
+      }
+    }, 100);
+  };
+
+  const toggleChatbot = () => {
+    setOpen(prev => {
+      const nextOpen = !prev;
+
+      // Only show welcome message on first open and on desktop
+      if (nextOpen && messages.length === 0 && window.innerWidth >= 1280) {
+        handleWelcomeMessage();
+      }
+
+      return nextOpen;
+    });
+  };
+
+  // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  // Auto-open and greet after login
-useEffect(() => {
-  const timer = setTimeout(() => {
-    // Only auto-open if screen width >= 1280px (Bootstrap lg breakpoint)
-    if (window.innerWidth >= 1280) {
-      setOpen(true);
-
-      if (messages.length === 0) {
-        const welcomeMsg = {
-          type: 'bot',
-          text: `<b>👋 Hello! I'm <span style="color:#007BFF;">B.A.R.K.L.E.Y.</span> – <br> Bot Assistant for Recommending Kits, Listings & Engaging You.</b>
-          <br><br>
-          Ask me anything about our store, products, or promotions! 🐾
-          <br><br>
-          You can also <span class="chatbot-close-link" style="color:#007BFF; cursor:pointer;">close</span> this tab and come back later ! I will be here anytime when you need me !`
-        };
-
-        setMessages([welcomeMsg]);
-
-        setTimeout(() => {
-          const closeLink = document.querySelector('.chatbot-close-link');
-          if (closeLink) {
-            closeLink.addEventListener('click', () => setOpen(false));
-          }
-        }, 100);
-      }
-    }
-  }, 1000);
-
-  return () => clearTimeout(timer);
-}, [messages.length]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,8 +56,11 @@ useEffect(() => {
     setInput('');
 
     try {
-      const endpoint = `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/chatbot/`;
-      const response = await axios.post(endpoint, { message: userInput }, { withCredentials: true });
+      const response = await axios.post(
+        `https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/ai/chatbot/`,
+        { message: userInput },
+        { withCredentials: true }
+      );
 
       const botReply = response.data.reply || "❓ Sorry, I didn't understand that.";
       setMessages([...updatedMessages, { type: 'bot', text: botReply }]);
@@ -74,37 +76,41 @@ useEffect(() => {
 
   return (
     <>
-      <button id="chatbot-toggle" onClick={toggleChatbot}>
-        <div className="chatbot-icon">💬</div>
-      </button>
+      {window.innerWidth >= 1280 && (
+        <>
+          <button id="chatbot-toggle" onClick={toggleChatbot}>
+            <div className="chatbot-icon">💬</div>
+          </button>
 
-      {open && (
-        <div id="chatbot-box">
-          <div id="chatbot-header">🐾 BARKLEY ChatBot</div>
+          {open && (
+            <div id="chatbot-box">
+              <div id="chatbot-header">🐾 BARKLEY ChatBot</div>
 
-          <div id="chatbot-messages">
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`chatbot-message chatbot-${msg.type}`}
-                dangerouslySetInnerHTML={{ __html: msg.text }}
-              ></div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
+              <div id="chatbot-messages">
+                {messages.map((msg, idx) => (
+                  <div
+                    key={idx}
+                    className={`chatbot-message chatbot-${msg.type}`}
+                    dangerouslySetInnerHTML={{ __html: msg.text }}
+                  ></div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
 
-          <form id="chatbot-form" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              id="chatbot-input"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask BARKLEY about products, promos, or categories..."
-              required
-            />
-            <button type="submit" id="chatbot-send">➤</button>
-          </form>
-        </div>
+              <form id="chatbot-form" onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  id="chatbot-input"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask BARKLEY about products, promos, or categories..."
+                  required
+                />
+                <button type="submit" id="chatbot-send">➤</button>
+              </form>
+            </div>
+          )}
+        </>
       )}
     </>
   );
