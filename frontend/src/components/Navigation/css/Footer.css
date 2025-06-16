@@ -63,3 +63,22 @@ footer .footer-bottom {
 .social-icons a:hover {
   color: #25D366; /* WhatsApp green or any hover effect */
 }
+
+/* Footer.css */
+.rufus-container {
+  background-color: #ffcc00;
+  border: 4px solid black;
+  border-radius: 16px;
+  padding: 10px;
+  text-align: center;
+
+  width: 100%;              /* Stretch full width of the parent column */
+  display: flex;
+  justify-content: center;  /* Center the image horizontally */
+  align-items: center;      /* Center vertically (optional) */
+}
+
+.rufus-img {
+  max-width: 200px;         /* Keep Rufus at a natural size */
+  height: auto;
+}

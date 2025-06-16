@@ -38,15 +38,22 @@ const Footer = () => {
         <div className="container text-center text-md-start mt-5">
           <div className="row mt-3">
 
-            {/* Company Info */}
-            <div className="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">
-              <h6 className="text-uppercase fw-bold mb-4">
-                <i className="fas fa-paw me-3"></i>PawFect Pantry Co.
-              </h6>
-              <p>
-              "Providing loving pets and premium supplies. Trusted care for your furry friends."
-              </p>
-            </div>
+{/* Company Info */}
+<div className="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">
+  <h6 className="text-uppercase fw-bold mb-4">
+    <i className="fas fa-paw me-3"></i>PawFect Pantry Co.
+  </h6>
+  <p>"Providing loving pets and premium supplies. Trusted care for your furry friends."</p>
+
+  {/* ✅ Add Rufus Container and CLOSE it */}
+  <div className="rufus-container d-none d-lg-block mt-3">
+    <img
+      src="/media/images/rufus.gif"
+      alt="Cool Corgi Rufus"
+      className="rufus-img"
+    />
+  </div>
+</div>
 
             {/* Hidden Product Category */}
             <div className="col-md-4 col-lg-4 col-xl-2 mx-auto mb-4">
