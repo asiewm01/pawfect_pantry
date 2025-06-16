@@ -94,7 +94,7 @@ useEffect(() => {
                 <th>#</th>
                 <th className="d-none d-sm-table-cell">Item</th>
                 <th>Quantity</th>
-                <th>Unit Price ($)</th>
+                <th className="d-none d-sm-table-cell">Unit Price ($)</th>
                 <th>Subtotal ($)</th>
                 <th>Actions</th>
               </tr>
@@ -131,8 +131,13 @@ useEffect(() => {
                       style={{ width: '80px' }}
                     />
                   </td>
-                  <td>${parseFloat(item.price).toFixed(2)}</td>
-                  <td>${(item.price * quantities[item.product_id]).toFixed(2)}</td>
+                  <td className="d-none d-sm-table-cell">${parseFloat(item.price).toFixed(2)}</td>
+                  <td>
+                    ${(item.price * quantities[item.product_id]).toFixed(2)}
+                    <span className="d-sm-none text-muted small">
+                      <br />(${parseFloat(item.price).toFixed(2)} each)
+                    </span>
+                  </td>                  
                   <td>
                     <button
                       className="btn btn-danger btn-sm"
