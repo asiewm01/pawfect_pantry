@@ -1,0 +1,117 @@
+/* ================================
+   📱 RESPONSIVE BREAKPOINTS
+================================ */
+
+/* ≥ 1281px — Desktop View */
+@media (min-width: 1279px) {
+  .full-corgi {
+    display: block !important;
+  }
+
+  .short-corgi {
+    display: none !important;
+  }
+
+  .slogan-desktop {
+    display: block !important;
+  }
+
+  .slogan-mobile {
+    display: none !important;
+  }
+}
+
+/* 853px–1280px — Tablet View (short corgi visible) */
+@media (max-width: 1280px) and (min-width: 853px) {
+  .full-corgi {
+    display: none !important;
+  }
+
+  .short-corgi {
+    display: block !important;
+  }
+
+  .slogan-desktop {
+    display: none !important;
+  }
+
+  .slogan-mobile {
+    display: block !important;
+    text-align: left;
+  }
+
+  .site-logo {
+    height: 150px;
+  }
+
+  .brand-name {
+    font-size: 1.2rem;
+    margin-left: 10px;
+  }
+}
+
+/* ≤ 852px — Mobile View */
+@media (max-width: 852px) {
+  .corgi-banner,
+  .short-corgi,
+  .full-corgi {
+    display: none !important;
+  }
+
+  .slogan-desktop {
+    display: none !important;
+  }
+
+  .slogan-mobile {
+    display: block !important;
+    text-align: left;
+  }
+
+  .site-logo {
+    height: 140px;
+  }
+}
+
+/* ≤ 768px */
+@media (max-width: 768px) {
+  .corgi-speech {
+    height: 150px;
+  }
+}
+
+/* ≤ 576px */
+@media (max-width: 576px) {
+  .corgi-speech {
+    height: 100px;
+  }
+}
+
+/* ≤ 430px — Smaller Mobile */
+@media (max-width: 430px) {
+  .slogan-mobile {
+    display: none !important;
+  }
+
+  .brand-area {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .site-logo {
+    margin: 0 auto;
+  }
+}
+
+/* ≤ 375px */
+@media (max-width: 375px) {
+  .site-logo {
+    height: 120px;
+  }
+}
+
+/* ≤ 344px */
+@media (max-width: 344px) {
+  .site-logo {
+    height: 90px;
+  }
+}

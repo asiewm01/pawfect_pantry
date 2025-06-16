@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './css/HeaderBrand.css';
+import './css/ResponsiveHeaderBrand.css';
 
 const HeaderBrand = () => {
-  const [showCorgi, setShowCorgi] = useState(true);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-useEffect(() => {
-  const checkScreenSize = () => {
-    setShowCorgi(window.innerWidth >= 1280); // ✅ Show only on desktop
-  };
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
 
-  // Run on mount
-  checkScreenSize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  // Add resize listener
-  window.addEventListener('resize', checkScreenSize);
-  return () => window.removeEventListener('resize', checkScreenSize);
-}, []);
+const showFullCorgi = windowWidth >= 1280;
+const showShortCorgi = windowWidth <= 1280 && windowWidth >= 853;
+const showCorgiBanner = windowWidth >= 853;
 
   return (
     <div className="header-top">
@@ -29,19 +28,10 @@ useEffect(() => {
           />
         </Link>
 
-        <span
-          className="brand-name"
-          style={{
-            color: '#2d7b3e',
-            textShadow: '1px 1px 2px rgba(0,0,0,0.25)',
-          }}
-        >
-          {/* Desktop slogan */}
+        <span className="brand-name">
           <p className="slogan-desktop d-none d-md-block">
             Where every bite is perfectly paw-picked.
           </p>
-
-          {/* Mobile/iPad slogan */}
           <div className="slogan-mobile d-block d-md-none">
             <p>Where every bite is</p>
             <p>perfectly paw-picked.</p>
@@ -49,40 +39,23 @@ useEffect(() => {
         </span>
       </div>
 
-      {/* 🐾 Show Corgi only if screen is above 830px */}
-      {showCorgi && (
-        <div
-          className="corgi-wrapper"
-          style={{
-            position: 'absolute',
-            right: 0,
-            bottom: '-1px',
-            display: 'flex',
-            alignItems: 'flex-end',
-            zIndex: 5,
-          }}
-        >
-          <div
-            className="corgi-container"
-            style={{
-              display: 'flex',
-              alignItems: 'flex-end',
-            }}
-          >
+      {showCorgiBanner && (
+        <div className="corgi-banner">
+          {showFullCorgi && (
             <img
-              src="/media/images/corgi-header.gif"
-              alt="Corgi Speech"
-              className="corgi-speech"
-              style={{
-                height: '190px',
-                objectFit: 'contain',
-                display: 'block',
-                margin: 0,
-                borderLeft: '3px solid black',
-                padding: 0,
-              }}
+              src="/media/images/corgi-speech.png"
+              alt="Full Corgi"
+              className="corgi-image full-corgi"
             />
-          </div>
+          )}
+          {showShortCorgi && (
+            <img
+              src="/media/images/corgi-speech-2.png"
+              alt="Short Corgi"
+              className="corgi-image short-corgi"
+              style={{ display: 'block' }}
+            />
+          )}
         </div>
       )}
     </div>
