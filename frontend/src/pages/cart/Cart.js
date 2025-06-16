@@ -101,17 +101,21 @@ const Cart = () => {
   {cartItems.map((item, index) => (
     <tr key={item.id}>
       <td>{index + 1}</td>
-      <td className="align-middle">{item.name}</td> {/* 🆕 Added */}
+
+      {/* ✅ Show item name here */}
+      <td className="align-middle fw-bold">{item.product_name}</td>
+
+      {/* ✅ Only show image here now */}
       <td className="align-middle">
-        <div className="fw-bold mb-1">{item.name}</div>
         <img
           src={item.image}
-          alt={item.name}
+          alt={item.product_name} // ✅ updated
           className="cart-item-img"
           onError={(e) => (e.target.src = '/media/products_images/default.png')}
           style={{ maxWidth: '80px' }}
         />
       </td>
+
       <td>
         <input
           type="number"
