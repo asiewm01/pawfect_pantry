@@ -86,55 +86,58 @@ const Cart = () => {
         <>
           <div className="table-responsive">
             <table className="table table-bordered align-middle">
-              <thead className="table-light">
-                <tr>
-                  <th>#</th>
-                  <th>Item</th>
-                  <th>Quantity</th>
-                  <th>Unit Price ($)</th>
-                  <th>Subtotal ($)</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cartItems.map((item, index) => (
-                  <tr key={item.id}>
-                    <td>{index + 1}</td>
-                    <td className="align-middle">
-                      <div className="fw-bold mb-1">{item.name}</div>
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="cart-item-img"
-                        onError={(e) => (e.target.src = '/media/products_images/default.png')}
-                        style={{ maxWidth: '80px' }}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        min="1"
-                        value={quantities[item.product_id]}
-                        onChange={(e) =>
-                          handleQuantityChange(item.product_id, parseInt(e.target.value))
-                        }
-                        className="form-control"
-                        style={{ width: '80px' }}
-                      />
-                    </td>
-                    <td>${parseFloat(item.price).toFixed(2)}</td>
-                    <td>${(item.price * quantities[item.product_id]).toFixed(2)}</td>
-                    <td>
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => handleRemove(item.product_id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+<thead className="table-light">
+  <tr>
+    <th>#</th>
+    <th>Name</th> {/* 🆕 Added */}
+    <th>Item</th>
+    <th>Quantity</th>
+    <th>Unit Price ($)</th>
+    <th>Subtotal ($)</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+<tbody>
+  {cartItems.map((item, index) => (
+    <tr key={item.id}>
+      <td>{index + 1}</td>
+      <td className="align-middle">{item.name}</td> {/* 🆕 Added */}
+      <td className="align-middle">
+        <div className="fw-bold mb-1">{item.name}</div>
+        <img
+          src={item.image}
+          alt={item.name}
+          className="cart-item-img"
+          onError={(e) => (e.target.src = '/media/products_images/default.png')}
+          style={{ maxWidth: '80px' }}
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          min="1"
+          value={quantities[item.product_id]}
+          onChange={(e) =>
+            handleQuantityChange(item.product_id, parseInt(e.target.value))
+          }
+          className="form-control"
+          style={{ width: '80px' }}
+        />
+      </td>
+      <td>${parseFloat(item.price).toFixed(2)}</td>
+      <td>${(item.price * quantities[item.product_id]).toFixed(2)}</td>
+      <td>
+        <button
+          className="btn btn-danger btn-sm"
+          onClick={() => handleRemove(item.product_id)}
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
             </table>
           </div>
 
