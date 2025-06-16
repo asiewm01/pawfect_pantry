@@ -1,4 +1,4 @@
-{% extends 'admin_base.html' %}
+{% extends 'vendor/vendor_base.html' %}
 {% block title %}Vendor Sales Dashboard{% endblock %}
 
 {% block content %}
@@ -24,11 +24,18 @@
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     margin-bottom: 30px;
+    text-align: center;
   }
 
   .chart-box h4 {
     color: #333;
     margin-bottom: 15px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
   }
 
   canvas {
@@ -47,29 +54,60 @@
 
 <div class="dashboard-container">
   <div class="dashboard-header">
-    <h2>Vendor Sales & Performance Overview</h2>
-    <p>Track your store's orders, revenue, and product feedback</p>
+    <h2>Vendor Sales Overview</h2>
+    <p>Track your product performance and revenue</p>
   </div>
 
+  <!-- Summary Metrics -->
+  <div class="row">
+    <div class="col-md-4">
+      <div class="chart-box">
+        <h4>💰 Total Revenue</h4>
+        <div class="stat-value">${{ total_revenue|floatformat:2 }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="chart-box">
+        <h4>🧾 Total Orders</h4>
+        <div class="stat-value">{{ total_orders }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="chart-box">
+        <h4>🛒 Abandoned Cart Items</h4>
+        <div class="stat-value">{{ abandoned_cart_items }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart Section -->
   <div class="row">
     <div class="col-md-6">
       <div class="chart-box">
-        <h4>📈 Orders Per Day</h4>
+        <h4>📈 Daily Orders</h4>
         <canvas id="ordersChart"></canvas>
       </div>
     </div>
+
     <div class="col-md-6">
       <div class="chart-box">
-        <h4>🏆 Top-Selling Products</h4>
+        <h4>🏆 Your Top Products</h4>
         <canvas id="topProductsChart"></canvas>
       </div>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
       <div class="chart-box">
-        <h4 style="font-size:20px">💬 Product Feedback Sentiment</h4>
+        <h4>📅 Monthly Sales Projection</h4>
+        <canvas id="monthlyChart"></canvas>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="chart-box">
+        <h4 style="font-size:20px">💬 Feedback Sentiment</h4>
         <canvas id="feedbackChart"></canvas>
       </div>
     </div>
@@ -83,8 +121,8 @@
     data: {
       labels: [{% for entry in daily_sales %}'{{ entry.day }}',{% endfor %}],
       datasets: [{
-        label: 'Orders',
-        data: [{% for entry in daily_sales %}{{ entry.total }},{% endfor %}],
+        label: 'Revenue',
+        data: [{% for entry in daily_sales %}{{ entry.revenue }},{% endfor %}],
         borderColor: '#007bff',
         backgroundColor: 'rgba(0,123,255,0.1)',
         fill: true
@@ -111,13 +149,25 @@
     data: {
       labels: ['Positive', 'Neutral', 'Negative'],
       datasets: [{
-        label: 'Feedback',
         data: [
           {{ feedback_counts.positive|default:0 }},
           {{ feedback_counts.neutral|default:0 }},
           {{ feedback_counts.negative|default:0 }}
         ],
         backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+      }]
+    }
+  });
+
+  const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+  new Chart(monthlyCtx, {
+    type: 'bar',
+    data: {
+      labels: [{% for entry in monthly_sales %}'{{ entry.month|date:"F Y" }}',{% endfor %}],
+      datasets: [{
+        label: 'Monthly Revenue',
+        data: [{% for entry in monthly_sales %}{{ entry.revenue }},{% endfor %}],
+        backgroundColor: 'rgba(0, 123, 255, 0.7)'
       }]
     }
   });

@@ -24,11 +24,18 @@
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     margin-bottom: 30px;
+    text-align: center;
   }
 
   .chart-box h4 {
     color: #333;
     margin-bottom: 15px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
   }
 
   canvas {
@@ -51,6 +58,29 @@
     <p>Track orders, revenue, and product performance</p>
   </div>
 
+  <!-- New Summary Metrics -->
+  <div class="row">
+    <div class="col-md-4">
+      <div class="chart-box">
+        <h4>💰 Total Revenue</h4>
+        <div class="stat-value">${{ total_revenue|floatformat:2 }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="chart-box">
+        <h4>🧾 Total Orders</h4>
+        <div class="stat-value">{{ total_orders }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="chart-box">
+        <h4>🛒 Abandoned Cart Items</h4>
+        <div class="stat-value">{{ abandoned_cart_items }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Existing Charts -->
   <div class="row">
     <div class="col-md-6">
       <div class="chart-box">
@@ -58,7 +88,6 @@
         <canvas id="ordersChart"></canvas>
       </div>
     </div>
-
     <div class="col-md-6">
       <div class="chart-box">
         <h4>🏆 Top-Selling Products</h4>
@@ -77,7 +106,6 @@
   </div>
 </div>
 
-
 <script>
   const ordersCtx = document.getElementById('ordersChart').getContext('2d');
   new Chart(ordersCtx, {
@@ -85,8 +113,8 @@
     data: {
       labels: [{% for entry in daily_sales %}'{{ entry.day }}',{% endfor %}],
       datasets: [{
-        label: 'Orders',
-        data: [{% for entry in daily_sales %}{{ entry.total }},{% endfor %}],
+        label: 'Revenue',
+        data: [{% for entry in daily_sales %}{{ entry.revenue }},{% endfor %}],
         borderColor: '#cc0000',
         backgroundColor: 'rgba(204,0,0,0.1)',
         fill: true
