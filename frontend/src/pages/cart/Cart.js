@@ -8,10 +8,6 @@ const Cart = () => {
   const [quantities, setQuantities] = useState({});
   const [total, setTotal] = useState(0);
 
-  useEffect(() => {
-    fetchCart();
-  }, []);
-
   const fetchCart = async () => {
     try {
       const res = await axios.get(`https://django-api.icypebble-e6a48936.southeastasia.azurecontainerapps.io/api/cart/`, {
@@ -70,17 +66,17 @@ const Cart = () => {
     }
   };
 
-useEffect(() => {
-  // ✅ Refresh once per session
-  const hasRefreshed = sessionStorage.getItem('cartRefreshed');
+  useEffect(() => {
+    // ✅ Refresh once per session
+    const hasRefreshed = sessionStorage.getItem('cartRefreshed');
 
-  if (!hasRefreshed) {
-    sessionStorage.setItem('cartRefreshed', 'true');
-    window.location.reload();
-  } else {
-    fetchCart();
-  }
-}, []);
+    if (!hasRefreshed) {
+      sessionStorage.setItem('cartRefreshed', 'true');
+      window.location.reload();
+    } else {
+      fetchCart();
+    }
+  }, []);
 
   return (
     <div className="cart-container container mt-4">
@@ -88,67 +84,59 @@ useEffect(() => {
 
       {cartItems.length > 0 ? (
         <>
-          <table className="table table-bordered align-middle">
-            <thead className="table-light">
-              <tr>
-                <th>#</th>
-                <th className="d-none d-sm-table-cell">Item</th>
-                <th>Quantity</th>
-                <th className="d-none d-sm-table-cell">Unit Price ($)</th>
-                <th>Subtotal ($)</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cartItems.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{index + 1}</td>
-<td className="align-middle">
-  {/* Always show the name */}
-  <div className="fw-bold mb-1">{item.name}</div>
-
-  {/* Show image only on larger screens */}
-  <div className="d-none d-sm-block">
-    <img
-      src={item.image}
-      alt={item.name}
-      className="cart-item-img"
-      onError={(e) => (e.target.src = '/media/products_images/default.png')}
-    />
-  </div>
-</td>
-
-                  <td>
-                    <input
-                      type="number"
-                      min="1"
-                      value={quantities[item.product_id]}
-                      onChange={(e) =>
-                        handleQuantityChange(item.product_id, parseInt(e.target.value))
-                      }
-                      className="form-control"
-                      style={{ width: '80px' }}
-                    />
-                  </td>
-                  <td className="d-none d-sm-table-cell">${parseFloat(item.price).toFixed(2)}</td>
-                  <td>
-                    ${(item.price * quantities[item.product_id]).toFixed(2)}
-                    <span className="d-sm-none text-muted small">
-                      <br />(${parseFloat(item.price).toFixed(2)} each)
-                    </span>
-                  </td>                  
-                  <td>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => handleRemove(item.product_id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
+          <div className="table-responsive">
+            <table className="table table-bordered align-middle">
+              <thead className="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Item</th>
+                  <th>Quantity</th>
+                  <th>Unit Price ($)</th>
+                  <th>Subtotal ($)</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {cartItems.map((item, index) => (
+                  <tr key={item.id}>
+                    <td>{index + 1}</td>
+                    <td className="align-middle">
+                      <div className="fw-bold mb-1">{item.name}</div>
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="cart-item-img"
+                        onError={(e) => (e.target.src = '/media/products_images/default.png')}
+                        style={{ maxWidth: '80px' }}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        min="1"
+                        value={quantities[item.product_id]}
+                        onChange={(e) =>
+                          handleQuantityChange(item.product_id, parseInt(e.target.value))
+                        }
+                        className="form-control"
+                        style={{ width: '80px' }}
+                      />
+                    </td>
+                    <td>${parseFloat(item.price).toFixed(2)}</td>
+                    <td>${(item.price * quantities[item.product_id]).toFixed(2)}</td>
+                    <td>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleRemove(item.product_id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <div className="text-end mb-3">
             <h5><strong>Total: ${total.toFixed(2)}</strong></h5>

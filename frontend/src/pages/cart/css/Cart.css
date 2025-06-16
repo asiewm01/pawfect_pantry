@@ -19,13 +19,14 @@
 /* ============================
    📦 Table Styles
 ============================ */
-table {
+.table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   border: 1px solid #ccc;
   text-align: center;
@@ -39,7 +40,7 @@ th {
 /* ============================
    🧮 Quantity Input
 ============================ */
-input[type="number"] {
+input[type='number'] {
   width: 60px;
   padding: 5px;
   text-align: center;
@@ -54,7 +55,7 @@ input[type="number"] {
   object-fit: cover;
   border-radius: 10px;
   border: 1px solid #ddd;
-  margin-right: 10px;
+  margin-top: 5px;
 }
 
 /* ============================
@@ -134,21 +135,9 @@ input[type="number"] {
   }
 }
 
-/* Hide product image on screens smaller than 576px */
-@media (max-width: 575.98px) {
-  .cart-item-img {
-    display: none !important;
-  }
-}
-
-.cart-item-img {
-  width: 70px;
-  height: auto;
-  border-radius: 6px;
-  object-fit: cover;
-}
-
-/* Optional: name spacing */
+/* ============================
+   💬 Optional: Item Name Styling
+============================ */
 .cart-item-name {
   font-weight: 500;
   color: #333;
