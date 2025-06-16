@@ -103,17 +103,17 @@ useEffect(() => {
               {cartItems.map((item, index) => (
                 <tr key={item.id}>
                   <td>{index + 1}</td>
-                  <td className="d-flex align-items-center gap-2">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="cart-item-img"
-                      onError={(e) =>
-                        (e.target.src = '/media/products_images/default.png')
-                      }
-                    />
-                    {item.name}
-                  </td>
+<td className="d-flex align-items-center gap-2">
+  <img
+    src={item.image}
+    alt={item.name}
+    className="cart-item-img d-none d-sm-block" // ✅ hide image on screens <576px
+    onError={(e) =>
+      (e.target.src = '/media/products_images/default.png')
+    }
+  />
+  <span className="cart-item-name">{item.name}</span>
+</td>
                   <td>
                     <input
                       type="number"

@@ -70,7 +70,7 @@ const HomePage = () => {
   animate={{ opacity: 1 }}
   transition={{ duration: 1 }}
 >
-  <div className="row d-flex flex-column flex-xxl-row align-items-stretch">
+  <div className="row d-flex flex-column flex-xxl-row align-items-stretch mt-4">
     
     {/* Image Section - First on small, second on large */}
     <div className="col-12 col-xxl-6 d-flex order-1 order-xxl-2 p-0">
@@ -86,7 +86,7 @@ const HomePage = () => {
     </div>
 
     {/* Text Section - Second on small, first on large */}
-    <div className="col-12 col-xxl-6 d-flex order-2 order-xxl-1">
+    <div className="col-12 col-xxl-6 d-flex order-2 order-xxl-1 mt-4">
       <div className="card shadow-sm w-100 h-100 p-4">
         <h2 className="homepage-subtitle d-flex align-items-center gap-2">
           <img

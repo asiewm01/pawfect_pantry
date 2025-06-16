@@ -133,3 +133,23 @@ input[type="number"] {
     text-align: center;
   }
 }
+
+/* Hide product image on screens smaller than 576px */
+@media (max-width: 575.98px) {
+  .cart-item-img {
+    display: none !important;
+  }
+}
+
+.cart-item-img {
+  width: 70px;
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+/* Optional: name spacing */
+.cart-item-name {
+  font-weight: 500;
+  color: #333;
+}
