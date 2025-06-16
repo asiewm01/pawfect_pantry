@@ -104,18 +104,17 @@ useEffect(() => {
                 <tr key={item.id}>
                   <td>{index + 1}</td>
 <td className="align-middle">
-  {/* Small screen item name */}
-  <div className="d-sm-none mb-1 fw-bold">{item.name}</div>
+  {/* Always show the name */}
+  <div className="fw-bold mb-1">{item.name}</div>
 
-  {/* Image and name for larger screens */}
-  <div className="d-none d-sm-flex align-items-center gap-2">
+  {/* Show image only on larger screens */}
+  <div className="d-none d-sm-block">
     <img
       src={item.image}
       alt={item.name}
       className="cart-item-img"
       onError={(e) => (e.target.src = '/media/products_images/default.png')}
     />
-    <span className="cart-item-name">{item.name}</span>
   </div>
 </td>
 
