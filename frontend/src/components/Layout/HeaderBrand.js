@@ -5,15 +5,18 @@ import './css/HeaderBrand.css';
 const HeaderBrand = () => {
   const [showCorgi, setShowCorgi] = useState(true);
 
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setShowCorgi(window.innerWidth < 1024);
-    };
+useEffect(() => {
+  const checkScreenSize = () => {
+    setShowCorgi(window.innerWidth >= 1280); // ✅ Show only on desktop
+  };
 
-    checkScreenSize(); // Initial check
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
+  // Run on mount
+  checkScreenSize();
+
+  // Add resize listener
+  window.addEventListener('resize', checkScreenSize);
+  return () => window.removeEventListener('resize', checkScreenSize);
+}, []);
 
   return (
     <div className="header-top">
@@ -75,7 +78,7 @@ const HeaderBrand = () => {
                 objectFit: 'contain',
                 display: 'block',
                 margin: 0,
-                borderLeft: '4px solid black',
+                borderLeft: '3px solid black',
                 padding: 0,
               }}
             />
