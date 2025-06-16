@@ -1,6 +1,6 @@
 /* ============== LOGIN FORM LAYOUT ============== */
 .login-wrapper {
-  max-width: 1200px; /* 🔽 reduce from 960 */
+  max-width: 900px; 
   width: 100%;
   margin: 50px auto;
   border-radius: 12px;
