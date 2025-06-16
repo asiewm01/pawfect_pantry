@@ -1,0 +1,48 @@
+.register-form-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1rem; /* 👈 replaces min-height */
+}
+
+.register-form h2 {
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  color: #333;
+}
+
+.register-form label {
+  font-weight: 500;
+}
+
+.register-form input {
+  padding: 10px;
+  margin: 6px 0;          /* reduced from 8px */
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.register-form button {
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.register-form button:hover {
+  background-color: #218838;
+}
+
+/* Optional: scale corgi on big screens but limit height */
+.register-image img {
+  max-height: 1200px;
+  object-fit: contain;
+  width: 100%;
+}
+

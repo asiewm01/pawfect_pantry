@@ -1,21 +1,15 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import './css/BaseLayout.css';
-import Navbar from './NavigationBar'; // Import Navbar
-import Footer from './Footer'; // ✅ Import Footer
+import Navbar from './Navigation/NavigationBar'; // Import Navbar
+import Footer from './Navigation/Footer'; // ✅ Import Footer
+import HeaderBrand from '../components/Layout/HeaderBrand'; // adjust the path as needed
 
 const BaseLayout = ({ user, setUser }) => {
   return (
     <>
       {/* Logo + Brand */}
-      <div className="header-top">
-        <div className="brand-area">
-          <Link to="/">
-            <img src="/media/images/logo.png" alt="Logo" className="site-logo" />
-          </Link>
-          <span className="brand-name">Where every bite is perfectly paw-picked.</span>
-        </div>
-      </div>
+      <HeaderBrand />
 
       {/* Navigation */}
       <Navbar user={user} setUser={setUser} /> {/* ✅ Pass setUser properly */}

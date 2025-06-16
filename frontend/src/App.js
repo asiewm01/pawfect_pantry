@@ -24,7 +24,7 @@ import Cart from './pages/cart/Cart';
 import Checkout from './pages/cart/Checkout';
 import OrderHistory from './pages/order/OrderHistory';
 import OrderDetail from './pages/order/OrderDetail';
-import SearchResults from './components/SearchResult';
+import SearchResults from './components/Navigation/SearchResult';
 import ChatbotWidget from './components/ChatbotWidget'; 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import OrderTracking from './pages/order/OrderTracking'; 

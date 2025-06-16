@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './css/ProductList.css';
-import ProductFilterForm from '../../components/ProductFilterForm';
+import ProductFilterForm from '../../components/Product/ProductFilterForm';
 import { Link } from 'react-router-dom';
 import axios from '../../axiosSetup';
 import { motion } from 'framer-motion';
@@ -68,9 +68,9 @@ const ProductList = ({ products: initialProducts }) => {
   }, [filters]);
 
   // ✅ Fetch products when filters or page change
-  useEffect(() => {
-    fetchProducts(pageInfo.page, filters);
-  }, [filters]);
+useEffect(() => {
+  fetchProducts(pageInfo.page, filters);
+}, [fetchProducts, pageInfo.page]); // ✅ now compliant with ESLint
 
   const handleAddToCart = async (productId) => {
     try {

@@ -1,58 +1,86 @@
-.register-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 30px;
-    border-radius: 12px;
-    background: #f9f9f9;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-  
-  .register-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-  }
-  
-  .register-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .register-form input {
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-  }
-  
-  .register-form button {
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    background-color: #4CAF50;
-    color: white;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  
-  .register-form button:hover {
-    background-color: #45a049;
-  }
-  
-  .error {
-    color: red;
-    text-align: center;
-  }
-  
-  .success {
-    color: green;
-    text-align: center;
-  }
-  
 /* ============================
-   🪟 Registration Success Popup
+   🧾 Register Wrapper Layout
+============================ */
+.register-wrapper {
+  max-width: 1500px;
+  margin: auto;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+.register-wrapper .left-image {
+  object-fit: cover;
+  height: 100%;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.register-wrapper .form-container {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* ============================
+   🧾 RegisterForm Styling
+============================ */
+.register-form-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.register-form h2 {
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  color: #333;
+}
+
+.register-form label {
+  font-weight: 500;
+}
+
+.register-form input {
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.register-form button {
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.register-form button:hover {
+  background-color: #218838;
+}
+
+.alert {
+  font-size: 0.95rem;
+}
+
+.error {
+  color: red;
+  text-align: center;
+}
+
+.success {
+  color: green;
+  text-align: center;
+}
+
+/* ============================
+   ✅ Registration Popup
 ============================ */
 .popup-overlay {
   position: fixed;
@@ -68,22 +96,29 @@
   z-index: 9999;
 }
 
-.popup-box {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 20px;
-  width: 350px;
-  text-align: center;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
-  animation: fadeIn 0.3s ease-in-out;
+img {
+  max-height: 100%;
 }
 
-.popup-corgi {
-  max-width: 100px;
-  margin-bottom: 15px;
+
+
+@media (min-width: 992px) {
+  .register-image {
+    width: 50% !important;
+    display: block !important;
+  }
+
+  .register-form-col {
+    width: 50% !important;
+  }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+@media (max-width: 1040px) {
+  .register-image {
+    display: none !important;
+  }
+
+  .register-form-col {
+    width: 100% !important;
+  }
 }

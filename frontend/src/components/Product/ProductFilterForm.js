@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './css/ProductFilterForm.css';
-import axios from '../axiosSetup';
+import axios from '../../axiosSetup';
 
 const ProductFilterForm = ({ onFilter }) => {
   const [search, setSearch] = useState('');

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import './css/HomePage.css';
-import ProductFilterForm from '../components/ProductFilterForm';
+import ProductFilterForm from '../components/Product/ProductFilterForm';
 import VideoBanner from '../components/VideoBanner';
 import ExoticImageSlider from '../components/ExoticImageSlider';
 
@@ -61,12 +61,8 @@ const HomePage = () => {
         <VideoBanner />
       </motion.div>
 
-{(window.innerWidth <= 300 || window.innerWidth >= 1279) ? (
-  <hr
-    className="solid my-4"
-    style={{ display: 'block' }}
-  />
-) : null}
+<hr className="solid my-4 hr-hide-on-mobile" />
+
 
 <motion.div
   className="container home-container"
@@ -79,32 +75,46 @@ const HomePage = () => {
     {/* Image Section - First on small, second on large */}
     <div className="col-12 col-xxl-6 d-flex order-1 order-xxl-2 p-0">
       <div className="w-100 h-100">
-        <img
-          src="/media/images/home_images.png"
-          alt="Cats and Dogs"
-          className="img-fluid w-100 h-100 object-fit-cover rounded shadow"
-          style={{ minHeight: '100%' }}
-        />
+<img
+  src="/media/images/home_images.png"
+  alt="Cats and Dogs"
+  className="img-fluid w-100 rounded shadow"
+  style={{ objectFit: 'cover', height: '100%', maxHeight: '500px' }}
+/>
+
       </div>
     </div>
 
     {/* Text Section - Second on small, first on large */}
     <div className="col-12 col-xxl-6 d-flex order-2 order-xxl-1">
-      <div className="welcome-card w-100 mt-4">
-        <h2 className="homepage-subtitle">
-          <img src="/media/images/corgi_butt.png" alt="Corgi Butt" className="corgi-butt" /> “Tail-Wagging Goodness in Every Treat!”
+      <div className="card shadow-sm w-100 h-100 p-4">
+        <h2 className="homepage-subtitle d-flex align-items-center gap-2">
+          <img
+            src="/media/images/corgi_butt.png"
+            alt="Corgi Butt"
+            className="corgi-butt"
+            style={{ height: '2rem' }}
+          />
+          “Tail-Wagging Goodness in Every Treat!”
         </h2>
         <hr className="solid divider-line" />
         <div className="about-text">
-          <p>We provide the freshest, highest-quality pet food and thoughtfully curated merchandise to meet your companions' daily needs. From nutrition to playtime, enrichment to grooming, your pets deserve nothing less than excellence — and we deliver it with care, precision, and love.</p>
-          <p>All our products are sustainably sourced from trusted suppliers across the globe. We work only with partners who share our commitment to quality, safety, and ethical practices, ensuring every bite and toy meets rigorous standards without compromise.</p>
-          <p>Whether you're looking for grain-free kibble, freeze-dried treats, interactive toys, or eco-friendly accessories — we've got it all. Whatever your furry, scaly, or feathered friend needs, PawFect Pantry is here to keep tails wagging, feathers fluffed, and whiskers happy!</p>
+          <p>
+            We provide the freshest, highest-quality pet food and thoughtfully curated merchandise to meet your companions' daily needs. From nutrition to playtime, enrichment to grooming, your pets deserve nothing less than excellence — and we deliver it with care, precision, and love.
+          </p>
+          <p>
+            All our products are sustainably sourced from trusted suppliers across the globe. We work only with partners who share our commitment to quality, safety, and ethical practices, ensuring every bite and toy meets rigorous standards without compromise.
+          </p>
+          <p>
+            Whether you're looking for grain-free kibble, freeze-dried treats, interactive toys, or eco-friendly accessories — we've got it all. Whatever your furry, scaly, or feathered friend needs, PawFect Pantry is here to keep tails wagging, feathers fluffed, and whiskers happy!
+          </p>
         </div>
       </div>
     </div>
 
   </div>
 </motion.div>
+
 
 
       <hr className="solid my-4" />

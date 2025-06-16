@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../../api/axiosInstance';
 import './css/ProductDetail.css';
-import FeedbackSection from '../../components/FeedbackSection';
+import FeedbackSection from '../../components/Product/FeedbackSection';
 import CartSuccessPopup from '../../components/Popup/CartSuccessPopup';
 
 const ProductDetail = () => {

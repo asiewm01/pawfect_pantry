@@ -1,0 +1,132 @@
+/* === HEADER TOP BAR === */
+.header-top {
+  position: relative;
+  height: 190px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  overflow: visible;
+  z-index: 2;
+}
+
+/* === LOGO IMAGE === */
+.site-logo {
+  height: 150px;
+  object-fit: contain;
+  display: block;
+  margin: 0;
+  border: 2px solid #2d7b3e;
+  border-radius: 50%;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+}
+
+/* === DESKTOP SLOGAN === */
+.brand-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2d7b3e;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
+  margin-left: 50px;
+}
+
+/* === CORGI SPEECH === */
+.corgi-wrapper {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  display: flex;
+  align-items: flex-end;
+  z-index: 5;
+}
+
+.corgi-speech {
+  height: 200px;
+  object-fit: contain;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* === SLOGAN VISIBILITY DEFAULTS === */
+.slogan-desktop {
+  display: block;
+}
+.slogan-mobile {
+  display: none;
+}
+.slogan-mobile p {
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  color: #2d7b3e;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* === RESPONSIVE BREAKPOINTS === */
+
+/* ≤ 1280px */
+@media (max-width: 1280px) {
+  .site-logo {
+    height: 150px;
+    margin-right: 12px;
+  }
+  .brand-name {
+    margin-left: 10px;
+  }
+}
+
+/* ≤ 1024px */
+@media (max-width: 1024px) {
+  .site-logo {
+    height: 140px;
+  }
+}
+
+/* ≤ 820px — Show mobile slogan, hide desktop and corgi */
+@media (max-width: 820px) {
+  .corgi-wrapper {
+    display: none !important;
+  }
+
+  .slogan-desktop {
+    display: none !important;
+  }
+
+  .slogan-mobile {
+    display: block;
+    text-align: left;
+  }
+}
+
+/* ≤ 768px */
+@media (max-width: 768px) {
+  .corgi-speech {
+    height: 150px;
+  }
+}
+
+/* ≤ 576px */
+@media (max-width: 576px) {
+  .corgi-speech {
+    height: 100px;
+  }
+}
+
+/* ≤ 430px */
+@media (max-width: 430px) {
+  .slogan-mobile {
+    display: none !important;
+  }
+
+  .brand-area {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .site-logo {
+    margin: 0 auto;
+  }
+}

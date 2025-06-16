@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/Nova.css';
-import DashboardSidebar from '../../components/DashboardSidebar';
+import DashboardSidebar from '../../components/Navigation/DashboardSidebar';
 
 const Nova = () => {
   const [input, setInput] = useState('');

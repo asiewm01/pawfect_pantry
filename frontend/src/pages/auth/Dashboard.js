@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DashboardSidebar from '../../components/DashboardSidebar';
+import DashboardSidebar from '../../components/Navigation/DashboardSidebar';
 import './css/Dashboard.css';
 
 const Dashboard = () => {

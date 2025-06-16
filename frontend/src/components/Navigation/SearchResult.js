@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../api/axiosInstance';
+import axios from '../../api/axiosInstance';
 import { useLocation, Link } from 'react-router-dom';
 import './css/SearchResult.css';
 
