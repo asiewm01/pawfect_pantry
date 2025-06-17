@@ -3,7 +3,7 @@
 ================================ */
 
 /* ≥ 1281px — Desktop View */
-@media (min-width: 1279px) {
+@media (min-width: 1280px) {
   .full-corgi {
     display: block !important;
   }

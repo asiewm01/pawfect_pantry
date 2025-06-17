@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import './css/HomePage.css';
+import './css/homepage/HomePage.css';
+import './css/homepage/ResponsiveHomePage.css';
 import ProductFilterForm from '../components/Product/ProductFilterForm';
 import VideoBanner from '../components/VideoBanner';
 import ExoticImageSlider from '../components/ExoticImageSlider';
@@ -41,23 +42,55 @@ const HomePage = () => {
 
   return (
     <>
-      <motion.div className="container-fluid p-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-        <div className="row">
-          <div className="col-12 text-center mt-3">
-            <h1 className="homepage-title">
-              Welcome to Our Pet Food & Merchandise Store
-              <img src="/media/images/cute-cat.png" alt="Cute Cat" className="cute-cat" />
-            </h1>
-          </div>
-        </div>
-      </motion.div>
+<motion.div className="container-fluid p-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+  <div className="row align-items-center justify-content-between gx-3 px-3">
 
-      <div className="container my-3">
-        <ProductFilterForm onFilter={handleFilter} />
+    {/* Left-side image */}
+    <div className="col-auto d-none d-xl-block">
+      <img
+        src="/media/images/cat-dog-left.png"
+        alt="Left Pets"
+        className="side-animal-img"
+      />
+    </div>
+
+    {/* Center content: Title + Filter */}
+    <div className="col text-center">
+      <div className="filter-header-group mb-3">
+        <h1 className="homepage-title d-inline-flex align-items-center justify-content-center">
+          Welcome to Our Pet Food & Merchandise Store
+<img
+  src="/media/images/cute-cat.png"
+  alt="Cute Cat"
+  className="cute-cat ms-2 d-none d-xl-inline-block"
+  style={{
+    height: '70px',
+    marginLeft: '10px'
+  }}
+/>
+</h1>
       </div>
 
+      <div className="filter-bar d-flex flex-wrap justify-content-center gap-2">
+        <ProductFilterForm onFilter={handleFilter} />
+      </div>
+    </div>
+
+    {/* Right-side image */}
+    <div className="col-auto d-none d-xl-block">
+      <img
+        src="/media/images/cat-dog-right.png"
+        alt="Right Pets"
+        className="side-animal-img"
+      />
+    </div>
+
+  </div>
+</motion.div>
+
+
       <hr className="solid my-4" />
-<motion.div className="video-banner-wrapper d-none d-lg-block" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+        <motion.div className="video-banner-wrapper d-none d-lg-block" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
         <VideoBanner />
       </motion.div>
 

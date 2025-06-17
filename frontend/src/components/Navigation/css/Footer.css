@@ -79,6 +79,25 @@ footer .footer-bottom {
 }
 
 .rufus-img {
-  max-width: 460px;         /* Keep Rufus at a natural size */
+  max-width: 290px;         /* Keep Rufus at a natural size */
   height: auto;
 }
+
+.rufus-img {
+  max-width: 450px;         /* Keep Rufus at a natural size */
+  height: auto;
+}
+
+@media (max-width: 1280px) {
+.rufus-img {
+  max-width: 290px;         /* Keep Rufus at a natural size */
+  height: auto;
+}
+  }
+
+@media (max-width: 1024px) {
+.rufus-img {
+  max-width: 200px;         /* Keep Rufus at a natural size */
+  height: auto;
+}
+  }
