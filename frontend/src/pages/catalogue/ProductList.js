@@ -117,7 +117,7 @@ useEffect(() => {
 <h1 className="homepage-title d-inline-flex align-items-center justify-content-center">
   Welcome to Our Pet Food & Merchandise Store
   <img
-    src="/media/images/kawaii-cat.png"
+    src="/media/images/ferret.png"
     alt="kawaii Cat"
     className="kawaii-cat ms-2 d-none d-xl-inline-block"
     style={{
