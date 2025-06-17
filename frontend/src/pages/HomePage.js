@@ -121,15 +121,17 @@ const HomePage = () => {
     {/* Text Section - Second on small, first on large */}
     <div className="col-12 col-xxl-6 d-flex order-2 order-xxl-1 mt-4 mt-xxl-0">
       <div className="card shadow-sm w-100 h-100 p-4">
-        <h2 className="homepage-subtitle d-flex align-items-center gap-2">
-          <img
-            src="/media/images/corgi_butt.png"
-            alt="Corgi Butt"
-            className="corgi-butt"
-            style={{ height: '2rem' }}
-          />
-          “Tail-Wagging Goodness in Every Treat!”
-        </h2>
+<div className="d-flex justify-content-center">
+  <h2 className="homepage-subtitle d-flex align-items-center gap-2">
+    <img
+      src="/media/images/corgi_butt.png"
+      alt="Corgi Butt"
+      className="corgi-butt"
+      style={{ height: '70px' }}
+    />
+    “Tail-Wagging Goodness in Every Treat!”
+  </h2>
+</div>
         <hr className="solid divider-line" />
         <div className="about-text">
           <p>
