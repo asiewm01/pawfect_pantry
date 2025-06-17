@@ -133,7 +133,7 @@ const HomePage = () => {
   </h2>
 </div>
         <hr className="solid divider-line" />
-        <div className="about-text">
+        <div className="about-text justify-content-center text-center">
           <p>
             We provide the freshest, highest-quality pet food and thoughtfully curated merchandise to meet your companions' daily needs. From nutrition to playtime, enrichment to grooming, your pets deserve nothing less than excellence — and we deliver it with care, precision, and love.
           </p>
