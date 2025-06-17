@@ -94,18 +94,62 @@ useEffect(() => {
 
   return (
     <div className="product-list-container">
-      <div className="container-fluid p-0">
-        <div className="row">
-          <div className="col-12 text-center mt-3">
-            <h1 className="homepage-title">
-              <img src="/media/images/kawaii_cat.png" alt="Kawaii Cat" className="kawaii_cat" />
-              Welcome to our pet food selection
-            </h1>
-          </div>
-        </div>
+<motion.div
+  className="container-fluid p-0"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 1 }}
+>
+  <div className="row align-items-center justify-content-between gx-3 px-3">
+
+    {/* Left-side image */}
+    <div className="col-auto d-none d-xl-block">
+      <img
+        src="/media/images/cat-dog-food-left.png"
+        alt="Left Pets"
+        className="side-animal-img"
+      />
+    </div>
+
+    {/* Center content: Title + Filter */}
+    <div className="col text-center">
+      <div className="filter-header-group mb-3">
+<h1 className="homepage-title d-inline-flex align-items-center justify-content-center">
+  Welcome to Our Pet Food & Merchandise Store
+  <img
+    src="/media/images/kawaii-cat.png"
+    alt="kawaii Cat"
+    className="kawaii-cat ms-2 d-none d-xl-inline-block"
+    style={{
+      height: '70px',
+      marginLeft: '10px'
+    }}
+  />
+</h1>
+
+<p className="homepage-subtext mt-2">
+  Explore nutritious meals and playful goodies tailored for your furry friends—because they deserve the best!
+</p>
       </div>
 
-      <ProductFilterForm onFilter={setFilters} />
+      <div className="filter-bar d-flex flex-wrap justify-content-center gap-2">
+        <ProductFilterForm onFilter={setFilters} />
+      </div>
+    </div>
+
+    {/* Right-side image */}
+    <div className="col-auto d-none d-xl-block">
+      <img
+        src="/media/images/cat-dog-food-right.png"
+        alt="Right Pets"
+        className="side-animal-img"
+      />
+    </div>
+
+  </div>
+</motion.div>
+
+      <hr className="solid my-4" />
 
       {loading && <p className="text-center">Loading products...</p>}
       {error && <p className="text-danger text-center">{error}</p>}
