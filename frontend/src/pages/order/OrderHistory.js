@@ -4,11 +4,13 @@ import { Link } from 'react-router-dom';
 import './css/OrderHistory.css';
 import DashboardSidebar from '../../components/Navigation/DashboardSidebar';
 
+const ORDERS_PER_PAGE = 10;
+
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // ✅ One-time refresh on first entry to this page
   useEffect(() => {
     const hasRefreshed = sessionStorage.getItem('orderHistoryRefreshed');
     if (!hasRefreshed) {
@@ -33,16 +35,19 @@ const OrderHistory = () => {
     }
   };
 
+  const totalPages = Math.ceil(orders.length / ORDERS_PER_PAGE);
+  const paginatedOrders = orders.slice(
+    (currentPage - 1) * ORDERS_PER_PAGE,
+    currentPage * ORDERS_PER_PAGE
+  );
+
   return (
     <div className="nova-container container-fluid my-5 px-4">
       <div className="row flex-lg-nowrap">
-
-        {/* Sidebar */}
         <div className="col-lg-3 col-md-12 mb-4">
           <DashboardSidebar />
         </div>
 
-        {/* Main Content */}
         <div className="col-lg-9 col-md-12 history-container">
           <h2>🧾 Order History</h2>
           {error && <p className="text-danger">{error}</p>}
@@ -58,10 +63,10 @@ const OrderHistory = () => {
               </tr>
             </thead>
             <tbody>
-              {orders.length > 0 ? (
-                orders.map((order, index) => (
+              {paginatedOrders.length > 0 ? (
+                paginatedOrders.map((order, index) => (
                   <tr key={order.id}>
-                    <td>{index + 1}</td>
+                    <td>{(currentPage - 1) * ORDERS_PER_PAGE + index + 1}</td>
                     <td>{new Date(order.date).toLocaleString()}</td>
                     <td>{order.total.toFixed(2)}</td>
                     <td>{order.status}</td>
@@ -80,7 +85,33 @@ const OrderHistory = () => {
             </tbody>
           </table>
 
-          {/* Empty State */}
+          {/* Pagination Controls */}
+          {orders.length > ORDERS_PER_PAGE && (
+            <div className="pagination mt-3">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i + 1}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={currentPage === i + 1 ? 'active' : ''}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
+
           {orders.length === 0 && !error && (
             <p className="text-muted mt-3">You haven't placed any orders yet.</p>
           )}
