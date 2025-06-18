@@ -51,64 +51,68 @@ const OrderHistory = () => {
         <div className="col-lg-9 col-md-12 history-container">
           <h2>🧾 Order History</h2>
           {error && <p className="text-danger">{error}</p>}
-        <div className="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Date</th>
-                <th>Total ($)</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedOrders.length > 0 ? (
-                paginatedOrders.map((order, index) => (
-                  <tr key={order.id}>
-                    <td>{(currentPage - 1) * ORDERS_PER_PAGE + index + 1}</td>
-                    <td>{new Date(order.date).toLocaleString()}</td>
-                    <td>{order.total.toFixed(2)}</td>
-                    <td>{order.status}</td>
-                    <td>
-                      <Link to={`/orders/detail/${order.id}`} className="view-btn">
-                        View
-                      </Link>
-                    </td>
-                  </tr>
-                ))
-              ) : (
+
+          <div className="table-responsive">
+            <table>
+              <thead>
                 <tr>
-                  <td colSpan="5">No orders found.</td>
+                  <th>#</th>
+                  <th>Date</th>
+                  <th>Total ($)</th>
+                  <th>Status</th>
+                  <th>Action</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-          {/* Pagination Controls */}
+              </thead>
+              <tbody>
+                {paginatedOrders.length > 0 ? (
+                  paginatedOrders.map((order, index) => (
+                    <tr key={order.id}>
+                      <td>{(currentPage - 1) * ORDERS_PER_PAGE + index + 1}</td>
+                      <td>{new Date(order.date).toLocaleString()}</td>
+                      <td>{order.total.toFixed(2)}</td>
+                      <td>{order.status}</td>
+                      <td>
+                        <Link to={`/orders/detail/${order.id}`} className="view-btn">
+                          View
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5">No orders found.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Scrollable Pagination */}
           {orders.length > ORDERS_PER_PAGE && (
-            <div className="pagination mt-3">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => (
+            <div className="pagination-wrapper mt-3">
+              <div className="pagination">
                 <button
-                  key={i + 1}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={currentPage === i + 1 ? 'active' : ''}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
                 >
-                  {i + 1}
+                  Previous
                 </button>
-              ))}
-              <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-              >
-                Next
-              </button>
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i + 1}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={currentPage === i + 1 ? 'active' : ''}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
             </div>
           )}
 
