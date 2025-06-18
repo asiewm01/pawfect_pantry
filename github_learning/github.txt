@@ -35,5 +35,5 @@ Database File -
 cd /c/Users/siewc/OneDrive/Desktop/Generation/Generation_Capstone_Ecommerce
 
 git add .
-git commit -m "Add Rufus.gif to Footer space"
+git commit -m "update chatbot close button"
 git push origin main

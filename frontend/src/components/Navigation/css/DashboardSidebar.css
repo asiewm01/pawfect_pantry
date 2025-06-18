@@ -45,3 +45,36 @@
   font-weight: 600;
 }
 
+
+/* Default: visible on desktop */
+.dashboard-sidebar {
+  transition: all 0.3s ease;
+}
+
+/* Hidden on mobile if collapsed */
+@media (max-width: 991px) {
+  .dashboard-sidebar.collapsed {
+    display: none;
+  }
+
+  .sidebar-toggle {
+    display: block;
+  }
+}
+
+@media (min-width: 992px) {
+  .sidebar-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 991px) {
+  .dashboard-sidebar {
+    transition: max-height 0.3s ease;
+  }
+}
+
+.sidebar-toggle {
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
