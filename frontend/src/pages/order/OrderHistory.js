@@ -51,7 +51,7 @@ const OrderHistory = () => {
         <div className="col-lg-9 col-md-12 history-container">
           <h2>🧾 Order History</h2>
           {error && <p className="text-danger">{error}</p>}
-
+        <div className="table-responsive">
           <table>
             <thead>
               <tr>
@@ -84,7 +84,7 @@ const OrderHistory = () => {
               )}
             </tbody>
           </table>
-
+        </div>
           {/* Pagination Controls */}
           {orders.length > ORDERS_PER_PAGE && (
             <div className="pagination mt-3">
