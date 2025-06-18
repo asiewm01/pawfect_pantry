@@ -205,8 +205,11 @@ const HomePage = () => {
 
       <motion.div className="container my-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.4 }}>
         <h2 className="mb-4 text-center">
-          Our Recommendations
-          <img src="/media/images/corgi-over-navbar.png" alt="Corgi" className="corgi-over-navbar" />
+<h2 className="recommendation-header text-center mb-3">
+  <img src="/media/images/cat-sleep.png" alt="Cat" className="neko-img" />
+  <span className="header-text">Recommended for You</span>
+  <img src="/media/images/corgi-sleep.png" alt="Corgi" className="corgi-img" />
+</h2>
         </h2>
         <div className="row">
           {recommended.length > 0 ? (

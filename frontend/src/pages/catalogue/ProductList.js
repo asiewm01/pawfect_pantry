@@ -198,10 +198,12 @@ useEffect(() => {
       <hr className="solid my-4" />
 
       <motion.div className="ai-recommendation-section container py-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.4 }}>
-        <h2 className="text-center mb-4">
-          Recommended for You
-          <img src="/media/images/neko.png" alt="Neko" className="neko" />
-        </h2>
+<h2 className="recommendation-header text-center mb-3">
+  <img src="/media/images/cat-sleep.png" alt="Cat" className="neko-img" />
+  <span className="header-text">Recommended for You</span>
+  <img src="/media/images/corgi-sleep.png" alt="Corgi" className="corgi-img" />
+</h2>
+
         <div className="row justify-content-center">
           {recommended.length > 0 ? (
             recommended.map(product => (
