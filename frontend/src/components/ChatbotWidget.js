@@ -11,37 +11,40 @@ const ChatbotWidget = () => {
   const handleWelcomeMessage = () => {
     const welcomeMsg = {
       type: 'bot',
-      text: `<b>👋 Hello! I'm <span style="color:#007BFF;">B.A.R.K.L.E.Y.</span> – <br> Bot Assistant for Recommending Kits, Listings & Engaging You.</b>
-      <br><br>
-      Ask me anything about our store, products, or promotions! 🐾
-      <br><br>
-      You can also <span class="chatbot-close-link" style="color:#007BFF; cursor:pointer;">close</span> this tab and come back later! I’ll be here when you need me.`
+      isJSX: true,
+      text: (
+        <>
+          <b>
+            👋 Hello! I'm <span style={{ color: '#007BFF' }}>B.A.R.K.L.E.Y.</span> – <br />
+            Bot Assistant for Recommending Kits, Listings & Engaging You.
+          </b>
+          <br /><br />
+          Ask me anything about our store, products, or promotions! 🐾
+          <br /><br />
+          You can{' '}
+          <span
+            onClick={() => setOpen(false)}
+            style={{ color: '#007BFF', cursor: 'pointer', fontWeight: 'bold' }}
+          >
+            close
+          </span>{' '}
+          this tab and come back later. I’ll be here whenever you need me.
+        </>
+      )
     };
-
     setMessages([welcomeMsg]);
-
-    setTimeout(() => {
-      const closeLink = document.querySelector('.chatbot-close-link');
-      if (closeLink) {
-        closeLink.addEventListener('click', () => setOpen(false));
-      }
-    }, 100);
   };
 
   const toggleChatbot = () => {
-    setOpen(prev => {
+    setOpen((prev) => {
       const nextOpen = !prev;
-
-      // Only show welcome message on first open and on desktop
       if (nextOpen && messages.length === 0 && window.innerWidth >= 1280) {
         handleWelcomeMessage();
       }
-
       return nextOpen;
     });
   };
 
-  // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -69,7 +72,6 @@ const ChatbotWidget = () => {
         err.response?.status === 401
           ? "🔒 Please log in to use BARKLEY ChatBot. You can log in from the top-right menu."
           : "⚠️ Something went wrong. Please try again later.";
-
       setMessages([...updatedMessages, { type: 'bot', text: errorMessage }]);
     }
   };
@@ -88,11 +90,9 @@ const ChatbotWidget = () => {
 
               <div id="chatbot-messages">
                 {messages.map((msg, idx) => (
-                  <div
-                    key={idx}
-                    className={`chatbot-message chatbot-${msg.type}`}
-                    dangerouslySetInnerHTML={{ __html: msg.text }}
-                  ></div>
+                  <div key={idx} className={`chatbot-message chatbot-${msg.type}`}>
+                    {msg.isJSX ? msg.text : <span dangerouslySetInnerHTML={{ __html: msg.text }} />}
+                  </div>
                 ))}
                 <div ref={messagesEndRef} />
               </div>
