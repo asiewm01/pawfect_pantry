@@ -1,28 +1,32 @@
 import React from 'react';
-import './css/ProductCard.css';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
-const ProductCard = ({ product, onAddToCart }) => {
+const RecommendedProductCard = ({ product }) => {
   return (
-    <div className="product-card">
-      <img
-        src={product.image || '/media/images/placeholder.png'}
-        alt={product.name}
-        className="product-img"
-      />
-      <h3>{product.name}</h3>
-      <p>{product.description?.slice(0, 100)}...</p>
-      <div className="price">${product.price}</div>
-      <div className="category">{product.species} | {product.food_type}</div>
-      <p className="views">{product.views} views</p>
-      <div className="button-wrapper">
-        <Link to={`/catalogue/${product.id}`} className="view-link">View Details</Link>
-        <button className="add-btn" onClick={() => onAddToCart(product.id)}>
-          Add to Cart
-        </button>
-      </div>
+    <div className="col-md-4 mb-4">
+      <motion.div className="card shadow-sm h-100" whileHover={{ scale: 1.03 }}>
+        <img
+          src={product.image || "/media/images/placeholder.jpg"}
+          className="card-img-top"
+          alt={product.name}
+          style={{ height: '200px', objectFit: 'cover' }}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/media/images/placeholder.jpg";
+          }}
+        />
+        <div className="card-body d-flex flex-column">
+          <h5 className="card-title">{product.name}</h5>
+          <p className="card-text text-success"><strong>${product.price}</strong></p>
+          <p className="card-text"><strong>Views:</strong> {product.views}</p>
+          <a href={`/catalogue/${product.id}`} className="btn btn-primary mt-auto">
+            View Details
+          </a>
+        </div>
+      </motion.div>
     </div>
   );
 };
 
-export default ProductCard;
+export default RecommendedProductCard;
+
